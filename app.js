@@ -49,7 +49,7 @@ function renderHome(){
   var n=Q.filter(function(q){return q.subject===k&&q.lesson===l}).length;
   var p=(S.prog[k]||{})[l]||0;var th=window.THEORY[k][l];
   lc.push('<div class="panel lesson-card"><span class="badge '+(k==="history"?"h":"b")+'">'+META[k].name+'</span><h3>'+esc(th.title)+'</h3><p>'+esc(th.desc)+'</p><div class="lesson-meta"><span class="badge">'+n+' câu</span><span class="badge">'+p+'% tiến độ</span></div><div class="pbar"><i style="width:'+p+'%"></i></div><div class="row"><button class="btn btn-sm" data-theory="'+k+':'+l+'">Học lý thuyết</button><button class="btn btn-sm btn-primary" data-quiz="'+k+':'+l+'">Luyện ngay</button></div></div>')})});
- $("lessonCards").innerHTML=lc;
+ $("lessonCards").innerHTML=lc.join("");
  var tot=S.hist.length,best=S.hist.reduce(function(m,h){return Math.max(m,h.point)},0);
  $("heroBest").textContent=tot?best.toFixed(2):"–";
  $("heroStats").innerHTML='<div><b>'+Q.length+'</b><span>câu hỏi</span></div><div><b>'+tot+'</b><span>đề đã làm</span></div><div><b>'+(tot?best.toFixed(1):"–")+'</b><span>điểm cao nhất</span></div>';
