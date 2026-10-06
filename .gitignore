@@ -1,0 +1,8 @@
+# ÔnTập12 là web tĩnh — không có node_modules/build, file này chỉ để phòng khi mở rộng sau này
+node_modules/
+dist/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
