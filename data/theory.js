@@ -44,7 +44,7 @@ html: `<h2>1. Từ hai cực sang đa cực</h2><p>1991 chấm dứt hai cực; 
 },
 biology: {
 1: { title: "Bài 1: DNA và cơ chế tái bản DNA", desc: "Cấu trúc, nguyên tắc bổ sung – bán bảo toàn, enzyme và ý nghĩa tái bản.",
-html: `<h2>1. Cấu trúc DNA</h2><p>DNA gồm 2 mạch polynucleotide xoắn kép, đơn phân là nucleotide (đường deoxyribose + phosphate + base A/T/G/C). Liên kết H giữa 2 mạch: A=T (2), G≡C (3); phosphodiester nối các nu trong mạch. Hệ quả: A=T, G=C, (A+G)=(T+C)=50%.</p>
+html: `<h2>1. Cấu trúc DNA</h2><p>DNA gồm 2 mạch polynucleotide xoắn kép, đơn phân là nucleotide (đường deoxyribose + phosphate + base A/T/G/C). Liên kết H giữa 2 mạch: <span class="fx">A = T (2 liên kết H)</span>, <span class="fx">G ≡ C (3 liên kết H)</span>; phosphodiester nối các nu trong cùng một mạch. Hệ quả Chargaff: <span class="fx">A = T</span>, <span class="fx">G = C</span>, <span class="fx">(A + G) = (T + C) = 50%</span>.</p>
 <h2>2. Chức năng</h2><p>Lưu giữ, bảo quản và truyền đạt thông tin di truyền; làm khuôn cho tái bản và phiên mã.</p>
 <h2>3. Tái bản DNA (nhân, pha S)</h2>
 <table><tr><th>Bước</th><th>Diễn biến</th><th>Enzyme</th></tr>
@@ -53,15 +53,15 @@ html: `<h2>1. Cấu trúc DNA</h2><p>DNA gồm 2 mạch polynucleotide xoắn k�
 <tr><td>Kéo dài 5'→3'</td><td>Gắn nu theo NTBS; mạch khuôn 3'→5' cho mạch liên tục, mạch khuôn 5'→3' cho đoạn Okazaki</td><td>DNA polymerase (+ sửa sai)</td></tr>
 <tr><td>Hoàn thiện</td><td>Thay mồi bằng DNA, nối Okazaki</td><td>Ligase</td></tr></table>
 <div class="key"><b>Nguyên tắc:</b> bổ sung (A–T, G–C) + bán bảo toàn (mỗi DNA con: 1 mạch cũ + 1 mạch mới — Meselson–Stahl). <b>Kết quả:</b> 1 → 2<sup>k</sup> phân tử sau k lần. Nhân thực có nhiều ori, telomere rút ngắn dần.</div>
-<h2>4. Công thức tính nhanh</h2><p>N = (L/3,4)×2; %A=%T, %G=%C; số DNA con = 2<sup>k</sup>. Ví dụ: gene 5100 Å → N = 3000 nu.</p>
+<h2>4. Công thức tính nhanh</h2><div class="fx-block"><div><span class="fx">N = (L / 3,4) × 2</span></div><div><span class="fx">%A = %T</span> , <span class="fx">%G = %C</span></div><div><span class="fx">Số DNA con = 2<sup>k</sup></span> (k = số lần tái bản)</div><div>Ví dụ: L = 5100 Å → <span class="fx">N = (5100 / 3,4) × 2 = 3000 nu</span></div></div>
 <h2>5. Ý nghĩa</h2><p>Truyền thông tin ổn định qua thế hệ; sai sót hiếm gây đột biến — nguyên liệu tiến hoá.</p>` },
 2: { title: "Bài 2: Gene, truyền đạt thông tin và hệ gene", desc: "Gene, mã di truyền, phiên mã, dịch mã, DNA → RNA → protein.",
-html: `<h2>1. Gene và hệ gene</h2><p><b>Gene:</b> đoạn DNA mang thông tin mã hoá polypeptide/RNA. Gene cấu trúc: vùng điều hoà (promoter) – vùng mã hoá (exon/intron ở nhân thực) – vùng kết thúc. <b>Hệ gene:</b> toàn bộ DNA trong tế bào (~3 tỉ cặp base, ~20.000–25.000 gene ở người).</p>
-<h2>2. Dòng thông tin: DNA → RNA → protein</h2><p>Tái bản (DNA→DNA), phiên mã (DNA→RNA), dịch mã (RNA→protein).</p>
-<h2>3. Mã di truyền</h2><p>Đọc bộ ba codon 5'→3': 64 codon (61 nghĩa + UAA/UAG/UGA kết thúc; AUG mở đầu = Met). Đặc điểm: phổ biến, đặc hiệu, thoái hoá, liên tục, không gối nhau.</p>
-<h2>4. Phiên mã (nhân, nhờ RNA polymerase)</h2><p>RNA pol bám promoter, đọc mạch khuôn 3'→5', tổng hợp RNA 5'→3' (A–U). Nhân thực: cắt intron, nối exon, thêm mũ 5' + đuôi poly-A. Ví dụ: khuôn 3'-TAC GAA-5' → mRNA 5'-AUG CUU-3'.</p>
+html: `<h2>1. Gene và hệ gene</h2><p><b>Gene:</b> đoạn DNA mang thông tin mã hoá polypeptide/RNA. Gene cấu trúc: vùng điều hoà (promoter) – vùng mã hoá (exon/intron ở nhân thực) – vùng kết thúc. <b>Hệ gene:</b> toàn bộ DNA trong tế bào (≈3 tỉỉ cặp base, ≈20.000–25.000 gene ở người).</p>
+<h2>2. Dòng thông tin: <span class="seq">DNA → RNA → protein</span></h2><p>Tái bản (<span class="fx">DNA → DNA</span>), phiên mã (<span class="fx">DNA → RNA</span>), dịch mã (<span class="fx">RNA → protein</span>).</p>
+<h2>3. Mã di truyền</h2><p>Đọc bộ ba codon 5'→3': 64 codon (61 nghĩa + <span class="seq">UAA</span>/<span class="seq">UAG</span>/<span class="seq">UGA</span> kết thúc; <span class="seq">AUG</span> mở đầu = Met). Đặc điểm: phổ biến, đặc hiệu, thoái hoá, liên tục, không gối nhau.</p>
+<h2>4. Phiên mã (nhân, nhờ RNA polymerase)</h2><p>RNA pol bám promoter, đọc mạch khuôn 3'→5', tổng hợp RNA 5'→3' (A–U). Nhân thực: cắt intron, nối exon, thêm mũ 5' + đuôi poly-A. Ví dụ: khuôn <span class="seq">3'-TAC GAA-5'</span> → mRNA <span class="seq">5'-AUG CUU-3'</span>.</p>
 <h2>5. Dịch mã (ribosome, tế bào chất)</h2><p>mRNA (khuôn) + tRNA (anticodon + aa) + rRNA (ribosome): ribosome trượt 5'→3', tạo liên kết peptide. Nhiều ribosome (polysome) tăng năng suất.</p>
-<div class="key"><b>Tính nhanh:</b> số codon = rNu/3; aa sơ cấp = codon − 1 (kết thúc); chuỗi hoàn chỉnh = −1 Met (ví dụ 600 codon → 598 aa). Anticodon 3'-UAC-5' ↔ codon 5'-AUG-3'.</div>` },
+<div class="key"><b>Tính nhanh:</b><div class="fx-block"><div><span class="fx">Số codon = rNu / 3</span></div><div><span class="fx">aa sơ cấp = số codon − 1</span> (trừ codon kết thúc)</div><div><span class="fx">Chuỗi hoàn chỉnh = aa sơ cấp − 1</span> (cắt Met mở đầu)</div><div>Ví dụ: 600 codon → 599 → <b>598 aa</b></div><div><span class="seq">3'-UAC-5'</span> ↔ <span class="seq">5'-AUG-3'</span></div></div></div>` },
 3: { title: "Bài 3: Điều hoà biểu hiện gene", desc: "Operon lac: cấu trúc, cơ chế đóng/mở, đột biến và ứng dụng.",
 html: `<h2>1. Khái niệm và ý nghĩa</h2><p>Điều hoà biểu hiện gene = điều khiển lượng RNA/protein phù hợp nhu cầu. Ý nghĩa: tiết kiệm năng lượng, thích ứng môi trường, biệt hoá tế bào, phát triển phôi. Các mức: phiên mã (chính), chế biến RNA, dịch mã, sau dịch mã.</p>
 <h2>2. Operon lac (Jacob–Monod, ở E. coli)</h2><p>Cấu trúc: gene điều hoà <b>lacI</b> (tạo repressor liên tục) + <b>promoter</b> (RNA pol bám) + <b>operator</b> (công tắc) + 3 gene cấu trúc <b>lacZ</b> (β-galactosidase cắt lactose), <b>lacY</b> (permease vận chuyển), <b>lacA</b>.</p>
