@@ -52,6 +52,9 @@ h3{margin:.4em 0 .6em;font-size:1.02rem;line-height:1.45}
 .btn-primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
 .btn-primary:hover{background:var(--primary-h)}
 .btn-bio{background:var(--bio);border-color:var(--bio);color:#fff}
+.btn-eng{background:#7C3AED;border-color:#7C3AED;color:#fff}
+.btn-eng:hover{background:#6D28D9}
+[data-theme="dark"] .btn-eng{background:#A78BFA;border-color:#A78BFA;color:#1E1B4B}
 .btn-ghost{background:transparent} .btn-danger{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
 .btn-sm{padding:9px 12px;min-height:44px;font-size:.88rem} .btn-block{width:100%;margin-top:12px}
 .icon-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--card);color:var(--fg);border-radius:99px;padding:8px 13px;cursor:pointer;font:inherit;font-size:.85rem;font-weight:600;min-height:44px}
@@ -89,6 +92,7 @@ main{min-height:60vh}
 .badge{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle;font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--muted);color:var(--fg);margin:0 6px 6px 0;white-space:nowrap}
 .badge.h{background:#DBEAFE;color:#1E40AF}[data-theme="dark"] .badge.h{background:#1A2B5E;color:#BFD2FF}
 .badge.b{background:#CCFBF1;color:#0F766E}[data-theme="dark"] .badge.b{background:#0B2E2B;color:#7DF0DD}
+.badge.e{background:#EDE9FE;color:#5B21B6}[data-theme="dark"] .badge.e{background:#2A1B5E;color:#D6C6FF}
 .lesson-meta{display:flex;gap:0 6px;flex-wrap:wrap;margin:8px 0}
 .pbar{height:8px;background:var(--muted);border-radius:99px;overflow:hidden}
 .pbar i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .3s}
@@ -102,6 +106,7 @@ main{min-height:60vh}
 .how li::marker{font-weight:700;color:var(--primary)}
 /* config */
 .cfg{margin:18px 0} .cfg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}
+.cfg-grid label:nth-child(5){grid-column:span 2}
 .cfg label{display:grid;gap:6px;font-size:.88rem;font-weight:600}
 .cfg select,.filters select,.filters input{background:var(--bg);border:1px solid var(--border);color:var(--fg);border-radius:10px;padding:11px 12px;font:inherit;min-height:44px;width:100%}
 .cfg label.chk{grid-template-columns:auto minmax(0,1fr);grid-auto-flow:column;align-items:center;justify-content:start;gap:8px;align-self:end;padding-bottom:10px;white-space:nowrap}
@@ -151,12 +156,27 @@ kbd{background:var(--muted);border:1px solid var(--border);border-radius:6px;pad
 .tag{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:99px;white-space:nowrap} .tag.ok{background:var(--ok-bg);color:var(--ok)} .tag.bad{background:var(--bad-bg);color:var(--bad)} .tag.skip{background:var(--skip-bg);color:var(--skip)}
 .rev .exp{border-left:3px solid var(--primary);padding:10px 12px;background:var(--bg);border-radius:0 10px 10px 0;margin-top:8px;font-size:.93rem;white-space:pre-line;overflow-wrap:break-word}
 .rev .exp b{color:var(--primary)}
+/* công thức toán/sinh: gọn, không MathJax */
+.fx{display:inline-block;background:var(--muted);border:1px solid var(--border);border-radius:8px;padding:1px 9px;margin:1px 2px;font-variant-numeric:tabular-nums;overflow-wrap:break-word}
+.fx-block{display:grid;gap:6px;background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:10px 12px;margin:8px 0;font-variant-numeric:tabular-nums}
+.seq{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;letter-spacing:.05em;background:var(--muted);border:1px solid var(--border);border-radius:8px;padding:1px 9px;white-space:nowrap}
+sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
+.rev .exp,.bank-item .exp{line-height:1.9}
+/* đoạn đọc cloze + từ vựng tiếng Anh */
+.passage{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px;font-size:.95rem;line-height:1.8}
+.passage b{color:var(--primary)}
+.passage p{margin:.5em 0 0}
+.passage .blank{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:0 10px;margin:0 2px;font-weight:800;font-variant-numeric:tabular-nums}
+.passage .blank.cur{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.vocab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.vocab div{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:.88rem}
+.vocab b{color:var(--primary)} .vocab .ipa{color:var(--muted-fg);font-size:.8rem}
 /* bank / progress */
 .filters{margin-bottom:14px} .search{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--bg);border-radius:10px;padding:0 12px;margin-bottom:10px}
 .search input{border:0;background:transparent;flex:1;min-width:0;padding:12px 0;color:var(--fg);font:inherit;outline:none}
-.frow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.frow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .bank-item{margin-bottom:12px} .bank-item summary{cursor:pointer;font-weight:600;padding:6px 0;min-height:44px;line-height:1.5}
-.bank-item .exp{margin-top:8px}
+.bank-item .exp{margin-top:8px;white-space:pre-line}
 .prog-row{margin:12px 0} .prog-row .lbl{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;font-weight:600}
 .prog-row .lbl span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hist{display:grid;gap:8px} .hist-item{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.88rem;background:var(--bg);flex-wrap:wrap}
@@ -183,6 +203,8 @@ kbd{background:var(--muted);border:1px solid var(--border);border-radius:6px;pad
   .grid2,.grid3{grid-template-columns:minmax(0,1fr)}
   .r-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cfg-grid,.frow{grid-template-columns:minmax(0,1fr)}
+  .cfg-grid label:nth-child(5){grid-column:auto}
+  .vocab{grid-template-columns:minmax(0,1fr)}
   .pal{grid-template-columns:repeat(5,minmax(0,1fr))}
   .q-nav .btn{flex:1 1 100%} .q-nav #qSubmit{margin-left:0}
   .hero-txt{padding:22px 18px}.panel{padding:16px}
@@ -193,4 +215,6 @@ kbd{background:var(--muted);border:1px solid var(--border);border-radius:6px;pad
   .hist-item{flex-direction:column;align-items:flex-start}
   .lesson-card .row .btn{flex:1 1 100%}
   #themeLbl{display:none}
+  .seq{white-space:normal;overflow-wrap:anywhere}
+  .fx-block{padding:8px 10px}
 }
