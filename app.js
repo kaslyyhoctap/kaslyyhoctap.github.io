@@ -221,16 +221,19 @@ function submit(auto){
  var v=verdict(point);var ve=$("rVerdict");ve.textContent=v[0];ve.className="r-verdict "+v[1];
  $("rOk").textContent=ok;$("rBad").textContent=bad;$("rSkip").textContent=skip;
  $("rTime").textContent=Math.floor(secs/60)+":"+String(secs%60).padStart(2,"0");
- $("rTopics").innerHTML="<h3>Kết quả theo chủ đề</h3>"+Object.keys(topics).map(function(t){var p=Math.round(topics[t].ok/topics[t].tot*100);
-  return '<div class="trow"><span>'+esc(t)+'</span><span class="pbar"><i style="width:'+p+'%"></i></span><b>'+topics[t].ok+'/'+topics[t].tot+'</b></div>'}).join("");
+ if(E.cfg.subject==="english"){$("rTopics").innerHTML="";}else{$("rTopics").innerHTML="<h3>Kết quả theo chủ đề</h3>"+Object.keys(topics).map(function(t){var p=Math.round(topics[t].ok/topics[t].tot*100);
+  return '<div class="trow"><span>'+esc(t)+'</span><span class="pbar"><i style="width:'+p+'%"></i></span><b>'+topics[t].ok+'/'+topics[t].tot+'</b></div>'}).join("");}
  var rt=$("rTypes");
  if(E.cfg.subject==="english"){
-  var rows=Object.keys(TYPES).map(function(t){var s=types[t];if(!s)return "";
-   return '<div class="trow"><span>'+TYPES[t].toUpperCase()+'</span><span class="pbar"><i style="width:'+Math.round(s.ok/s.tot*100)+'%"></i></span><b>'+s.ok+'/'+s.tot+'</b></div>'}).join("");
+  var order=["multiple_choice","cloze","word_usage_error","closest_meaning"];
+   var letters={multiple_choice:"A",cloze:"B",word_usage_error:"C",closest_meaning:"D"};
+   var rows=order.map(function(t){var s=types[t];if(!s)return "";
+   var p=Math.round(s.ok/s.tot*100);
+    return '<div class="r-box"><b>'+s.ok+'/'+s.tot+'</b><span>Phần '+letters[t]+' · '+TYPES[t]+'</span><span class="pbar"><i style="width:'+p+'%"></i></span></div>'}).join("");
   var sk=Object.keys(SKILLS).map(function(k){var agg={ok:0,tot:0};E.qs.forEach(function(s,n){var q=byId(s.id);if(q.topic!==k)return;var a=E.ans[n];agg.tot++;if(a>=0&&s.opts[a].ok)agg.ok++});
    if(!agg.tot)return "";var note=agg.tot<3?' <span class="muted small">(cần ≥3 câu)</span>':"";
    return '<div class="trow"><span>'+SKILLS[k]+note+'</span><span class="pbar"><i style="width:'+Math.round(agg.ok/agg.tot*100)+'%"></i></span><b>'+Math.round(agg.ok/agg.tot*100)+'%</b></div>'}).join("");
-  rt.innerHTML="<h3>Kết quả theo phần</h3>"+rows+"<h3>Kỹ năng theo chủ đề</h3>"+(sk||'<p class="muted">Chưa đủ dữ liệu.</p>');
+  rt.innerHTML="<h3>Kết quả theo phần</h3>"+'<div class="r-grid r-parts">'+rows+'</div>'+(sk?"<h3>Kỹ năng theo chủ đề</h3>"+sk:"");
  }else rt.innerHTML="";
  var list=$("rList");list.innerHTML="<h2>Chi tiết từng câu</h2>";
  E._wrongOnly=false;
