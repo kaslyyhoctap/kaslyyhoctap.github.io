@@ -4,7 +4,7 @@
 var $=function(id){return document.getElementById(id)};
 var LS="ontap12-v1";
 var store={get:function(){try{return JSON.parse(localStorage.getItem(LS))||{}}catch(e){return{}}},set:function(s){try{localStorage.setItem(LS,JSON.stringify(s))}catch(e){}}};
-var S=Object.assign({theme:"light",best:0,exams:0,correct:0,answered:{},marked:[],hist:[],prog:{}},store.get());
+var S=Object.assign({theme:"light",best:0,exams:0,correct:0,answered:{},marked:[],hist:[],prog:{},vocabKnown:{}},store.get());
 function save(){store.set(S)}
 var META={
  history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh"}},
@@ -34,14 +34,21 @@ function blankNo(q){var m=/(\d+)$/.exec(q.id);return m?String(parseInt(m[1],10))
 function applyTheme(){document.documentElement.dataset.theme=S.theme;$("themeLbl").textContent=S.theme==="light"?"Sáng":"Tối"}
 $("themeBtn").onclick=function(){S.theme=S.theme==="light"?"dark":"light";save();applyTheme()};applyTheme();
 
+/* sidebar mobile: ponytail — 1 toggle gốc, mọi điều hướng đều đóng */
+function setNav(open){document.body.classList.toggle("nav-open",!!open);var b=$("menuBtn");if(b)b.setAttribute("aria-expanded",open?"true":"false")}
+$("menuBtn").onclick=function(e){e.stopPropagation();setNav(!document.body.classList.contains("nav-open"))};
+$("navScrim").onclick=function(){setNav(false)};
+document.addEventListener("keydown",function(e){if(e.key==="Escape")setNav(false)});
+
 /* router */
-var views=["home","subject","theory","quiz","bank","progress","result"];
+var views=["home","subject","theory","quiz","bank","vocab","progress","result"];
 var SUBJS=["history","biology","english"];
-function go(v){views.forEach(function(x){$("view-"+x).hidden=x!==v});document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.toggle("active",b.dataset.nav===v||(v==="subject"&&curSub&&b.dataset.nav===curSub))});window.scrollTo({top:0,behavior:"smooth"});$("main").querySelector("h1,h2")?.setAttribute("tabindex","-1")}
+function go(v){views.forEach(function(x){$("view-"+x).hidden=x!==v});document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.toggle("active",b.dataset.nav===v||(v==="subject"&&curSub&&b.dataset.nav===curSub))});setNav(false);window.scrollTo({top:0,behavior:"smooth"});$("main").querySelector("h1,h2")?.setAttribute("tabindex","-1")}
 document.addEventListener("click",function(e){var b=e.target.closest("[data-nav]");if(!b)return;var v=b.dataset.nav;
  if(v==="home")renderHome();
  else if(v==="history"||v==="biology"||v==="english")renderSubject(v);
  else if(v==="bank")renderBank();
+ else if(v==="vocab")renderVocab();
  else if(v==="progress")renderProgress();
  go(SUBJS.indexOf(v)>=0?"subject":v)});
 
@@ -267,6 +274,71 @@ function renderBank(){
  go("bank");
 }
 ["fQ","fSub","fLes","fDif","fState","fType"].forEach(function(id){$(id).addEventListener("input",renderBank)});
+
+/* ---------- VOCAB FLASHCARDS ---------- */
+var V={list:[],i:0,flip:false,hideAll:false};
+function vocabAll(){return window.VOCAB||{}}
+function vocabFilter(){
+ var unit=$("vUnit").value||"1",kind=$("vKind").value||"",q=$("vQ").value.trim().toLowerCase();
+ return (vocabAll()[unit]||[]).filter(function(w){
+  return(!kind||w.kind===kind)&&(!q||w.en.toLowerCase().includes(q)||(w.vi||"").toLowerCase().includes(q))});
+}
+function vocabKey(w){return $("vUnit").value+"::"+w.en}
+function renderVocab(){
+ V.list=vocabFilter();V.i=0;V.flip=false;
+ var u=$("vUnit").value,all=(vocabAll()[u]||[]).length;
+ $("vocabCount").textContent="· Unit "+u+" · "+V.list.length+"/"+all+" thẻ";
+ renderFc();renderVGrid();
+ go("vocab");
+}
+function fcFront(w){var envi=$("vMode").value!=="vien";return envi?w.en:w.vi}
+function fcBack(w){var envi=$("vMode").value!=="vien";return envi?w.vi:w.en}
+function renderFc(){
+ var box=$("fcMain"),n=V.list.length;
+ if(!n){box.innerHTML='<span class="muted">Không có thẻ nào. Hãy nới lỏng bộ lọc.</span>';$("fcCount").textContent="0/0";$("fcProg").style.width="0%";return}
+ if(V.i<0)V.i=0;if(V.i>=n)V.i=n-1;
+ var w=V.list[V.i],front=fcFront(w),back=fcBack(w);
+ var known=S.vocabKnown[vocabKey(w)];
+ box.innerHTML='<div class="en">'+esc(V.flip?back:front)+'</div>'
+  +(w.pos&&!V.flip?'<div class="ipa">'+esc(w.pos+(w.ipa?" · "+w.ipa:""))+'</div>':"")
+  +(!V.flip&&V.hideAll?'<div class="hint">Bấm để hiện nghĩa</div>':"")
+  +(V.flip||V.hideAll?"":'<div class="vi">'+esc(back)+'</div>')
+  +'<div class="hint">'+esc(w.kind==="phrase"?"Cụm từ":"Từ vựng")+' · Unit '+esc($("vUnit").value)+(known?" · Đã thuộc ✓":"")+'</div>';
+ $("fcCount").textContent=(V.i+1)+"/"+n;
+ var done=V.list.filter(function(x){return S.vocabKnown[$("vUnit").value+"::"+x.en]}).length;
+ var pct=n?Math.round(done/n*100):0;$("fcProg").style.width=pct+"%";$("fcProgWrap").setAttribute("aria-valuenow",pct);
+ var kb=$("fcKnow");kb.textContent=known?"Chưa thuộc":"Đã thuộc ✓";kb.setAttribute("aria-pressed",known?"true":"false");
+}
+function renderVGrid(){
+ var g=$("vocabGrid");if(!g)return;
+ g.innerHTML=V.list.map(function(w,idx){
+  var known=S.vocabKnown[vocabKey(w)];
+  return '<button class="vcard'+(known?" known":"")+'" data-vi="'+idx+'"><span class="en">'+esc(w.en)+'</span>'
+  +(w.pos||w.ipa?'<span class="ipa">'+esc([w.pos,w.ipa].filter(Boolean).join(" · "))+'</span>':"")
+  +'<span class="vi"'+(V.hideAll?" hidden":"")+'>'+esc(w.vi)+'</span>'
+  +'<span class="rowline"><span class="badge e">'+esc(w.kind==="phrase"?"Cụm từ":"Từ vựng")+'</span><span class="muted small">'+(known?"Đã thuộc ✓":"Bấm để lật")+'</span></span></button>'}).join("")
+  ||'<div class="panel">Không có thẻ nào.</div>';
+}
+document.addEventListener("click",function(e){
+ var c=e.target.closest(".vcard");if(!c)return;
+ var w=V.list[+c.dataset.vi];if(!w)return;
+ var vi=c.querySelector(".vi");if(vi)vi.hidden=!vi.hidden;
+});
+$("fcMain").onclick=function(){V.flip=!V.flip;renderFc()};
+$("fcMain").onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();V.flip=!V.flip;renderFc()}};
+$("fcPrev").onclick=function(){if(!V.list.length)return;V.i=(V.i-1+V.list.length)%V.list.length;V.flip=false;renderFc()};
+$("fcNext").onclick=function(){if(!V.list.length)return;V.i=(V.i+1)%V.list.length;V.flip=false;renderFc()};
+$("fcKnow").onclick=function(){var w=V.list[V.i];if(!w)return;var k=vocabKey(w);if(S.vocabKnown[k])delete S.vocabKnown[k];else S.vocabKnown[k]=1;save();renderFc();renderVGrid()};
+$("vShuffle").onclick=function(){V.list=shuffle(V.list);V.i=0;V.flip=false;renderFc();renderVGrid();toast("Đã trộn "+V.list.length+" thẻ")};
+$("vHideAll").onclick=function(){V.hideAll=!V.hideAll;V.flip=false;var b=$("vHideAll");b.textContent=V.hideAll?"Hiện hết nghĩa":"Ẩn hết nghĩa";b.setAttribute("aria-pressed",V.hideAll?"true":"false");renderFc();renderVGrid()};
+["vQ","vUnit","vKind","vMode"].forEach(function(id){$(id).addEventListener("input",function(){V.hideAll=false;$("vHideAll").textContent="Ẩn hết nghĩa";renderVocab()})});
+document.addEventListener("keydown",function(e){
+ if($("view-vocab").hidden||!V.list.length)return;
+ if(e.target.matches("input,select,textarea"))return;
+ if(e.key==="ArrowRight")$("fcNext").click();
+ else if(e.key==="ArrowLeft")$("fcPrev").click();
+ else if(e.key===" "&&document.activeElement!==$("fcMain")){e.preventDefault();V.flip=!V.flip;renderFc()}
+});
 
 /* ---------- PROGRESS ---------- */
 function renderProgress(){
