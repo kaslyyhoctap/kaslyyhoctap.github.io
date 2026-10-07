@@ -380,7 +380,7 @@ function weakStats(){
  }
  var ts=Object.keys(TYPES),t;
  for(t=0;t<ts.length;t++)(function(ty){agg(TYPES[ty]+" · Anh",function(q){return q.subject==="english"&&typeOf(q)===ty},{subject:"english",qtype:ty})})(ts[t]);
- [5.5,6.0,6.5,7.0].forEach(function(b){agg("Band "+b.toFixed(1)+" · Anh",function(q){return q.subject==="english"&&q.band===b},{subject:"english",band:b})});
+ [5.5,6.0,6.5,7.0,7.5,8.0,8.5].forEach(function(b){agg("Band "+b.toFixed(1)+" · Anh",function(q){return q.subject==="english"&&q.band===b},{subject:"english",band:b})});
  var sk=Object.keys(META),ti,li;
  for(ti=0;ti<sk.length;ti++){var ls=lessonsOf(sk[ti]);for(li=0;li<ls.length;li++)(function(k,l){var lbl=(META[k].lessons[l]||(META[k].units+" "+l)).split(":")[0];agg(lbl+" · "+META[k].short,function(q){return q.subject===k&&q.lesson===l},{subject:k,lesson:String(l)})})(sk[ti],ls[li])}
  var tp={};
