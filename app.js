@@ -122,7 +122,9 @@ function pool(o){
  var base=Q.filter(function(q){return q.subject===o.subject&&(o.lesson==="all"||q.lesson===+o.lesson)&&(!o.level||o.level==="all"||q.difficulty===o.level)&&(!o.topic||q.topic===o.topic)&&(!o.band||q.band===+o.band)});
  if(o.subject!=="english")return pickFresh(base,o.count,o.shQ);
  var qt=o.qtype||"all";
- if(qt!=="all")return pickFresh(base.filter(function(q){return typeOf(q)===qt}),o.count,o.shQ);
+ if(qt!=="all"){var only=base.filter(function(q){return typeOf(q)===qt});
+  if(qt==="cloze"||qt==="reading_comprehension"){var gs={};only.forEach(function(q){var p=q.passageId||"x";(gs[p]=gs[p]||[]).push(q)});var gl=Object.keys(gs).map(function(p){return gs[p]});var fl={};Q.filter(function(q){return q.subject==="english"&&q.passageId}).forEach(function(q){fl[q.passageId]=(fl[q.passageId]||0)+1});gl=gl.filter(function(g){var p=g[0].passageId;return !p||g.length===(fl[p]||g.length)});if(o.shQ!==false)gl=shuffle(gl);var take=[],n=o.count;gl.forEach(function(g){if(take.length+g.length<=n)take=take.concat(g)});if(!take.length&&gl.length)take=gl[0].slice(0,n);return take}
+  return pickFresh(only,o.count,o.shQ)}
  var N=o.count;
  var mc=base.filter(function(q){return typeOf(q)==="multiple_choice"});
  var wue=base.filter(function(q){return typeOf(q)==="word_usage_error"});
