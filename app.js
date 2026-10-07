@@ -309,6 +309,8 @@ function bankItem(x,s,det){
  return '<details class="panel bank-item"><summary>['+subjTag(x)+' '+unitTag(x)+(x.type?" · "+TYPES[x.type]:"")+'] '+(x.subject==="chemistry"?chem(x.question):esc(x.question))+' '+(s?'<span class="tag '+(s==="ok"?"ok":"bad")+'">'+(s==="ok"?"Đã đúng":"Đã sai")+'</span>':"")
  +'<br><span class="muted small">'+chipFor(x)+' · Nguồn: '+esc(x.source)+'</span></summary>'+det
  +body+(x.wrongWord?'<br><b>Từ sai:</b> '+esc(x.wrongWord)+' → <b>nên dùng:</b> '+esc(x.correctWord):"")+'</div></details>'}
+var BANK_PAGE=1,BANK_PAGES=1;
+function bankPager(){if(BANK_PAGES<=1)return "";var o="";for(var i=1;i<=BANK_PAGES;i++)o+='<option value="'+i+'"'+(i===BANK_PAGE?" selected":"")+'>Trang '+i+'/'+BANK_PAGES+'</option>';return '<div class="row wrap-btns" style="margin-top:14px"><button class="btn btn-sm" data-pg="-1"'+(BANK_PAGE<=1?" disabled":"")+'>Trước</button><select id="pgSel" aria-label="Chọn trang">'+o+'</select><button class="btn btn-sm" data-pg="1"'+(BANK_PAGE>=BANK_PAGES?" disabled":"")+'>Sau</button></div>';}
 function renderBank(){
  var sub=$("fSub").value,les=$("fLes").value,dif=$("fDif").value,st=$("fState").value,ft=$("fType").value,q=$("fQ").value.trim().toLowerCase();
  var list=Q.filter(function(x){
@@ -316,15 +318,18 @@ function renderBank(){
   &&(!ft||typeOf(x)===ft)
   &&(!q||x.question.toLowerCase().includes(q)||x.topic.toLowerCase().includes(q))
   &&(!st||(st==="star"?(S.starred&&S.starred[x.id]):st==="todo"?!S.answered[x.id]:st==="done"?S.answered[x.id]==="ok":S.answered[x.id]==="bad"))});
+ BANK_PAGES=Math.max(1,Math.ceil(list.length/20));if(BANK_PAGE>BANK_PAGES)BANK_PAGE=BANK_PAGES;
  $("bankCount").textContent="· "+list.length+"/"+Q.length+" câu";
- $("bankList").innerHTML=list.length?list.slice(0,120).map(function(x){
+ $("bankList").innerHTML=list.length?list.slice((BANK_PAGE-1)*20,BANK_PAGE*20).map(function(x){
   var s=S.answered[x.id];
   var det=x.passageId&&window.PASSAGES&&window.PASSAGES[x.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[x.passageId].title)+'</b><p>'+esc(window.PASSAGES[x.passageId].text)+'</p></div>':"";
-  return bankItem(x,s,det)}).join("")+(list.length>120?'<div class="panel muted">Chỉ hiện 120/'+list.length+' câu — hãy lọc hẹp hơn để xem hết.</div>':"")
+  return bankItem(x,s,det)}).join("")+bankPager()
  :'<div class="panel">Không tìm thấy câu hỏi nào. Hãy thử nới lỏng bộ lọc.</div>';
  go("bank");
 }
-["fQ","fSub","fLes","fDif","fState","fType"].forEach(function(id){$(id).addEventListener("input",renderBank)});
+["fQ","fSub","fLes","fDif","fState","fType"].forEach(function(id){$(id).addEventListener("input",function(){BANK_PAGE=1;renderBank()})});
+document.addEventListener("click",function(e){var t=e.target&&e.target.closest?e.target.closest("[data-pg]"):null;if(!t||t.disabled)return;BANK_PAGE=Math.min(BANK_PAGES,Math.max(1,BANK_PAGE+(+t.dataset.pg)));renderBank()});
+document.addEventListener("change",function(e){if(e.target&&e.target.id==="pgSel"){BANK_PAGE=+e.target.value||1;renderBank()}});
 
 /* ---------- VOCAB FLASHCARDS ---------- */
 var V={list:[],i:0,flip:false,hideAll:false,starOnly:false};
