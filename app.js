@@ -11,8 +11,8 @@ var META={
  biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene"}},
  english:{name:"Tiếng Anh 12",short:"Anh",units:"Unit",book:"Global Success",lessons:{1:"Unit 1: Life stories we admire",2:"Unit 2: A multicultural world"}}
 };
-var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning"};
-var SKILLS={Vocabulary:"Vocabulary",Grammar:"Grammar","Cloze test":"Cloze Test","Word usage":"Word Usage","Closest meaning":"Paraphrase"};
+var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning",reading_comprehension:"Reading Comprehension"};
+var SKILLS={Vocabulary:"Vocabulary",Grammar:"Grammar","Cloze test":"Cloze Test","Word usage":"Word Usage","Closest meaning":"Paraphrase","Reading":"Reading"};
 function lessonsOf(sub){return Object.keys(META[sub].lessons).map(Number).sort(function(a,b){return a-b})}
 function badgeCls(k){return k==="history"?"h":k==="biology"?"b":"e"}
 function btnCls(k){return k==="history"?"btn-primary":k==="biology"?"btn-bio":"btn-eng"}
@@ -128,17 +128,17 @@ function pool(o){
  var wue=base.filter(function(q){return typeOf(q)==="word_usage_error"});
  var cm=base.filter(function(q){return typeOf(q)==="closest_meaning"});
  var groups={};
- base.filter(function(q){return typeOf(q)==="cloze"}).forEach(function(q){var p=q.passageId||"x";(groups[p]=groups[p]||[]).push(q)});
+ base.filter(function(q){return typeOf(q)==="cloze"||typeOf(q)==="reading_comprehension"}).forEach(function(q){var p=q.passageId||"x";(groups[p]=groups[p]||[]).push(q)});
  var ps=Object.keys(groups).map(function(p){return groups[p].sort(function(a,b){return (blankNo(a)||"")<(blankNo(b)||"")?-1:1})});
  var wantWUE=N>=30?5:(N>=20?3:1),wantCM=N>=30?5:(N>=20?2:1);
  var wueSel=pickFresh(wue,wantWUE,o.shQ),cmSel=pickFresh(cm,wantCM,o.shQ);
  var budget=N-wueSel.length-cmSel.length;
- // ponytail: cloze là bó nguyên bài — chỉ lấy bài đọc còn đủ chỗ trống sau lọc, vừa ngân sách, không xẻ lẻ
+ // ponytail: passage (cloze/reading) là bó nguyên bài — chỉ lấy bài đọc còn đủ chỗ trống sau lọc, vừa ngân sách, không xẻ lẻ
  var fullLen={};
  Q.filter(function(q){return q.subject==="english"&&q.passageId}).forEach(function(q){fullLen[q.passageId]=(fullLen[q.passageId]||0)+1});
  var fullPs=ps.filter(function(g){var p=g[0].passageId;return g.length===(fullLen[p]||g.length)});
  if(o.shQ!==false)fullPs=shuffle(fullPs);
- var maxPass=o.qtype==="cloze"?fullPs.length:(o.lesson==="all"?(N>=40?Math.min(2,fullPs.length):Math.min(1,fullPs.length)):Math.min(1,fullPs.length));
+ var maxPass=(o.qtype==="cloze"||o.qtype==="reading_comprehension")?fullPs.length:(o.lesson==="all"?(N>=40?Math.min(2,fullPs.length):Math.min(1,fullPs.length)):Math.min(1,fullPs.length));
  var clozeSel=[];fullPs.slice(0,maxPass).forEach(function(g){if(clozeSel.length+g.length<=budget)clozeSel=clozeSel.concat(g)});
  if(o.level&&o.level!=="all"&&ps.length&&!clozeSel.length)toast("Bài đọc không đủ điều kiện mức độ đã chọn nên đề không gồm cloze");
  var mcSel=pickFresh(mc,Math.max(budget-clozeSel.length,0),o.shQ);
@@ -239,8 +239,8 @@ function submit(auto){
   return '<div class="trow"><span>'+esc(t)+'</span><span class="pbar"><i style="width:'+p+'%"></i></span><b>'+topics[t].ok+'/'+topics[t].tot+'</b></div>'}).join("");}
  var rt=$("rTypes");
  if(E.cfg.subject==="english"){
-  var order=["multiple_choice","cloze","word_usage_error","closest_meaning"];
-   var letters={multiple_choice:"A",cloze:"B",word_usage_error:"C",closest_meaning:"D"};
+  var order=["multiple_choice","cloze","word_usage_error","closest_meaning","reading_comprehension"];
+   var letters={multiple_choice:"A",cloze:"B",word_usage_error:"C",closest_meaning:"D",reading_comprehension:"E"};
    var rows=order.map(function(t){var s=types[t];if(!s)return "";
    var p=Math.round(s.ok/s.tot*100);
     return '<div class="r-box"><b>'+s.ok+'/'+s.tot+'</b><span>Phần '+letters[t]+' · '+TYPES[t]+'</span><span class="pbar"><i style="width:'+p+'%"></i></span></div>'}).join("");

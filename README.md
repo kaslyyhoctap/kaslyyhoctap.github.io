@@ -4,7 +4,7 @@
 
 Website ôn tập trắc nghiệm Lịch sử 12, Sinh học 12 (Kết nối tri thức, Bài 1–3) và Tiếng Anh 12 Global Success (Unit 1–2).
 464 câu hỏi, có đáp án + giải thích, chấm điểm tự động, theo dõi tiến độ.
-Riêng Tiếng Anh có 2 tầng: band 5.5–7.0 (nền tảng) và band 7.0–8.5 (nâng cao, theo cấu trúc IELTS Reading).
+Riêng Tiếng Anh có 2 tầng: band 5.5–7.0 (nền tảng) và band 7.0–8.5 (nâng cao, theo cấu trúc IELTS Reading, gồm cả Reading Comprehension).
 
 ## Tính năng
 
@@ -113,6 +113,8 @@ data/
   english-unit2c.js   # 50 câu Anh Unit 2 (bổ sung)
   english-unit1d.js   # 30 câu Anh Unit 1 band 7.0–8.5 (nâng cao)
   english-unit2d.js   # 30 câu Anh Unit 2 band 7.0–8.5 (nâng cao)
+  english-unit1e.js   # 11 câu Anh Unit 1: Reading Comprehension + cloze khó
+  english-unit2e.js   # 11 câu Anh Unit 2: Reading Comprehension + cloze khó
   english-vocab.js    # flashcard từ vựng Unit 1–2
   theory.js           # tóm tắt lý thuyết Sử + Sinh
   english-theory.js   # tóm tắt lý thuyết Anh Unit 1–2
