@@ -100,6 +100,7 @@ main{min-height:60vh;isolation:isolate} /* ponytail: nhốt stacking của nội
 .badge.b{background:#CCFBF1;color:#0F766E}[data-theme="dark"] .badge.b{background:#0B2E2B;color:#7DF0DD}
 .badge.e{background:#EDE9FE;color:#5B21B6}[data-theme="dark"] .badge.e{background:#2A1B5E;color:#D6C6FF}
 .lesson-meta{display:flex;gap:0 6px;flex-wrap:wrap;margin:8px 0}
+.lesson-meta .badge{white-space:normal}
 .pbar{height:8px;background:var(--muted);border-radius:99px;overflow:hidden}
 .pbar i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .3s}
 .lesson-card{display:flex;flex-direction:column;gap:10px;overflow:hidden;transition:transform .18s,box-shadow .18s}
@@ -226,8 +227,9 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
 .frow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .bank-item{margin-bottom:12px} .bank-item summary{cursor:pointer;font-weight:600;padding:6px 0;min-height:44px;line-height:1.5}
 .bank-item .exp{margin-top:8px;white-space:pre-line}
-.prog-row{margin:12px 0} .prog-row .lbl{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;font-weight:600}
-.prog-row .lbl span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prog-row{margin:12px 0} .prog-row .lbl{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;font-weight:600;align-items:flex-start}
+.prog-row .lbl span:first-child{overflow-wrap:break-word;min-width:0}
+.prog-row .lbl span:last-child{white-space:nowrap;flex:none;color:var(--muted-fg);font-weight:600}
 .hist{display:grid;gap:8px} .hist-item{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.88rem;background:var(--bg);flex-wrap:wrap}
 /* theory */
 .theory{line-height:1.75;overflow-x:auto} .theory h2{color:var(--primary);border-bottom:2px solid var(--border);padding-bottom:6px} .theory table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;min-width:520px}

@@ -19,6 +19,7 @@ function btnCls(k){return k==="history"?"btn-primary":k==="biology"?"btn-bio":"b
 function subjTag(q){return q.subject==="history"?"Sử":q.subject==="biology"?"Sinh":"Anh"}
 function unitTag(q){return (q.subject==="english"?"U":"B")+q.lesson}
 function typeOf(q){return q.type||"multiple_choice"}
+function chipFor(q){var t=q.type?TYPES[q.type]:"";if(t&&q.topic&&t.toLowerCase()===q.topic.toLowerCase())t="";return esc(q.topic)+(t?" · "+esc(t):"")+" · "+esc(q.difficulty)}
 var Q=(window.QBANK||[]).filter(function(q){return q&&q.id&&q.question&&q.options&&q.options.length===4&&q.correctAnswer>=0&&q.correctAnswer<4&&q.explanation});
 var seen={};
 Q=Q.filter(function(q){var k=(q.passageId||"")+q.question.trim().toLowerCase();if(seen[k])return false;seen[k]=1;return true});
@@ -172,7 +173,7 @@ function renderQ(){
  $("qDone").textContent="Đã làm: "+done;
  var pct=Math.round(done/E.qs.length*100);$("qProg").style.width=pct+"%";$("qProgWrap").setAttribute("aria-valuenow",pct);
  $("qFlag").textContent=(E.flag[E.i]?"★ ":"☆ ")+"Đánh dấu xem lại";
- $("qTopic").textContent=q.topic+(E.cfg.subject==="english"&&q.type?" · "+TYPES[q.type]:"")+" · "+q.difficulty;
+ $("qTopic").textContent=q.topic+((E.cfg.subject==="english"&&q.type&&TYPES[q.type].toLowerCase()!==String(q.topic).toLowerCase())?" · "+TYPES[q.type]:"")+" · "+q.difficulty;
  var head=passageHtml(q);
  $("qText").innerHTML=(head?head+"<br>":"")+"Câu "+(E.i+1)+": "+esc(q.question);
  var box=$("qOpts");box.innerHTML="";
@@ -250,7 +251,7 @@ function submit(auto){
    if(onlyWrong&&st==="ok")return;
    var d=document.createElement("div");d.className="panel rev";
    var extra=q.wrongWord?("<br><b>Từ sai:</b> "+esc(q.wrongWord)+" → <b>nên dùng:</b> "+esc(q.correctWord)):"";
-   d.innerHTML='<div class="rev-head"><b>Câu '+(n+1)+'</b><span class="tag '+st+'">'+(st==="ok"?"Đúng":st==="bad"?"Sai":"Bỏ qua")+'</span><span class="chip">'+esc(q.topic)+(q.type?" · "+esc(TYPES[q.type]):"")+' · '+esc(q.difficulty)+'</span></div>'
+   d.innerHTML='<div class="rev-head"><b>Câu '+(n+1)+'</b><span class="tag '+st+'">'+(st==="ok"?"Đúng":st==="bad"?"Sai":"Bỏ qua")+'</span><span class="chip">'+chipFor(q)+'</span></div>'
    +(q.passageId&&window.PASSAGES&&window.PASSAGES[q.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[q.passageId].title)+'</b><p>'+esc(window.PASSAGES[q.passageId].text)+'</p></div>':"")
    +'<p>'+esc(q.question)+'</p>'
    +s.opts.map(function(op,idx){var mk=op.ok?" ✓":"";var mine=(idx===a&&!op.ok)?" ✗":"";
@@ -278,7 +279,7 @@ function renderBank(){
   var s=S.answered[x.id];
   var det=x.passageId&&window.PASSAGES&&window.PASSAGES[x.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[x.passageId].title)+'</b><p>'+esc(window.PASSAGES[x.passageId].text)+'</p></div>':"";
   return '<details class="panel bank-item"><summary>['+subjTag(x)+' '+unitTag(x)+(x.type?" · "+TYPES[x.type]:"")+'] '+esc(x.question)+' '+(s?'<span class="tag '+(s==="ok"?"ok":"bad")+'">'+(s==="ok"?"Đã đúng":"Đã sai")+'</span>':"")
-  +'<br><span class="muted small">'+esc(x.topic)+' · '+esc(x.difficulty)+' · Nguồn: '+esc(x.source)+'</span></summary>'+det
+  +'<br><span class="muted small">'+chipFor(x)+' · Nguồn: '+esc(x.source)+'</span></summary>'+det
   +'<ol type="A">'+x.options.map(function(o){return "<li>"+esc(o)+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+esc(x.explanation)+(x.wrongWord?'<br><b>Từ sai:</b> '+esc(x.wrongWord)+' → <b>nên dùng:</b> '+esc(x.correctWord):"")+'</div></details>'}).join("")
  :'<div class="panel">Không tìm thấy câu hỏi nào. Hãy thử nới lỏng bộ lọc.</div>';
  go("bank");
