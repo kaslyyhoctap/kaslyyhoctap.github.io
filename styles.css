@@ -94,8 +94,8 @@ main{min-height:60vh;isolation:isolate} /* ponytail: nhốt stacking của nội
 .hbar i{height:8px;background:rgba(255,255,255,.28);border-radius:99px;overflow:hidden;display:block}
 .hbar i em{display:block;height:100%;background:#fff;border-radius:99px}
 /* cards */
-.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0 0 18px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:0 0 18px}
 .panel{background:var(--card);color:var(--card-fg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:20px}
 .sec-t{margin-top:26px}
 .subj-card{padding:0;overflow:hidden;transition:transform .18s,box-shadow .18s}
@@ -235,8 +235,12 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
 .frow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .bank-item{margin-bottom:12px} .bank-item summary{cursor:pointer;font-weight:600;padding:6px 0;min-height:44px;line-height:1.5}
 .bank-item .exp{margin-top:8px;white-space:pre-line}
-.prog-row{margin:12px 0} .prog-row .lbl{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;font-weight:600;align-items:flex-start}
-.prog-row .lbl span:first-child{overflow-wrap:break-word;min-width:0}
+.prog-row{margin:12px 0} .prog-row .lbl{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;font-weight:600;align-items:flex-start;overflow:hidden}
+.prog-row .lbl span:first-child{overflow:hidden;text-overflow:ellipsis;min-width:0}
+/* tiến độ: panel xếp chồng luôn cách nhau, không dính */
+#view-progress>.panel{margin-top:18px}
+#view-progress>.grid2{margin-bottom:0}
+#view-home>.panel.how{margin-top:8px}
 .prog-row .lbl span:last-child{white-space:nowrap;flex:none;color:var(--muted-fg);font-weight:600}
 .hist{display:grid;gap:8px} .hist-item{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.88rem;background:var(--bg);flex-wrap:wrap}
 /* theory */
