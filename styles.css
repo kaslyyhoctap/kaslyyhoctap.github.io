@@ -242,7 +242,7 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
 @keyframes fcPrev{from{opacity:0;translate:-28px 0}to{opacity:1;translate:0 0}}
 .fc-nav{display:flex;gap:10px;align-items:center;justify-content:center;margin:12px 0;flex-wrap:wrap}
 /* bank / progress */
-.filters{margin-bottom:14px} .search{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--bg);border-radius:10px;padding:0 12px;margin-bottom:10px}
+.filters{margin-bottom:14px} #pgSel{background:var(--bg);border:1px solid var(--border);color:var(--fg);border-radius:10px;padding:9px 12px;font:inherit;min-height:44px;max-width:170px} .search{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--bg);border-radius:10px;padding:0 12px;margin-bottom:10px}
 .search input{border:0;background:transparent;flex:1;min-width:0;padding:12px 0;color:var(--fg);font:inherit;outline:none}
 .frow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .bank-item{margin-bottom:12px} .bank-item summary{cursor:pointer;font-weight:600;padding:6px 0;min-height:44px;line-height:1.5}
