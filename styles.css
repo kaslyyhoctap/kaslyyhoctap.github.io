@@ -160,6 +160,7 @@ main{min-height:60vh;isolation:isolate} /* ponytail: nhốt stacking của nội
 .tf-row .btn{flex:none}
 .tf-ok{border-color:var(--ok);background:var(--ok-bg)} .tf-bad{border-color:var(--bad);background:var(--bad-bg)}
 .tf-list{display:grid;gap:8px;margin:8px 0}
+#saIn{width:100%;border:1.5px solid var(--border);background:var(--bg);color:var(--fg);border-radius:12px;padding:13px 14px;font:inherit;font-size:1.05rem;min-height:52px}#saIn:focus{border-color:var(--primary);outline:none}#saIn.practice-ok{border-color:var(--ok);background:var(--ok-bg)}#saIn.practice-bad{border-color:var(--bad);background:var(--bad-bg)}
 .opt>span:last-child{overflow-wrap:break-word}
 .opt.practice-ok{border-color:var(--ok);background:var(--ok-bg)} .opt.practice-bad{border-color:var(--bad);background:var(--bad-bg)}
 .q-nav{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap} .q-nav .btn-primary,.q-nav #qSubmit{margin-left:auto}

@@ -12,7 +12,7 @@ var META={
  chemistry:{name:"Hóa học 12",short:"Hóa",units:"Chương",book:"Kết nối tri thức",lessons:{1:"Chương 1: Ester – Lipid",2:"Chương 2: Carbohydrate"}},
  english:{name:"Tiếng Anh 12",short:"Anh",units:"Unit",book:"Global Success",lessons:{1:"Unit 1: Life stories we admire",2:"Unit 2: A multicultural world"}}
 };
-var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning",reading_comprehension:"Reading Comprehension",true_false:"True/False"};
+var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning",reading_comprehension:"Reading Comprehension",true_false:"True/False",short_answer:"Short Answer"};
 var SKILLS={Vocabulary:"Vocabulary",Grammar:"Grammar","Cloze test":"Cloze Test","Word usage":"Word Usage","Closest meaning":"Paraphrase","Reading":"Reading"};
 function lessonsOf(sub){return Object.keys(META[sub].lessons).map(Number).sort(function(a,b){return a-b})}
 function badgeCls(k){return k==="history"?"h":k==="biology"?"b":k==="chemistry"?"c":"e"}
@@ -21,7 +21,7 @@ function subjTag(q){return q.subject==="history"?"Sử":q.subject==="biology"?"S
 function unitTag(q){return (q.subject==="english"?"U":q.subject==="chemistry"?"C":"B")+q.lesson}
 function typeOf(q){return q.type||"multiple_choice"}
 function chipFor(q){var t=q.type?TYPES[q.type]:"";if(t&&q.topic&&t.toLowerCase()===q.topic.toLowerCase())t="";return esc(q.topic)+(t?" · "+esc(t):"")+" · "+esc(q.difficulty)+(q.band?" · Band "+Number(q.band).toFixed(1):"")}
-var Q=(window.QBANK||[]).filter(function(q){return q&&q.id&&q.question&&((q.options&&q.options.length===4&&q.correctAnswer>=0&&q.correctAnswer<4)||(q.type==="true_false"&&q.statements&&q.statements.length===4))&&q.explanation});
+var Q=(window.QBANK||[]).filter(function(q){return q&&q.id&&q.question&&((q.options&&q.options.length===4&&q.correctAnswer>=0&&q.correctAnswer<4)||(q.type==="true_false"&&q.statements&&q.statements.length===4)||(q.type==="short_answer"&&typeof q.answer==="string"))&&q.explanation});
 var seen={};
 Q=Q.filter(function(q){var k=(q.passageId||"")+q.question.trim().toLowerCase();if(seen[k])return false;seen[k]=1;return true});
 if(!Q.length){document.body.insertAdjacentHTML("afterbegin",'<div class="wrap panel" style="margin-top:16px"><b>Lỗi dữ liệu:</b> chưa tải được câu hỏi. Hãy kiểm tra thư mục <code>data/</code>.</div>');return}
@@ -166,7 +166,7 @@ function startExam(o){
  var list=pool(o);
  if(!list.length){toast("Không có câu hỏi phù hợp bộ lọc");return}
  if(list.length<o.count)toast("Kho đề có "+list.length+" câu phù hợp (đã lấy tối đa)");
- E={cfg:o,qs:list.map(function(q){if(typeOf(q)==="true_false")return{id:q.id,tf:[-1,-1,-1,-1]};var opts=q.options.map(function(t,i){return{t:t,ok:i===q.correctAnswer}});
+ E={cfg:o,qs:list.map(function(q){if(typeOf(q)==="true_false")return{id:q.id,tf:[-1,-1,-1,-1]};if(typeOf(q)==="short_answer")return{id:q.id,sa:"",max:q.maxLen||4};var opts=q.options.map(function(t,i){return{t:t,ok:i===q.correctAnswer}});
   if(o.shA!==false)opts=shuffle(opts);
   return{id:q.id,opts:opts}}),ans:new Array(list.length).fill(-1),flag:new Array(list.length).fill(false),i:0,practice:!!o.practice,t0:Date.now(),limit:o.time*60};
  renderQ();go("quiz");startTimer();
@@ -178,8 +178,8 @@ function tick(){if(!E)return;var el=Math.floor((Date.now()-E.t0)/1000);var left=
 function curQ(){return byId(E.qs[E.i].id)}
 function saveDraft(){try{if(E&&!$("view-quiz").hidden)localStorage.setItem(LS_EXAM,JSON.stringify(E));else localStorage.removeItem(LS_EXAM)}catch(e){}}
 
-function qDoneN(n){var s=E.qs[n];return typeOf(byId(s.id))==="true_false"?s.tf.some(function(v){return v>=0}):E.ans[n]>=0}
-function tfSt(q,s,a){if(typeOf(q)!=="true_false")return a>=0?(s.opts[a].ok?"ok":"bad"):"skip";var an=s.tf.filter(function(v){return v>=0}).length;if(!an)return "skip";return q.statements.every(function(t,i){return s.tf[i]===(t.ok?1:0)})?"ok":"bad"}
+function qDoneN(n){var s=E.qs[n];var t=typeOf(byId(s.id));return t==="true_false"?s.tf.some(function(v){return v>=0}):t==="short_answer"?s.sa!=="":E.ans[n]>=0}
+function tfSt(q,s,a){if(typeOf(q)==="short_answer")return s.sa===""?"skip":(saOk(s,q)?"ok":"bad");if(typeOf(q)!=="true_false")return a>=0?(s.opts[a].ok?"ok":"bad"):"skip";var an=s.tf.filter(function(v){return v>=0}).length;if(!an)return "skip";return q.statements.every(function(t,i){return s.tf[i]===(t.ok?1:0)})?"ok":"bad"}
 function answerTF(i,v){E.qs[E.i].tf[i]=v;renderQ()}
 function renderTF(box,q,st){
  box.innerHTML="";
@@ -195,6 +195,7 @@ function renderTF(box,q,st){
  if(E.practice&&st.tf.some(function(v){return v>=0})){var d=document.createElement("div");d.className="rev exp";d.innerHTML="<b>Giải thích:</b> "+chem(q.explanation);box.appendChild(d)}
 }
 function resultOpts(q,s,a){
+ if(typeOf(q)==="short_answer"){var good=saOk(s,q);var chemA=q.subject==="chemistry"?chem(q.answer):esc(q.answer);return '<div class="opt'+(s.sa===""?"":good?" practice-ok":" practice-bad")+'" style="cursor:default"><span class="k">Ab</span><span>Bạn trả lời: '+esc(s.sa||"—")+'</span><b>Đáp án: '+chemA+(s.sa===""?"":" · "+(good?"✓ Đúng":"✗ Sai"))+'</b></div>'}
  if(typeOf(q)!=="true_false")return s.opts.map(function(op,idx){var mk=op.ok?" ✓":"";var mine=(idx===a&&!op.ok)?" ✗":"";return '<div class="opt'+(op.ok?" practice-ok":idx===a?" practice-bad":"")+'" style="cursor:default"><span class="k">'+["A","B","C","D"][idx]+'</span><span>'+(q.subject==="chemistry"?chem(op.t):esc(op.t))+mk+mine+'</span></div>'}).join("");
  return q.statements.map(function(t,i){var mine=s.tf[i];var good=mine>=0&&mine===(t.ok?1:0);
   return '<div class="opt'+(mine>=0?(good?" practice-ok":" practice-bad"):"")+'" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+chem(t.t)+'</span><b>'+(mine>=0?(mine?"Đúng":"Sai"):"—")+' · Đáp án: '+(t.ok?"Đúng":"Sai")+(mine>=0?(good?" ✓":" ✗"):"")+'</b></div>'}).join("");
@@ -215,7 +216,7 @@ function renderQ(){
  var head=passageHtml(q);
  $("qText").innerHTML=(head?head+"<br>":"")+"Câu "+(E.i+1)+": "+(q.subject==="chemistry"?chem(q.question):esc(q.question));
  var box=$("qOpts");box.innerHTML="";
- if(typeOf(q)==="true_false"){renderTF(box,q,st)}else{st.opts.forEach(function(op,idx){
+ if(typeOf(q)==="true_false"){renderTF(box,q,st)}else if(typeOf(q)==="short_answer"){renderSA(box,q,st)}else{st.opts.forEach(function(op,idx){
   var b=document.createElement("button");b.className="opt"+(E.ans[E.i]===idx?" sel":"");b.setAttribute("role","radio");b.setAttribute("aria-checked",E.ans[E.i]===idx);
   b.innerHTML='<span class="k">'+["A","B","C","D"][idx]+'</span><span>'+(q.subject==="chemistry"?chem(op.t):esc(op.t))+'</span>';
   b.onclick=function(){answer(idx)};box.appendChild(b)});
@@ -233,8 +234,13 @@ $("qPrev").onclick=function(){if(E.i>0){E.i--;renderQ()}};
 $("qNext").onclick=function(){if(E.i<E.qs.length-1){E.i++;renderQ()}};
 $("qFlag").onclick=function(){E.flag[E.i]=!E.flag[E.i];save();renderQ()};
 $("qStar").onclick=function(){S.starred=S.starred||{};var id=curQ().id;if(S.starred[id])delete S.starred[id];else S.starred[id]=1;save();renderQ()};
+function normSA(v){return String(v).trim().replace(",",".").replace(/\s/g,"")}
+function saOk(s,q){var a=parseFloat(normSA(s.sa)),b=parseFloat(normSA(q.answer));if(isNaN(a)||isNaN(b)){var x=normSA(s.sa).toLowerCase(),y=normSA(q.answer).toLowerCase();return x===y&&x!=="";}return Math.abs(a-b)<1e-9}
+function saSync(){var box=$("qOpts");var inp=box.querySelector("#saIn");if(!inp)return;var st=E.qs[E.i];var mx=st.max||4;st.sa=String(inp.value).slice(0,mx);if(inp.value!==st.sa)inp.value=st.sa;var dn=st.sa!=="";var pal=$("qPal");if(pal){var b=pal.children[E.i];if(b){b.classList.toggle("done",dn);b.setAttribute("aria-label","Câu "+(E.i+1)+(dn?" đã làm":" chưa làm"))}}var done=E.qs.filter(function(x,n){return qDoneN(n)}).length;$("qDone").textContent="Đã làm: "+done;var pct=Math.round(done/E.qs.length*100);$("qProg").style.width=pct+"%";$("qProgWrap").setAttribute("aria-valuenow",pct)}
+function renderSA(box,q,st){box.innerHTML="";var inp=document.createElement("input");inp.id="saIn";inp.maxLength=st.max||4;inp.setAttribute("inputmode","decimal");inp.setAttribute("placeholder","Nhập đáp án (tối đa "+(st.max||4)+" kí tự)");inp.setAttribute("aria-label","Đáp án ngắn");inp.value=st.sa||"";inp.oninput=function(){saSync()};inp.onchange=function(){renderQ()};box.appendChild(inp);if(E.practice&&st.sa!==""){var good=saOk(st,q);inp.classList.add(good?"practice-ok":"practice-bad");var d=document.createElement("div");d.className="rev exp";d.innerHTML="<b>Đáp án đúng:</b> "+esc(q.answer)+"<br><b>Giải thích:</b> "+esc(q.explanation);box.appendChild(d)}}
 document.addEventListener("keydown",function(e){
  if($("view-quiz").hidden||!E)return;
+ if(e.target&&e.target.matches&&e.target.matches("input,select,textarea"))return;
  if(e.key>="1"&&e.key<="4"){if(typeOf(curQ())!=="true_false")answer(+e.key-1)}
  else if(e.key==="ArrowRight"){if(E.i<E.qs.length-1){E.i++;renderQ()}}
  else if(e.key==="ArrowLeft"){if(E.i>0){E.i--;renderQ()}}});
@@ -247,6 +253,7 @@ function submit(auto){
  var ok=0,bad=0,skip=0,pts=0,topics={},types={};
  E.qs.forEach(function(s,n){var q=byId(s.id);var a=E.ans[n];var st,fr;
   if(typeOf(q)==="true_false"){var gd=q.statements.reduce(function(m,t,i){return m+(s.tf[i]===(t.ok?1:0)?1:0)},0);var an=s.tf.filter(function(v){return v>=0}).length;st=an===0?"skip":(gd===4?"ok":"bad");fr=gd===4?1:(gd===3?0.5:(gd===2?0.25:0))}
+  else if(typeOf(q)==="short_answer"){st=s.sa===""?"skip":(saOk(s,q)?"ok":"bad");fr=st==="ok"?1:0}
   else{st=a>=0?(s.opts[a].ok?"ok":"bad"):"skip";fr=st==="ok"?1:0}
   pts+=fr;S.answered[s.id]=st;if(st==="ok"){ok++;S.correct++}
   if(st==="bad")bad++;else if(st==="skip")skip++;
@@ -278,7 +285,7 @@ function submit(auto){
    var rows=order.map(function(t){var s=types[t];if(!s)return "";
    var p=Math.round(s.ok/s.tot*100);
     return '<div class="r-box"><b>'+s.ok+'/'+s.tot+'</b><span>Phần '+letters[t]+' · '+TYPES[t]+'</span><span class="pbar"><i style="width:'+p+'%"></i></span></div>'}).join("");
-  var sk=Object.keys(SKILLS).map(function(k){var agg={ok:0,tot:0};E.qs.forEach(function(s,n){var q=byId(s.id);if(q.topic!==k)return;var a=E.ans[n];agg.tot++;if(a>=0&&s.opts[a].ok)agg.ok++});
+  var sk=Object.keys(SKILLS).map(function(k){var agg={ok:0,tot:0};E.qs.forEach(function(s,n){var q=byId(s.id);if(q.topic!==k)return;var a=E.ans[n];agg.tot++;if(tfSt(q,s,a)==="ok")agg.ok++});
    if(!agg.tot)return "";var note=agg.tot<3?' <span class="muted small">(cần ≥3 câu)</span>':"";
    return '<div class="trow"><span>'+SKILLS[k]+note+'</span><span class="pbar"><i style="width:'+Math.round(agg.ok/agg.tot*100)+'%"></i></span><b>'+Math.round(agg.ok/agg.tot*100)+'%</b></div>'}).join("");
   rt.innerHTML="<h3>Kết quả theo phần</h3>"+'<div class="r-grid r-parts">'+rows+'</div>'+(sk?"<h3>Kỹ năng theo chủ đề</h3>"+sk:"");
@@ -295,12 +302,12 @@ function submit(auto){
    +(q.passageId&&window.PASSAGES&&window.PASSAGES[q.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[q.passageId].title)+'</b><p>'+esc(window.PASSAGES[q.passageId].text)+'</p></div>':"")
    +'<p>'+(q.subject==="chemistry"?chem(q.question):esc(q.question))+'</p>'
    +resultOpts(q,s,a)
-   +(typeOf(q)==="true_false"?'<div class="exp"><b>Đúng/Sai từng ý ở trên</b><br><b>Giải thích:</b> ':'<div class="exp"><b>Đáp án đúng: '+["A","B","C","D"][s.opts.findIndex(function(o){return o.ok})]+'</b><br><b>Giải thích:</b> ')+(q.subject==="chemistry"?chem(q.explanation):esc(q.explanation))+extra+'<br><span class="muted small">Nguồn: '+esc(q.source)+(q.sourceType?" ("+esc(q.sourceType)+")":"")+'</span></div>';
+   +(typeOf(q)==="true_false"?'<div class="exp"><b>Đúng/Sai từng ý ở trên</b><br><b>Giải thích:</b> ':typeOf(q)==="short_answer"?'<div class="exp"><b>Giải thích:</b> ':'<div class="exp"><b>Đáp án đúng: '+["A","B","C","D"][s.opts.findIndex(function(o){return o.ok})]+'</b><br><b>Giải thích:</b> ')+(q.subject==="chemistry"?chem(q.explanation):esc(q.explanation))+extra+'<br><span class="muted small">Nguồn: '+esc(q.source)+(q.sourceType?" ("+esc(q.sourceType)+")":"")+'</span></div>';
    list.appendChild(d)})};
  renderList(false);
  $("rWrong").onclick=function(){E._wrongOnly=!E._wrongOnly;renderList(E._wrongOnly);$("rWrong").textContent=E._wrongOnly?"Xem tất cả câu":"Xem lại câu sai";window.scrollTo({top:document.querySelector(".result-hero").offsetHeight})};
  $("rRetry").onclick=function(){startExam(E.cfg)};
-  $("rDrill").onclick=function(){var ids=[];E.qs.forEach(function(s,n){var x=E.ans[n];if(!(x>=0&&s.opts[x].ok))ids.push(s.id)});if(!ids.length){toast("Không có câu sai — làm tốt lắm!");return}startExam({subject:E.cfg.subject,lesson:"all",count:ids.length,time:Math.max(5,Math.ceil(ids.length*1.5)),practice:true,shQ:true,shA:true,ids:ids})};
+  $("rDrill").onclick=function(){var ids=[];E.qs.forEach(function(s,n){var q=byId(s.id);if(tfSt(q,s,E.ans[n])!=="ok")ids.push(s.id)});if(!ids.length){toast("Không có câu sai — làm tốt lắm!");return}startExam({subject:E.cfg.subject,lesson:"all",count:ids.length,time:Math.max(5,Math.ceil(ids.length*1.5)),practice:true,shQ:true,shA:true,ids:ids})};
  $("rNew").onclick=function(){var c=Object.assign({},E.cfg);startExam(c)};
  toast(auto?"Hết giờ — đã tự nộp bài":"Đã chấm bài: "+point.toFixed(1)+"/10");
  go("result");
@@ -308,7 +315,7 @@ function submit(auto){
 
 /* ---------- BANK ---------- */
 function bankItem(x,s,det){
- var body=typeOf(x)==="true_false"
+ var body=typeOf(x)==="short_answer"?'<div class="exp"><b>Đáp án: '+(x.subject==="chemistry"?chem(x.answer):esc(x.answer))+'.</b> '+(x.subject==="chemistry"?chem(x.explanation):esc(x.explanation)):typeOf(x)==="true_false"
   ?'<div class="tf-list">'+tfRows(x)+'</div><div class="exp"><b>Đáp án từng ý ở trên.</b> '+(x.subject==="chemistry"?chem(x.explanation):esc(x.explanation))
   :'<ol type="A">'+x.options.map(function(o){return "<li>"+(x.subject==="chemistry"?chem(o):esc(o))+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+(x.subject==="chemistry"?chem(x.explanation):esc(x.explanation));
  return '<details class="panel bank-item"><summary>['+subjTag(x)+' '+unitTag(x)+(x.type?" · "+TYPES[x.type]:"")+'] '+(x.subject==="chemistry"?chem(x.question):esc(x.question))+' '+(s?'<span class="tag '+(s==="ok"?"ok":"bad")+'">'+(s==="ok"?"Đã đúng":"Đã sai")+'</span>':"")

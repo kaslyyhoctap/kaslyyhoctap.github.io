@@ -3,7 +3,7 @@
 ## Giới thiệu
 
 Website ôn tập trắc nghiệm Lịch sử 12, Sinh học 12 (Kết nối tri thức, Bài 1–3), Hóa học 12 (Chương 1–2) và Tiếng Anh 12 Global Success (Unit 1–2).
-748 câu hỏi (kèm dạng Đúng/Sai 4 ý), có đáp án + giải thích, chấm điểm tự động, theo dõi tiến độ.
+1048 câu hỏi (kèm dạng Đúng/Sai 4 ý và Trả lời ngắn), có đáp án + giải thích, chấm điểm tự động, theo dõi tiến độ.
 Riêng Tiếng Anh toàn bộ band 6.0–7.5, từ vựng B1–C1 chủ yếu B2, theo cấu trúc IELTS Reading (gồm cả Reading Comprehension).
 
 ## Tính năng
@@ -109,6 +109,7 @@ data/
   chemistry-ch2.js    # 30 câu Hóa Chương 2 (Carbohydrate)
   chemistry-ch1b.js   # 70 câu Hóa Chương 1 (50 lý thuyết + 50 vận dụng, gồm Đúng/Sai)
   chemistry-ch2b.js   # 70 câu Hóa Chương 2 (50 lý thuyết + 50 vận dụng, gồm Đúng/Sai)
+  # + 300 câu Trả lời ngắn: 30 câu/môn/bài (Sử 3 bài, Sinh 3 bài, Hóa 2 chương, Anh 2 unit)
   english-unit1.js    # ~36 câu Anh Unit 1 (gốc)
   english-unit1b.js   # 50 câu Anh Unit 1 (bổ sung)
   english-unit1c.js   # 50 câu Anh Unit 1 (bổ sung)
