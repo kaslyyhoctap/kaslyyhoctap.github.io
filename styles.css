@@ -48,6 +48,14 @@ body.nav-open .header{z-index:200}
 .nav-btn{border:0;background:transparent;color:var(--fg);font:inherit;font-weight:600;font-size:.9rem;padding:9px 13px;border-radius:10px;cursor:pointer;min-height:44px;transition:background .18s;white-space:nowrap;flex:none}
 .nav-btn:first-child{margin-left:auto} .nav-btn:last-child{margin-right:auto}
 .nav-btn:hover{background:var(--muted)} .nav-btn.active{background:var(--primary);color:var(--on-primary)}
+/* grouped subjects dropdown: ponytail — 1 tab thay 3 nút, tái dùng .nav-btn */
+.nav-group{position:relative;flex:none}
+#subjBtn svg{transition:transform .2s}
+#subjBtn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.nav-menu{position:absolute;top:calc(100% + 8px);left:50%;translate:-50% 0;min-width:170px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:6px;display:grid;gap:2px;z-index:90}
+.nav-menu[hidden]{display:none}
+.nav-menu .nav-btn{justify-content:flex-start;width:100%;margin:0}
+@media(min-width:901px){body.subj-open .nav{overflow:visible}}
 .header-act{display:flex;align-items:center;gap:10px;white-space:nowrap}
 .header-act .btn,.icon-btn{white-space:nowrap;flex:none}
 /* buttons */
@@ -257,6 +265,8 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
   .nav{position:fixed;inset:0 auto 0 0;width:min(300px,84vw);flex-direction:column;align-items:stretch;justify-content:flex-start;gap:6px;background:var(--card);border-right:1px solid var(--border);box-shadow:8px 0 32px rgba(0,0,0,.18);padding:16px 12px calc(16px + env(safe-area-inset-bottom));overflow-y:auto;z-index:300;transform:translateX(-102%);transition:transform .25s ease;visibility:hidden}
   body.nav-open .nav{transform:translateX(0);visibility:visible}
   .nav-btn{justify-content:flex-start;text-align:left;width:100%;padding:12px 14px}
+  .nav-group{width:100%}
+  .nav-menu{position:static;translate:none;box-shadow:none;border:0;border-top:1px dashed var(--border);border-radius:0;padding:6px 0 2px 12px;min-width:0}
   .scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:290;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,visibility .25s}
   body.nav-open .scrim{opacity:1;visibility:visible;pointer-events:auto}
 }

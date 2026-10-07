@@ -22,9 +22,14 @@
     </a>
     <nav class="nav" id="mainNav" aria-label="Điều hướng chính">
       <button class="nav-btn" data-nav="home">Trang chủ</button>
-      <button class="nav-btn" data-nav="history">Lịch sử</button>
-      <button class="nav-btn" data-nav="biology">Sinh học</button>
-      <button class="nav-btn" data-nav="english">Tiếng Anh</button>
+      <div class="nav-group">
+        <button class="nav-btn" id="subjBtn" aria-haspopup="true" aria-expanded="false" aria-controls="subjMenu" type="button">Môn học <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-menu" id="subjMenu" role="menu" hidden>
+          <button class="nav-btn" data-nav="history" role="menuitem">Lịch sử</button>
+          <button class="nav-btn" data-nav="biology" role="menuitem">Sinh học</button>
+          <button class="nav-btn" data-nav="english" role="menuitem">Tiếng Anh</button>
+        </div>
+      </div>
       <button class="nav-btn" data-nav="bank">Ngân hàng câu hỏi</button>
       <button class="nav-btn" data-nav="vocab">Từ vựng</button>
       <button class="nav-btn" data-nav="progress">Tiến độ</button>

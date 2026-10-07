@@ -35,16 +35,19 @@ function blankNo(q){var m=/(\d+)$/.exec(q.id);return m?String(parseInt(m[1],10))
 function applyTheme(){document.documentElement.dataset.theme=S.theme;$("themeLbl").textContent=S.theme==="light"?"Sáng":"Tối"}
 $("themeBtn").onclick=function(){S.theme=S.theme==="light"?"dark":"light";save();applyTheme()};applyTheme();
 
-/* sidebar mobile: ponytail — 1 toggle gốc, mọi điều hướng đều đóng */
+/* sidebar mobile + dropdown môn học: ponytail — 1 toggle gốc, mọi điều hướng đều đóng */
 function setNav(open){document.body.classList.toggle("nav-open",!!open);var b=$("menuBtn");if(b)b.setAttribute("aria-expanded",open?"true":"false")}
+function setSubj(open){var m=$("subjMenu"),b=$("subjBtn");if(!m||!b)return;var show=open===undefined?m.hidden:!!open;m.hidden=!show;document.body.classList.toggle("subj-open",show);b.setAttribute("aria-expanded",show?"true":"false")}
 $("menuBtn").onclick=function(e){e.stopPropagation();setNav(!document.body.classList.contains("nav-open"))};
+$("subjBtn").onclick=function(e){e.stopPropagation();setSubj()};
 $("navScrim").onclick=function(){setNav(false)};
-document.addEventListener("keydown",function(e){if(e.key==="Escape")setNav(false)});
+document.addEventListener("click",function(e){if(!e.target.closest(".nav-group"))setSubj(false)});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){setNav(false);setSubj(false)}});
 
 /* router */
 var views=["home","subject","theory","quiz","bank","vocab","progress","result"];
 var SUBJS=["history","biology","english"];
-function go(v){views.forEach(function(x){$("view-"+x).hidden=x!==v});document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.toggle("active",b.dataset.nav===v||(v==="subject"&&curSub&&b.dataset.nav===curSub))});setNav(false);window.scrollTo({top:0,behavior:"smooth"});$("main").querySelector("h1,h2")?.setAttribute("tabindex","-1")}
+function go(v){views.forEach(function(x){$("view-"+x).hidden=x!==v});document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.toggle("active",b.dataset.nav===v||(v==="subject"&&curSub&&b.dataset.nav===curSub))});var sb=$("subjBtn");if(sb)sb.classList.toggle("active",v==="subject");setNav(false);setSubj(false);window.scrollTo({top:0,behavior:"smooth"});$("main").querySelector("h1,h2")?.setAttribute("tabindex","-1")}
 document.addEventListener("click",function(e){var b=e.target.closest("[data-nav]");if(!b)return;var v=b.dataset.nav;
  if(v==="home")renderHome();
  else if(v==="history"||v==="biology"||v==="english")renderSubject(v);
