@@ -76,7 +76,7 @@ function renderHome(){
  var tot=S.hist.length,best=S.hist.reduce(function(m,h){return Math.max(m,h.point)},0);
  $("heroBest").textContent=tot?best.toFixed(2):"–";
  $("heroStats").innerHTML='<div><b>'+Q.length+'</b><span>câu hỏi</span></div><div><b>'+tot+'</b><span>đề đã làm</span></div><div><b>'+(tot?best.toFixed(1):"–")+'</b><span>điểm cao nhất</span></div>';
- $("heroBars").innerHTML=Object.keys(META).map(function(k){var m=META[k];return lessonsOf(k).map(function(l){var p=(S.prog[k]||{})[l]||0;return '<div class="hbar"><span>'+m.short+' '+(m.units==="Unit"?"U":"B")+l+'</span><i><em style="width:'+p+'%"></em></i><span>'+p+'%</span></div>'}).join("")}).join("");
+ $("heroBars").innerHTML=Object.keys(META).map(function(k){var m=META[k];return lessonsOf(k).map(function(l){var p=(S.prog[k]||{})[l]||0;return '<div class="hbar"><span>'+m.short+' '+(m.units==="Unit"?"U":m.units==="Chương"?"C":"B")+l+'</span><i><em style="width:'+p+'%"></em></i><span>'+p+'%</span></div>'}).join("")}).join("");
  go("home");
 }
 document.addEventListener("click",function(e){
@@ -257,7 +257,7 @@ function submit(auto){
  var rec={when:Date.now(),sub:E.cfg.subject,lesson:E.cfg.lesson,point:point,ok:ok,tot:tot,time:secs,ids:E.qs.map(function(s){return s.id})};
  S.hist.unshift(rec);S.hist=S.hist.slice(0,20);save();
  var m=META[E.cfg.subject];
- var scope=E.cfg.lesson==="all"?(E.cfg.subject==="english"?" · Tổng hợp Unit 1+2":" · Tổng hợp 3 bài"):(" · "+m.units+" "+E.cfg.lesson);
+ var scope=E.cfg.lesson==="all"?(" · Tổng hợp "+lessonsOf(E.cfg.subject).length+" "+m.units.toLowerCase()):(" · "+m.units+" "+E.cfg.lesson);
  $("rSub").textContent=(auto?"Hết giờ · ":"")+m.name+scope;
  $("rPoint").textContent=point.toFixed(1);
  $("rFrac").textContent=ok+"/"+tot+" · "+Math.round(ok/tot*100)+"%";
