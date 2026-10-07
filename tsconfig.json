@@ -13,12 +13,11 @@
     "incremental": true,
     "esModuleInterop": true,
     "moduleResolution": "bundler",
-    "module": "NodeNext",
+    "module": "preserve",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "jsx": "react-jsx",
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./*"
