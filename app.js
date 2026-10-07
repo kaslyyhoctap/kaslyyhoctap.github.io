@@ -87,13 +87,15 @@ document.addEventListener("click",function(e){
 
 /* ---------- SUBJECT ---------- */
 var curSub="history";
+function cfgChecked(id){var r=[];Array.prototype.forEach.call($(id).querySelectorAll("input:checked"),function(i){if(!i.disabled&&i.value!=="all")r.push(i.value)});return r}
+function bindCheckAll(id){var box=$(id);if(!box||!box.querySelector)return;var all=box.querySelector('input[value="all"]');var items=Array.prototype.filter.call(box.querySelectorAll("input"),function(i){return i!==all&&!i.disabled});var sync=function(){if(all)all.checked=items.length>0&&items.every(function(i){return i.checked})};if(all)all.onchange=function(){items.forEach(function(i){i.checked=all.checked})};items.forEach(function(i){i.onchange=sync})}
+function cfgSetLesson(v){Array.prototype.forEach.call($("cfgLesson").querySelectorAll("input"),function(i){i.checked=(v==="all")?true:i.value===String(v)})}
 function typeCounts(sub,l){var tc={};Q.filter(function(q){return q.subject===sub&&q.lesson===l}).forEach(function(q){var t=typeOf(q);tc[t]=(tc[t]||0)+1});return tc}
 function renderSubject(sub){curSub=sub;var m=META[sub];var th=window.THEORY[sub]||{};var ls=lessonsOf(sub);
  $("subjectHead").innerHTML='<h2>'+m.name+' <small class="muted">· '+counts(sub)+' câu · '+m.units+' 1–'+ls.length+'</small></h2><p class="muted">'+m.book+' — chọn '+m.units.toLowerCase()+' để học lý thuyết, luyện trắc nghiệm hoặc tạo đề kiểm tra tính giờ.</p>';
- var prev=$("cfgLesson").value;
- $("cfgLesson").innerHTML='<option value="all">Tổng hợp '+ls.length+' '+m.units.toLowerCase()+'</option>'+ls.map(function(l){return '<option value="'+l+'">'+m.units+' '+l+'</option>'}).join("");
- $("cfgLesson").value=ls.indexOf(+prev)>=0||prev==="all"?prev:"all";
- $("cfgTypeWrap").style.display=sub==="english"?"":"none";
+ $("cfgLesson").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+ls.map(function(l){return '<label class="chk"><input type="checkbox" value="'+l+'" checked> '+m.units+' '+l+'</label>'}).join("");
+ $("cfgType").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+Object.keys(TYPES).map(function(t){var n=Q.filter(function(q){return q.subject===sub&&typeOf(q)===t}).length;return '<label class="chk'+(n?"":" dis")+'"><input type="checkbox" value="'+t+'"'+(n?" checked":" disabled")+'> '+TYPES[t]+' ('+n+')</label>'}).join("");
+ bindCheckAll("cfgLesson");bindCheckAll("cfgType");
  $("subjectLessons").innerHTML=ls.map(function(l){var n=Q.filter(function(q){return q.subject===sub&&q.lesson===l}).length;var p=(S.prog[sub]||{})[l]||0;
   var meta=sub==="english"?Object.keys(TYPES).map(function(t){return (typeCounts(sub,l)[t]||0)+" "+TYPES[t].split(" ")[0]}).join(" · "):"Nhận biết → Vận dụng cao";
   var title=(th[l]&&th[l].title)||(m.units+" "+l);
@@ -102,8 +104,8 @@ function renderSubject(sub){curSub=sub;var m=META[sub];var th=window.THEORY[sub]
  +'<div class="panel lesson-card"><h3>Tổng hợp '+ls.length+' '+m.units.toLowerCase()+'</h3><p>Đề trộn đủ các '+(sub==="english"?"dạng bài":"bài học")+', đúng như kiểm tra cuối kỳ.</p><div class="lesson-meta"><span class="badge">'+counts(sub)+' câu</span></div><div class="row"><button class="btn btn-sm btn-primary" data-test="'+sub+':all">Kiểm tra tổng hợp</button></div></div>';
  go("subject");
 }
-document.addEventListener("click",function(e){var t=e.target.closest("[data-test]");if(!t)return;var a=t.dataset.test.split(":");$("cfgLesson").value=a[1];collectCfg(a[0],false)});
-function collectCfg(sub,practice){startExam({subject:sub||curSub,lesson:$("cfgLesson").value,count:+$("cfgCount").value,time:+$("cfgTime").value,level:$("cfgLevel").value,qtype:(sub||curSub)==="english"?$("cfgType").value:"all",shQ:$("cfgShuffleQ").checked,shA:$("cfgShuffleA").checked,practice:practice})}
+document.addEventListener("click",function(e){var t=e.target.closest("[data-test]");if(!t)return;var a=t.dataset.test.split(":");cfgSetLesson(a[1]);collectCfg(a[0],false)});
+function collectCfg(sub,practice){var s=sub||curSub;var ls=cfgChecked("cfgLesson");if(!ls.length){toast("Hãy chọn ít nhất 1 bài");return}var ts=cfgChecked("cfgType");if(!ts.length){toast("Hãy chọn ít nhất 1 dạng bài");return}startExam({subject:s,lesson:ls.length>=lessonsOf(s).length?"all":ls,count:+$("cfgCount").value,time:+$("cfgTime").value,level:$("cfgLevel").value,qtype:ts.length>=Object.keys(TYPES).length?"all":ts,shQ:$("cfgShuffleQ").checked,shA:$("cfgShuffleA").checked,practice:practice})}
 $("cfgStart").onclick=function(){collectCfg(null,false)};$("cfgPractice").onclick=function(){collectCfg(null,true)};
 $("quickBtn").onclick=function(){startExam({subject:SUBJS[Math.floor(Math.random()*SUBJS.length)],lesson:"all",count:10,time:10,practice:false,quick:true})};
 $("theoryBack").onclick=function(){renderSubject(curSub)};
@@ -121,11 +123,14 @@ function recentMap(){var r={};S.hist.slice(-3).forEach(function(h){(h.ids||[]).f
 function pickFresh(arr,n,shQ){var a=shQ!==false?shuffle(arr):arr.slice();var r=recentMap();a=a.slice().sort(function(x,y){return (r[x.id]?1:0)-(r[y.id]?1:0)});return a.slice(0,Math.min(n,a.length))}
 function pool(o){
  if(o.ids&&o.ids.length){var seen={},arr=[];o.ids.forEach(function(id){var q=byId(id);if(q&&!seen[id]){seen[id]=1;arr.push(q)}});return pickFresh(arr,o.count||arr.length,o.shQ)}
- var base=Q.filter(function(q){return q.subject===o.subject&&(o.lesson==="all"||q.lesson===+o.lesson)&&(!o.level||o.level==="all"||q.difficulty===o.level)&&(!o.topic||q.topic===o.topic)&&(!o.band||q.band===+o.band)});
+ var lessons=(o.lesson==="all"||o.lesson==null)?null:(Array.isArray(o.lesson)?o.lesson.map(String):[String(o.lesson)]);
+ var qts=(o.qtype==="all"||o.qtype==null)?null:(Array.isArray(o.qtype)?o.qtype.slice():[o.qtype]);
+ var base=Q.filter(function(q){return q.subject===o.subject&&(!lessons||lessons.indexOf(String(q.lesson))>=0)&&(!o.level||o.level==="all"||q.difficulty===o.level)&&(!o.topic||q.topic===o.topic)&&(!o.band||q.band===+o.band)});
+ if(qts)base=base.filter(function(q){return qts.indexOf(typeOf(q))>=0});
  if(o.subject==="chemistry"&&(!o.qtype||o.qtype==="all")){var tfs=base.filter(function(q){return typeOf(q)==="true_false"});var rest=base.filter(function(q){return typeOf(q)!=="true_false"});var k=Math.min(2,tfs.length,o.count);var sel=pickFresh(tfs,k,o.shQ).concat(pickFresh(rest,o.count-k,o.shQ));return o.shQ!==false?shuffle(sel):sel}
  if(o.subject!=="english")return pickFresh(base,o.count,o.shQ);
- var qt=o.qtype||"all";
- if(qt!=="all"){var only=base.filter(function(q){return typeOf(q)===qt});
+ var qt=!qts?"all":(qts.length===1?qts[0]:"multi");
+ if(qt!=="all"&&qt!=="multi"){var only=base.filter(function(q){return typeOf(q)===qt});
   if(qt==="cloze"||qt==="reading_comprehension"){var gs={};only.forEach(function(q){var p=q.passageId||"x";(gs[p]=gs[p]||[]).push(q)});var gl=Object.keys(gs).map(function(p){return gs[p]});var fl={};Q.filter(function(q){return q.subject==="english"&&q.passageId}).forEach(function(q){fl[q.passageId]=(fl[q.passageId]||0)+1});gl=gl.filter(function(g){var p=g[0].passageId;return !p||g.length===(fl[p]||g.length)});if(o.shQ!==false)gl=shuffle(gl);var take=[],n=o.count;gl.forEach(function(g){if(take.length+g.length<=n)take=take.concat(g)});if(!take.length&&gl.length)take=gl[0].slice(0,n);return take}
   return pickFresh(only,o.count,o.shQ)}
  var N=o.count;
@@ -143,7 +148,7 @@ function pool(o){
  Q.filter(function(q){return q.subject==="english"&&q.passageId}).forEach(function(q){fullLen[q.passageId]=(fullLen[q.passageId]||0)+1});
  var fullPs=ps.filter(function(g){var p=g[0].passageId;return g.length===(fullLen[p]||g.length)});
  if(o.shQ!==false)fullPs=shuffle(fullPs);
- var maxPass=(o.qtype==="cloze"||o.qtype==="reading_comprehension")?fullPs.length:(o.lesson==="all"?(N>=40?Math.min(2,fullPs.length):Math.min(1,fullPs.length)):Math.min(1,fullPs.length));
+ var maxPass=(qt==="cloze"||qt==="reading_comprehension")?fullPs.length:(o.lesson==="all"?(N>=40?Math.min(2,fullPs.length):Math.min(1,fullPs.length)):Math.min(1,fullPs.length));
  var clozeSel=[];fullPs.slice(0,maxPass).forEach(function(g){if(clozeSel.length+g.length<=budget)clozeSel=clozeSel.concat(g)});
  if(o.level&&o.level!=="all"&&ps.length&&!clozeSel.length)toast("Bài đọc không đủ điều kiện mức độ đã chọn nên đề không gồm cloze");
  var mcSel=pickFresh(mc,Math.max(budget-clozeSel.length,0),o.shQ);
