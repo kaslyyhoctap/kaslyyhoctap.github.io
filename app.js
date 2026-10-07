@@ -53,7 +53,7 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-nav]
  else if(v==="history"||v==="biology"||v==="english")renderSubject(v);
  else if(v==="bank")renderBank();
  else if(v==="vocab")renderVocab();
- else if(v==="progress")renderProgress();
+ else if(v==="progress"){renderProgress();renderWeak()}
  go(SUBJS.indexOf(v)>=0?"subject":v)});
 
 /* ---------- HOME ---------- */
@@ -118,7 +118,7 @@ var LS_EXAM=LS+"-exam";
 function recentMap(){var r={};S.hist.slice(-3).forEach(function(h){(h.ids||[]).forEach(function(id){r[id]=1})});return r}
 function pickFresh(arr,n,shQ){var a=shQ!==false?shuffle(arr):arr.slice();var r=recentMap();a=a.slice().sort(function(x,y){return (r[x.id]?1:0)-(r[y.id]?1:0)});return a.slice(0,Math.min(n,a.length))}
 function pool(o){
- var base=Q.filter(function(q){return q.subject===o.subject&&(o.lesson==="all"||q.lesson===+o.lesson)&&(!o.level||o.level==="all"||q.difficulty===o.level)});
+ var base=Q.filter(function(q){return q.subject===o.subject&&(o.lesson==="all"||q.lesson===+o.lesson)&&(!o.level||o.level==="all"||q.difficulty===o.level)&&(!o.topic||q.topic===o.topic)&&(!o.band||q.band===+o.band)});
  if(o.subject!=="english")return pickFresh(base,o.count,o.shQ);
  var qt=o.qtype||"all";
  if(qt!=="all")return pickFresh(base.filter(function(q){return typeOf(q)===qt}),o.count,o.shQ);
@@ -137,7 +137,7 @@ function pool(o){
  Q.filter(function(q){return q.subject==="english"&&q.passageId}).forEach(function(q){fullLen[q.passageId]=(fullLen[q.passageId]||0)+1});
  var fullPs=ps.filter(function(g){var p=g[0].passageId;return g.length===(fullLen[p]||g.length)});
  if(o.shQ!==false)fullPs=shuffle(fullPs);
- var maxPass=o.lesson==="all"?(N>=40?Math.min(2,fullPs.length):Math.min(1,fullPs.length)):Math.min(1,fullPs.length);
+ var maxPass=o.qtype==="cloze"?fullPs.length:(o.lesson==="all"?(N>=40?Math.min(2,fullPs.length):Math.min(1,fullPs.length)):Math.min(1,fullPs.length));
  var clozeSel=[];fullPs.slice(0,maxPass).forEach(function(g){if(clozeSel.length+g.length<=budget)clozeSel=clozeSel.concat(g)});
  if(o.level&&o.level!=="all"&&ps.length&&!clozeSel.length)toast("Bài đọc không đủ điều kiện mức độ đã chọn nên đề không gồm cloze");
  var mcSel=pickFresh(mc,Math.max(budget-clozeSel.length,0),o.shQ);
@@ -360,6 +360,44 @@ document.addEventListener("keydown",function(e){
  if(e.key==="ArrowRight")$("fcNext").click();
  else if(e.key==="ArrowLeft")$("fcPrev").click();
  else if(e.key===" "&&document.activeElement!==$("fcMain")){e.preventDefault();V.flip=!V.flip;renderFc()}
+});
+
+/* ---------- DIEM YEU (B): tai dung S.answered + filter san co cua pool() */
+var WEAK=[];
+function weakStats(){
+ var dims=[];
+ function agg(label,filter,action){
+  var tot=0,ok=0,i,q,st;
+  for(i=0;i<Q.length;i++){q=Q[i];if(!filter(q))continue;st=S.answered[q.id];if(!st||st==="skip")continue;tot++;if(st==="ok")ok++}
+  if(tot>=3)dims.push({label:label,ok:ok,tot:tot,acc:Math.round(ok/tot*100),action:action});
+ }
+ var ts=Object.keys(TYPES),t;
+ for(t=0;t<ts.length;t++)(function(ty){agg(TYPES[ty]+" · Anh",function(q){return q.subject==="english"&&typeOf(q)===ty},{subject:"english",qtype:ty})})(ts[t]);
+ [5.5,6.0,6.5,7.0].forEach(function(b){agg("Band "+b.toFixed(1)+" · Anh",function(q){return q.subject==="english"&&q.band===b},{subject:"english",band:b})});
+ var sk=Object.keys(META),ti,li;
+ for(ti=0;ti<sk.length;ti++){var ls=lessonsOf(sk[ti]);for(li=0;li<ls.length;li++)(function(k,l){var lbl=(META[k].lessons[l]||(META[k].units+" "+l)).split(":")[0];agg(lbl+" · "+META[k].short,function(q){return q.subject===k&&q.lesson===l},{subject:k,lesson:String(l)})})(sk[ti],ls[li])}
+ var tp={};
+ Q.forEach(function(q){(tp[q.topic]=tp[q.topic]||[]).push(q)});
+ Object.keys(tp).forEach(function(topic){var q0=tp[topic][0];agg(topic+" · "+subjTag(q0),function(q){return q.topic===topic},{subject:q0.subject,topic:topic})});
+ dims.sort(function(a,b){return a.acc-b.acc});
+ return dims.slice(0,3);
+}
+function renderWeak(){
+ var box=$("weakBox");if(!box)return;
+ WEAK=weakStats();
+ if(!WEAK.length){box.innerHTML='<p class="muted">Chưa đủ dữ liệu — làm thêm bài để có phân tích (mỗi nhóm cần tối thiểu 3 câu đã làm).</p>';return}
+ box.innerHTML=WEAK.map(function(w,i){
+  return '<div class="prog-row"><div class="lbl"><span>'+(i===0?'<span class="tag bad">Yếu nhất</span> ':'')+esc(w.label)+'</span><span>'+w.ok+'/'+w.tot+' đúng · '+w.acc+'%</span></div><div class="pbar"><i style="width:'+w.acc+'%"></i></div><div class="row" style="margin-top:8px"><button class="btn btn-sm btn-primary" data-weak="'+i+'">Luyện 10 câu phần này</button></div></div>'}).join("");
+}
+document.addEventListener("click",function(e){
+ var b=e.target.closest("[data-weak]");if(!b)return;
+ var w=WEAK[+b.dataset.weak];if(!w)return;
+ var cfg={subject:w.action.subject,lesson:"all",count:10,time:10,practice:true,level:"all",qtype:"all",shQ:true,shA:true};
+ if(w.action.lesson!==undefined)cfg.lesson=w.action.lesson;
+ if(w.action.topic)cfg.topic=w.action.topic;
+ if(w.action.band!==undefined)cfg.band=w.action.band;
+ if(w.action.qtype)cfg.qtype=w.action.qtype;
+ startExam(cfg);
 });
 
 /* ---------- PROGRESS ---------- */
