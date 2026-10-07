@@ -30,6 +30,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(t
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 function byId(id){return Q.find(function(q){return q.id===id})}
+function chem(s){return esc(String(s).replace(/\bE5\b/g,"E\x015\x01").replace(/\bB(\d+)\b/g,"B\x01$1\x01")).replace(/([A-Za-z\)\]])(\d+)/g,"$1<sub>$2</sub>").replace(/\x01/g,"")}
 function blankNo(q){var m=/\((\d+)\)/.exec(q.question||"");return m?m[1]:null}
 
 /* theme */
@@ -180,21 +181,20 @@ function renderTF(box,q,st){
  q.statements.forEach(function(t,i){
   var row=document.createElement("div");row.className="tf-row";
   var cur=st.tf[i];
-  row.innerHTML='<span class="tf-t"><b>'+"abcd"[i]+')</b> '+esc(t.t)+'</span>';
+  row.innerHTML='<span class="tf-t"><b>'+"abcd"[i]+')</b> '+chem(t.t)+'</span>';
   [["D",1],["S",0]].forEach(function(p){
    var b=document.createElement("button");b.className="btn btn-sm"+(cur===p[1]?" btn-primary":" btn-ghost");b.textContent=p[0]==="D"?"Đúng":"Sai";
    b.onclick=function(){answerTF(i,p[1])};row.appendChild(b)});
   if(E.practice&&cur>=0)row.classList.add(cur===(t.ok?1:0)?"tf-ok":"tf-bad");
   box.appendChild(row)});
- if(E.practice&&st.tf.some(function(v){return v>=0})){var d=document.createElement("div");d.className="rev exp";d.innerHTML="<b>Giải thích:</b> "+esc(q.explanation);box.appendChild(d)}
+ if(E.practice&&st.tf.some(function(v){return v>=0})){var d=document.createElement("div");d.className="rev exp";d.innerHTML="<b>Giải thích:</b> "+chem(q.explanation);box.appendChild(d)}
 }
 function resultOpts(q,s,a){
- if(typeOf(q)!=="true_false")return s.opts.map(function(op,idx){var mk=op.ok?" ✓":"";var mine=(idx===a&&!op.ok)?" ✗":"";return '<div class="opt'+(op.ok?" practice-ok":idx===a?" practice-bad":"")+'" style="cursor:default"><span class="k">'+["A","B","C","D"][idx]+'</span><span>'+esc(op.t)+mk+mine+'</span></div>'}).join("");
+ if(typeOf(q)!=="true_false")return s.opts.map(function(op,idx){var mk=op.ok?" ✓":"";var mine=(idx===a&&!op.ok)?" ✗":"";return '<div class="opt'+(op.ok?" practice-ok":idx===a?" practice-bad":"")+'" style="cursor:default"><span class="k">'+["A","B","C","D"][idx]+'</span><span>'+(q.subject==="chemistry"?chem(op.t):esc(op.t))+mk+mine+'</span></div>'}).join("");
  return q.statements.map(function(t,i){var mine=s.tf[i];var good=mine>=0&&mine===(t.ok?1:0);
-  return '<div class="opt'+(mine>=0?(good?" practice-ok":" practice-bad"):"")+'" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+esc(t.t)+'</span><b>'+(mine>=0?(mine?"Đúng":"Sai"):"—")+' · Đáp án: '+(t.ok?"Đúng":"Sai")+(mine>=0?(good?" ✓":" ✗"):"")+'</b></div>'}).join("");
+  return '<div class="opt'+(mine>=0?(good?" practice-ok":" practice-bad"):"")+'" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+chem(t.t)+'</span><b>'+(mine>=0?(mine?"Đúng":"Sai"):"—")+' · Đáp án: '+(t.ok?"Đúng":"Sai")+(mine>=0?(good?" ✓":" ✗"):"")+'</b></div>'}).join("");
 }
-function tfRows(q){return q.statements.map(function(s2,i){return '<div class="opt" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+esc(s2.t)+'</span><b>'+(s2.ok?"Đúng":"Sai")+'</b></div>'}).join("")}
-function bankBody(x){if(typeOf(x)!=="true_false")return '<ol type="A">'+x.options.map(function(o){return "<li>"+esc(o)+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+esc(x.explanation);return '<div class="tf-list">'+tfRows(x)+'</div><div class="exp"><b>Đáp án từng ý ở trên.</b> '+esc(x.explanation)}
+function tfRows(q){return q.statements.map(function(s2,i){return '<div class="opt" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+chem(s2.t)+'</span><b>'+(s2.ok?"Đúng":"Sai")+'</b></div>'}).join("")}
 function renderQ(){
  var q=curQ(),st=E.qs[E.i],m=META[E.cfg.subject];
  var scope=E.cfg.lesson==="all"?" · Tổng hợp":(" · "+m.units+" "+E.cfg.lesson);
@@ -208,14 +208,14 @@ function renderQ(){
   $("qStar").textContent=((S.starred&&S.starred[curQ().id])?"★ Sổ tay":"☆ Sổ tay");
  $("qTopic").textContent=q.topic+((E.cfg.subject==="english"&&q.type&&TYPES[q.type].toLowerCase()!==String(q.topic).toLowerCase())?" · "+TYPES[q.type]:"")+" · "+q.difficulty+(q.band?" · Band "+Number(q.band).toFixed(1):"");
  var head=passageHtml(q);
- $("qText").innerHTML=(head?head+"<br>":"")+"Câu "+(E.i+1)+": "+esc(q.question);
+ $("qText").innerHTML=(head?head+"<br>":"")+"Câu "+(E.i+1)+": "+(q.subject==="chemistry"?chem(q.question):esc(q.question));
  var box=$("qOpts");box.innerHTML="";
  if(typeOf(q)==="true_false"){renderTF(box,q,st)}else{st.opts.forEach(function(op,idx){
   var b=document.createElement("button");b.className="opt"+(E.ans[E.i]===idx?" sel":"");b.setAttribute("role","radio");b.setAttribute("aria-checked",E.ans[E.i]===idx);
-  b.innerHTML='<span class="k">'+["A","B","C","D"][idx]+'</span><span>'+esc(op.t)+'</span>';
+  b.innerHTML='<span class="k">'+["A","B","C","D"][idx]+'</span><span>'+(q.subject==="chemistry"?chem(op.t):esc(op.t))+'</span>';
   b.onclick=function(){answer(idx)};box.appendChild(b)});
  if(E.practice&&E.ans[E.i]>=0){box.querySelectorAll(".opt").forEach(function(el,idx){if(st.opts[idx].ok)el.classList.add("practice-ok");else if(idx===E.ans[E.i])el.classList.add("practice-bad")});
-  if(!box.querySelector(".exp")){var d=document.createElement("div");d.className="rev exp";d.innerHTML="<b>Giải thích:</b> "+esc(q.explanation)+(q.wrongWord?"<br><b>Từ sai:</b> "+esc(q.wrongWord)+" → <b>nên dùng:</b> "+esc(q.correctWord):"");box.appendChild(d)}}
+  if(!box.querySelector(".exp")){var d=document.createElement("div");d.className="rev exp";d.innerHTML="<b>Giải thích:</b> "+(q.subject==="chemistry"?chem(q.explanation):esc(q.explanation))+(q.wrongWord?"<br><b>Từ sai:</b> "+esc(q.wrongWord)+" → <b>nên dùng:</b> "+esc(q.correctWord):"");box.appendChild(d)}}
  }var pal=$("qPal");pal.innerHTML="";
  E.qs.forEach(function(s,n){var b=document.createElement("button");b.textContent=(n+1<10?"0":"")+(n+1);
   b.className=(qDoneN(n)?"done ":"")+(n===E.i?"cur":"");if(E.flag[n])b.classList.add("flag");
@@ -288,9 +288,9 @@ function submit(auto){
    var extra=q.wrongWord?("<br><b>Từ sai:</b> "+esc(q.wrongWord)+" → <b>nên dùng:</b> "+esc(q.correctWord)):"";
    d.innerHTML='<div class="rev-head"><b>Câu '+(n+1)+'</b><button class="btn btn-sm btn-ghost" data-star="'+s.id+'">'+((S.starred&&S.starred[s.id])?"★ Sổ tay":"☆ Sổ tay")+'</button>'+'<span class="tag '+st+'">'+(st==="ok"?"Đúng":st==="bad"?"Sai":"Bỏ qua")+'</span><span class="chip">'+chipFor(q)+'</span></div>'
    +(q.passageId&&window.PASSAGES&&window.PASSAGES[q.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[q.passageId].title)+'</b><p>'+esc(window.PASSAGES[q.passageId].text)+'</p></div>':"")
-   +'<p>'+esc(q.question)+'</p>'
+   +'<p>'+(q.subject==="chemistry"?chem(q.question):esc(q.question))+'</p>'
    +resultOpts(q,s,a)
-   +(typeOf(q)==="true_false"?'<div class="exp"><b>Đúng/Sai từng ý ở trên</b><br><b>Giải thích:</b> ':'<div class="exp"><b>Đáp án đúng: '+["A","B","C","D"][s.opts.findIndex(function(o){return o.ok})]+'</b><br><b>Giải thích:</b> ')+esc(q.explanation)+extra+'<br><span class="muted small">Nguồn: '+esc(q.source)+(q.sourceType?" ("+esc(q.sourceType)+")":"")+'</span></div>';
+   +(typeOf(q)==="true_false"?'<div class="exp"><b>Đúng/Sai từng ý ở trên</b><br><b>Giải thích:</b> ':'<div class="exp"><b>Đáp án đúng: '+["A","B","C","D"][s.opts.findIndex(function(o){return o.ok})]+'</b><br><b>Giải thích:</b> ')+(q.subject==="chemistry"?chem(q.explanation):esc(q.explanation))+extra+'<br><span class="muted small">Nguồn: '+esc(q.source)+(q.sourceType?" ("+esc(q.sourceType)+")":"")+'</span></div>';
    list.appendChild(d)})};
  renderList(false);
  $("rWrong").onclick=function(){E._wrongOnly=!E._wrongOnly;renderList(E._wrongOnly);$("rWrong").textContent=E._wrongOnly?"Xem tất cả câu":"Xem lại câu sai";window.scrollTo({top:document.querySelector(".result-hero").offsetHeight})};
@@ -304,9 +304,9 @@ function submit(auto){
 /* ---------- BANK ---------- */
 function bankItem(x,s,det){
  var body=typeOf(x)==="true_false"
-  ?'<div class="tf-list">'+tfRows(x)+'</div><div class="exp"><b>Đáp án từng ý ở trên.</b> '+esc(x.explanation)
-  :'<ol type="A">'+x.options.map(function(o){return "<li>"+esc(o)+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+esc(x.explanation);
- return '<details class="panel bank-item"><summary>['+subjTag(x)+' '+unitTag(x)+(x.type?" · "+TYPES[x.type]:"")+'] '+esc(x.question)+' '+(s?'<span class="tag '+(s==="ok"?"ok":"bad")+'">'+(s==="ok"?"Đã đúng":"Đã sai")+'</span>':"")
+  ?'<div class="tf-list">'+tfRows(x)+'</div><div class="exp"><b>Đáp án từng ý ở trên.</b> '+(x.subject==="chemistry"?chem(x.explanation):esc(x.explanation))
+  :'<ol type="A">'+x.options.map(function(o){return "<li>"+(x.subject==="chemistry"?chem(o):esc(o))+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+(x.subject==="chemistry"?chem(x.explanation):esc(x.explanation));
+ return '<details class="panel bank-item"><summary>['+subjTag(x)+' '+unitTag(x)+(x.type?" · "+TYPES[x.type]:"")+'] '+(x.subject==="chemistry"?chem(x.question):esc(x.question))+' '+(s?'<span class="tag '+(s==="ok"?"ok":"bad")+'">'+(s==="ok"?"Đã đúng":"Đã sai")+'</span>':"")
  +'<br><span class="muted small">'+chipFor(x)+' · Nguồn: '+esc(x.source)+'</span></summary>'+det
  +body+(x.wrongWord?'<br><b>Từ sai:</b> '+esc(x.wrongWord)+' → <b>nên dùng:</b> '+esc(x.correctWord):"")+'</div></details>'}
 function renderBank(){
