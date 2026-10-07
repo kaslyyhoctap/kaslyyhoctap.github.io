@@ -290,7 +290,7 @@ function submit(auto){
    +(q.passageId&&window.PASSAGES&&window.PASSAGES[q.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[q.passageId].title)+'</b><p>'+esc(window.PASSAGES[q.passageId].text)+'</p></div>':"")
    +'<p>'+esc(q.question)+'</p>'
    +resultOpts(q,s,a)
-   +(typeOf(q)==="true_false"?'<div class="exp"><b>Đúng/Sai từng ý ở trên</b><br>':'<div class="exp"><b>Đáp án đúng: ')+["A","B","C","D"][s.opts.findIndex(function(o){return o.ok})]+'</b><br><b>Giải thích:</b> '+esc(q.explanation)+extra+'<br><span class="muted small">Nguồn: '+esc(q.source)+(q.sourceType?" ("+esc(q.sourceType)+")":"")+'</span></div>';
+   +(typeOf(q)==="true_false"?'<div class="exp"><b>Đúng/Sai từng ý ở trên</b><br><b>Giải thích:</b> ':'<div class="exp"><b>Đáp án đúng: '+["A","B","C","D"][s.opts.findIndex(function(o){return o.ok})]+'</b><br><b>Giải thích:</b> ')+esc(q.explanation)+extra+'<br><span class="muted small">Nguồn: '+esc(q.source)+(q.sourceType?" ("+esc(q.sourceType)+")":"")+'</span></div>';
    list.appendChild(d)})};
  renderList(false);
  $("rWrong").onclick=function(){E._wrongOnly=!E._wrongOnly;renderList(E._wrongOnly);$("rWrong").textContent=E._wrongOnly?"Xem tất cả câu":"Xem lại câu sai";window.scrollTo({top:document.querySelector(".result-hero").offsetHeight})};
