@@ -96,3 +96,24 @@ export interface WeakArea {
   correct: number;
   accuracy: number; // 0–1 ratio
 }
+
+/** Payload for `saveExamResult` — mirrors `exam_results` without the auto `id`/`createdAt`. */
+export interface ExamResultInput {
+  userId?: string | null;
+  subject: string;
+  lesson: number;
+  point?: number | null;
+  ok?: number | null;
+  wrong?: number | null;
+  skip?: number | null;
+  total?: number | null;
+  timeSeconds?: number | null;
+  isPractice?: boolean | null;
+}
+
+/** Subject metadata derived from the `questions` table (counts + lessons). */
+export interface SubjectMeta {
+  subject: string;
+  count: number;
+  lessons: number[];
+}
