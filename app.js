@@ -51,7 +51,7 @@ var SUBJS=["history","biology","chemistry","english"];
 function go(v){views.forEach(function(x){$("view-"+x).hidden=x!==v});document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.toggle("active",b.dataset.nav===v||(v==="subject"&&curSub&&b.dataset.nav===curSub))});var sb=$("subjBtn");if(sb)sb.classList.toggle("active",v==="subject");setNav(false);setSubj(false);window.scrollTo({top:0,behavior:"smooth"});$("main").querySelector("h1,h2")?.setAttribute("tabindex","-1")}
 document.addEventListener("click",function(e){var b=e.target.closest("[data-nav]");if(!b)return;var v=b.dataset.nav;
  if(v==="home")renderHome();
- else if(v==="history"||v==="biology"||v==="english")renderSubject(v);
+ else if(SUBJS.indexOf(v)>=0)renderSubject(v);
  else if(v==="bank")renderBank();
  else if(v==="vocab")renderVocab();
  else if(v==="progress"){renderProgress();renderWeak()}
