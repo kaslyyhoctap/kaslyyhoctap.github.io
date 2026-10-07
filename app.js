@@ -306,7 +306,9 @@ function bankItem(x,s,det){
  var body=typeOf(x)==="true_false"
   ?'<div class="tf-list">'+tfRows(x)+'</div><div class="exp"><b>Đáp án từng ý ở trên.</b> '+esc(x.explanation)
   :'<ol type="A">'+x.options.map(function(o){return "<li>"+esc(o)+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+esc(x.explanation);
- return bankItem(x,s,det)}
+ return '<details class="panel bank-item"><summary>['+subjTag(x)+' '+unitTag(x)+(x.type?" · "+TYPES[x.type]:"")+'] '+esc(x.question)+' '+(s?'<span class="tag '+(s==="ok"?"ok":"bad")+'">'+(s==="ok"?"Đã đúng":"Đã sai")+'</span>':"")
+ +'<br><span class="muted small">'+chipFor(x)+' · Nguồn: '+esc(x.source)+'</span></summary>'+det
+ +body+(x.wrongWord?'<br><b>Từ sai:</b> '+esc(x.wrongWord)+' → <b>nên dùng:</b> '+esc(x.correctWord):"")+'</div></details>'}
 function renderBank(){
  var sub=$("fSub").value,les=$("fLes").value,dif=$("fDif").value,st=$("fState").value,ft=$("fType").value,q=$("fQ").value.trim().toLowerCase();
  var list=Q.filter(function(x){
@@ -318,9 +320,7 @@ function renderBank(){
  $("bankList").innerHTML=list.length?list.slice(0,120).map(function(x){
   var s=S.answered[x.id];
   var det=x.passageId&&window.PASSAGES&&window.PASSAGES[x.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[x.passageId].title)+'</b><p>'+esc(window.PASSAGES[x.passageId].text)+'</p></div>':"";
-  return '<details class="panel bank-item"><summary>['+subjTag(x)+' '+unitTag(x)+(x.type?" · "+TYPES[x.type]:"")+'] '+esc(x.question)+' '+(s?'<span class="tag '+(s==="ok"?"ok":"bad")+'">'+(s==="ok"?"Đã đúng":"Đã sai")+'</span>':"")
-  +'<br><span class="muted small">'+chipFor(x)+' · Nguồn: '+esc(x.source)+'</span></summary>'+det
-  +'<ol type="A">'+x.options.map(function(o){return "<li>"+esc(o)+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+esc(x.explanation)+(x.wrongWord?'<br><b>Từ sai:</b> '+esc(x.wrongWord)+' → <b>nên dùng:</b> '+esc(x.correctWord):"")+'</div></details>'}).join("")+(list.length>120?'<div class="panel muted">Chỉ hiện 120/'+list.length+' câu — hãy lọc hẹp hơn để xem hết.</div>':"")
+  return bankItem(x,s,det)}).join("")+(list.length>120?'<div class="panel muted">Chỉ hiện 120/'+list.length+' câu — hãy lọc hẹp hơn để xem hết.</div>':"")
  :'<div class="panel">Không tìm thấy câu hỏi nào. Hãy thử nới lỏng bộ lọc.</div>';
  go("bank");
 }
