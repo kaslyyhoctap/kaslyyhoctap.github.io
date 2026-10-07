@@ -1,19 +1,23 @@
-# ÔnTập12 — Ôn thi Lịch Sử & Sinh Học lớp 12
+# ÔnTập12 — Ôn thi Lịch Sử, Sinh Học & Tiếng Anh lớp 12
 
 ## Giới thiệu
 
-Website ôn tập trắc nghiệm Lịch sử 12 và Sinh học 12 (Kết nối tri thức, Bài 1–3).
-180 câu hỏi thật, có đáp án + giải thích, chấm điểm tự động, theo dõi tiến độ.
+Website ôn tập trắc nghiệm Lịch sử 12, Sinh học 12 (Kết nối tri thức, Bài 1–3) và Tiếng Anh 12 Global Success (Unit 1–2).
+464 câu hỏi, có đáp án + giải thích, chấm điểm tự động, theo dõi tiến độ.
 
 ## Tính năng
 
-* Ôn tập theo bài (lý thuyết tóm tắt 6 bài)
+* Ôn tập theo bài (lý thuyết tóm tắt 6 bài Sử/Sinh + 2 Unit Anh)
 * Luyện trắc nghiệm (xem đáp án ngay)
 * Kiểm tra tổng hợp tính giờ (10/20/30/40/50 câu, 10–60 phút)
 * Trộn câu hỏi + trộn đáp án, ưu tiên câu chưa làm
-* Chấm điểm /10, thống kê đúng/sai/bỏ qua, kết quả theo chủ đề
-* Xem lại câu sai, làm lại đề, đề mới
-* Ngân hàng câu hỏi: tìm kiếm + lọc môn/bài/mức độ/trạng thái
+* Chấm điểm /10, thống kê đúng/sai/bỏ qua, kết quả theo chủ đề + theo dạng bài Tiếng Anh
+* Xem lại câu sai, luyện riêng đề câu sai, làm lại đề, đề mới
+* Sổ tay cá nhân: gắn sao câu khó/từ vựng, xem lại qua bộ lọc
+* Ngân hàng câu hỏi: tìm kiếm + lọc môn/bài/mức độ/dạng/trạng thái
+* Flashcard từ vựng Anh Unit 1–2 (Anh→Việt / Việt→Anh, đánh dấu đã thuộc)
+* Phân tích điểm yếu + gợi ý luyện 10 câu phần yếu (theo dạng bài, band, từng bài, chủ đề, mức độ khó)
+* Biểu đồ tiến bộ: chuỗi ngày học, mục tiêu đề/tuần, điểm 14 đề gần đây
 * Theo dõi tiến độ từng bài + lịch sử làm bài (localStorage, không cần đăng nhập)
 * Dark mode (lưu lựa chọn), Responsive mobile/tablet/desktop
 * Keyboard: phím 1–4 chọn đáp án, ←/→ chuyển câu
@@ -90,7 +94,7 @@ Sau khi bật Pages (Source: GitHub Actions), website có dạng:
 ## Cấu trúc
 
 ```
-index.html            # 1 SPA: home / môn / lý thuyết / thi / kết quả / bank / tiến độ
+index.html            # 1 SPA: home / môn / lý thuyết / thi / kết quả / bank / vocab / tiến độ
 styles.css            # design tokens, dark mode, responsive
 app.js                # logic đề, timer, chấm điểm, localStorage
 data/
@@ -100,10 +104,18 @@ data/
   biology-bai1.js     # 30 câu Sinh Bài 1
   biology-bai2.js     # 30 câu Sinh Bài 2
   biology-bai3.js     # 30 câu Sinh Bài 3
-  theory.js           # tóm tắt lý thuyết 6 bài
+  english-unit1.js    # ~36 câu Anh Unit 1 (gốc)
+  english-unit1b.js   # 50 câu Anh Unit 1 (bổ sung)
+  english-unit1c.js   # 50 câu Anh Unit 1 (bổ sung)
+  english-unit2.js    # ~48 câu Anh Unit 2 (gốc)
+  english-unit2b.js   # 50 câu Anh Unit 2 (bổ sung)
+  english-unit2c.js   # 50 câu Anh Unit 2 (bổ sung)
+  english-vocab.js    # flashcard từ vựng Unit 1–2
+  theory.js           # tóm tắt lý thuyết Sử + Sinh
+  english-theory.js   # tóm tắt lý thuyết Anh Unit 1–2
 .github/workflows/
   deploy.yml          # deploy tĩnh lên GitHub Pages
 ```
 
-Schema câu hỏi: `{id, subject, lesson, topic, question, options[4], correctAnswer, explanation, difficulty, source, sourceUrl}`.
+Schema câu hỏi: `{id, subject, lesson, type, topic, question, options[4], correctAnswer, explanation, difficulty, band, source, sourceType, sourceUrl[, passageId, wrongWord, correctWord]}`.
 Muốn thêm bộ sách khác: thêm file `data/...` mới + khai báo trong `index.html`, không sửa `app.js`.

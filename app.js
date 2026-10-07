@@ -4,7 +4,7 @@
 var $=function(id){return document.getElementById(id)};
 var LS="ontap12-v1";
 var store={get:function(){try{return JSON.parse(localStorage.getItem(LS))||{}}catch(e){return{}}},set:function(s){try{localStorage.setItem(LS,JSON.stringify(s))}catch(e){}}};
-var S=Object.assign({theme:"light",best:0,exams:0,correct:0,answered:{},marked:[],hist:[],prog:{},vocabKnown:{}},store.get());
+var S=Object.assign({theme:"light",best:0,exams:0,correct:0,answered:{},marked:[],hist:[],prog:{},vocabKnown:{},starred:{}},store.get());
 function save(){store.set(S)}
 var META={
  history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh"}},
@@ -26,10 +26,10 @@ Q=Q.filter(function(q){var k=(q.passageId||"")+q.question.trim().toLowerCase();i
 if(!Q.length){document.body.insertAdjacentHTML("afterbegin",'<div class="wrap panel" style="margin-top:16px"><b>Lỗi dữ liệu:</b> chưa tải được câu hỏi. Hãy kiểm tra thư mục <code>data/</code>.</div>');return}
 
 function toast(m){var t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(t._h);t._h=setTimeout(function(){t.hidden=true},2600)}
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 function byId(id){return Q.find(function(q){return q.id===id})}
-function blankNo(q){var m=/(\d+)$/.exec(q.id);return m?String(parseInt(m[1],10)):null}
+function blankNo(q){var m=/\((\d+)\)/.exec(q.question||"");return m?m[1]:null}
 
 /* theme */
 function applyTheme(){document.documentElement.dataset.theme=S.theme;$("themeLbl").textContent=S.theme==="light"?"Sáng":"Tối"}
@@ -118,6 +118,7 @@ var LS_EXAM=LS+"-exam";
 function recentMap(){var r={};S.hist.slice(-3).forEach(function(h){(h.ids||[]).forEach(function(id){r[id]=1})});return r}
 function pickFresh(arr,n,shQ){var a=shQ!==false?shuffle(arr):arr.slice();var r=recentMap();a=a.slice().sort(function(x,y){return (r[x.id]?1:0)-(r[y.id]?1:0)});return a.slice(0,Math.min(n,a.length))}
 function pool(o){
+ if(o.ids&&o.ids.length){var seen={},arr=[];o.ids.forEach(function(id){var q=byId(id);if(q&&!seen[id]){seen[id]=1;arr.push(q)}});return pickFresh(arr,o.count||arr.length,o.shQ)}
  var base=Q.filter(function(q){return q.subject===o.subject&&(o.lesson==="all"||q.lesson===+o.lesson)&&(!o.level||o.level==="all"||q.difficulty===o.level)&&(!o.topic||q.topic===o.topic)&&(!o.band||q.band===+o.band)});
  if(o.subject!=="english")return pickFresh(base,o.count,o.shQ);
  var qt=o.qtype||"all";
@@ -176,6 +177,7 @@ function renderQ(){
  $("qDone").textContent="Đã làm: "+done;
  var pct=Math.round(done/E.qs.length*100);$("qProg").style.width=pct+"%";$("qProgWrap").setAttribute("aria-valuenow",pct);
  $("qFlag").textContent=(E.flag[E.i]?"★ ":"☆ ")+"Đánh dấu xem lại";
+  $("qStar").textContent=((S.starred&&S.starred[curQ().id])?"★ Sổ tay":"☆ Sổ tay");
  $("qTopic").textContent=q.topic+((E.cfg.subject==="english"&&q.type&&TYPES[q.type].toLowerCase()!==String(q.topic).toLowerCase())?" · "+TYPES[q.type]:"")+" · "+q.difficulty+(q.band?" · Band "+Number(q.band).toFixed(1):"");
  var head=passageHtml(q);
  $("qText").innerHTML=(head?head+"<br>":"")+"Câu "+(E.i+1)+": "+esc(q.question);
@@ -197,6 +199,7 @@ function answer(i){E.ans[E.i]=i;renderQ()}
 $("qPrev").onclick=function(){if(E.i>0){E.i--;renderQ()}};
 $("qNext").onclick=function(){if(E.i<E.qs.length-1){E.i++;renderQ()}};
 $("qFlag").onclick=function(){E.flag[E.i]=!E.flag[E.i];save();renderQ()};
+$("qStar").onclick=function(){S.starred=S.starred||{};var id=curQ().id;if(S.starred[id])delete S.starred[id];else S.starred[id]=1;save();renderQ()};
 document.addEventListener("keydown",function(e){
  if($("view-quiz").hidden||!E)return;
  if(e.key>="1"&&e.key<="4"){answer(+e.key-1)}
@@ -254,7 +257,7 @@ function submit(auto){
    if(onlyWrong&&st==="ok")return;
    var d=document.createElement("div");d.className="panel rev";
    var extra=q.wrongWord?("<br><b>Từ sai:</b> "+esc(q.wrongWord)+" → <b>nên dùng:</b> "+esc(q.correctWord)):"";
-   d.innerHTML='<div class="rev-head"><b>Câu '+(n+1)+'</b><span class="tag '+st+'">'+(st==="ok"?"Đúng":st==="bad"?"Sai":"Bỏ qua")+'</span><span class="chip">'+chipFor(q)+'</span></div>'
+   d.innerHTML='<div class="rev-head"><b>Câu '+(n+1)+'</b><button class="btn btn-sm btn-ghost" data-star="'+s.id+'">'+((S.starred&&S.starred[s.id])?"★ Sổ tay":"☆ Sổ tay")+'</button>'+'<span class="tag '+st+'">'+(st==="ok"?"Đúng":st==="bad"?"Sai":"Bỏ qua")+'</span><span class="chip">'+chipFor(q)+'</span></div>'
    +(q.passageId&&window.PASSAGES&&window.PASSAGES[q.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[q.passageId].title)+'</b><p>'+esc(window.PASSAGES[q.passageId].text)+'</p></div>':"")
    +'<p>'+esc(q.question)+'</p>'
    +s.opts.map(function(op,idx){var mk=op.ok?" ✓":"";var mine=(idx===a&&!op.ok)?" ✗":"";
@@ -264,6 +267,7 @@ function submit(auto){
  renderList(false);
  $("rWrong").onclick=function(){E._wrongOnly=!E._wrongOnly;renderList(E._wrongOnly);$("rWrong").textContent=E._wrongOnly?"Xem tất cả câu":"Xem lại câu sai";window.scrollTo({top:document.querySelector(".result-hero").offsetHeight})};
  $("rRetry").onclick=function(){startExam(E.cfg)};
+  $("rDrill").onclick=function(){var ids=[];E.qs.forEach(function(s,n){var x=E.ans[n];if(!(x>=0&&s.opts[x].ok))ids.push(s.id)});if(!ids.length){toast("Không có câu sai — làm tốt lắm!");return}startExam({subject:E.cfg.subject,lesson:"all",count:ids.length,time:Math.max(5,Math.ceil(ids.length*1.5)),practice:true,shQ:true,shA:true,ids:ids})};
  $("rNew").onclick=function(){var c=Object.assign({},E.cfg);startExam(c)};
  toast(auto?"Hết giờ — đã tự nộp bài":"Đã chấm bài: "+point.toFixed(1)+"/10");
  go("result");
@@ -276,26 +280,26 @@ function renderBank(){
   return(!sub||x.subject===sub)&&(!les||x.lesson===+les)&&(!dif||x.difficulty===dif)
   &&(!ft||typeOf(x)===ft)
   &&(!q||x.question.toLowerCase().includes(q)||x.topic.toLowerCase().includes(q))
-  &&(!st||(st==="todo"?!S.answered[x.id]:st==="done"?S.answered[x.id]==="ok":S.answered[x.id]==="bad"))});
+  &&(!st||(st==="star"?(S.starred&&S.starred[x.id]):st==="todo"?!S.answered[x.id]:st==="done"?S.answered[x.id]==="ok":S.answered[x.id]==="bad"))});
  $("bankCount").textContent="· "+list.length+"/"+Q.length+" câu";
  $("bankList").innerHTML=list.length?list.slice(0,120).map(function(x){
   var s=S.answered[x.id];
   var det=x.passageId&&window.PASSAGES&&window.PASSAGES[x.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[x.passageId].title)+'</b><p>'+esc(window.PASSAGES[x.passageId].text)+'</p></div>':"";
   return '<details class="panel bank-item"><summary>['+subjTag(x)+' '+unitTag(x)+(x.type?" · "+TYPES[x.type]:"")+'] '+esc(x.question)+' '+(s?'<span class="tag '+(s==="ok"?"ok":"bad")+'">'+(s==="ok"?"Đã đúng":"Đã sai")+'</span>':"")
   +'<br><span class="muted small">'+chipFor(x)+' · Nguồn: '+esc(x.source)+'</span></summary>'+det
-  +'<ol type="A">'+x.options.map(function(o){return "<li>"+esc(o)+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+esc(x.explanation)+(x.wrongWord?'<br><b>Từ sai:</b> '+esc(x.wrongWord)+' → <b>nên dùng:</b> '+esc(x.correctWord):"")+'</div></details>'}).join("")
+  +'<ol type="A">'+x.options.map(function(o){return "<li>"+esc(o)+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+esc(x.explanation)+(x.wrongWord?'<br><b>Từ sai:</b> '+esc(x.wrongWord)+' → <b>nên dùng:</b> '+esc(x.correctWord):"")+'</div></details>'}).join("")+(list.length>120?'<div class="panel muted">Chỉ hiện 120/'+list.length+' câu — hãy lọc hẹp hơn để xem hết.</div>':"")
  :'<div class="panel">Không tìm thấy câu hỏi nào. Hãy thử nới lỏng bộ lọc.</div>';
  go("bank");
 }
 ["fQ","fSub","fLes","fDif","fState","fType"].forEach(function(id){$(id).addEventListener("input",renderBank)});
 
 /* ---------- VOCAB FLASHCARDS ---------- */
-var V={list:[],i:0,flip:false,hideAll:false};
+var V={list:[],i:0,flip:false,hideAll:false,starOnly:false};
 function vocabAll(){return window.VOCAB||{}}
 function vocabFilter(){
  var unit=$("vUnit").value||"1",kind=$("vKind").value||"",q=$("vQ").value.trim().toLowerCase();
  return (vocabAll()[unit]||[]).filter(function(w){
-  return(!kind||w.kind===kind)&&(!q||w.en.toLowerCase().includes(q)||(w.vi||"").toLowerCase().includes(q))});
+  return(!kind||w.kind===kind)&&(!V.starOnly||(S.starred&&S.starred["v::"+unit+"::"+w.en]))&&(!q||w.en.toLowerCase().includes(q)||(w.vi||"").toLowerCase().includes(q))});
 }
 function vocabKey(w){return $("vUnit").value+"::"+w.en}
 function renderVocab(){
@@ -330,12 +334,13 @@ function renderFc(){
  var done=V.list.filter(function(x){return S.vocabKnown[$("vUnit").value+"::"+x.en]}).length;
  var pct=n?Math.round(done/n*100):0;$("fcProg").style.width=pct+"%";$("fcProgWrap").setAttribute("aria-valuenow",pct);
  var kb=$("fcKnow");kb.textContent=known?"Chưa thuộc":"Đã thuộc ✓";kb.setAttribute("aria-pressed",known?"true":"false");
+  var _w=V.list[V.i];$("fcStar").textContent=(S.starred&&_w&&S.starred["v::"+vocabKey(_w)])?"★ Sổ tay":"☆ Sổ tay";
 }
 function renderVGrid(){
  var g=$("vocabGrid");if(!g)return;
  g.innerHTML=V.list.map(function(w,idx){
   var known=S.vocabKnown[vocabKey(w)];
-  return '<button class="vcard'+(known?" known":"")+'" data-vi="'+idx+'"><span class="en">'+esc(w.en)+'</span>'
+  return '<button class="vcard'+(known?" known":"")+'" data-vi="'+idx+'"><span class="en">'+esc(w.en)+((S.starred&&S.starred["v::"+$("vUnit").value+"::"+w.en])?" \u2605":"")+'</span>'
   +(w.pos||w.ipa?'<span class="ipa">'+esc([w.pos,w.ipa].filter(Boolean).join(" · "))+'</span>':"")
   +'<span class="vi'+(V.hideAll?" masked":"")+'"><span>'+esc(w.vi)+'</span></span>'
   +'<span class="rowline"><span class="badge e">'+esc(w.kind==="phrase"?"Cụm từ":"Từ vựng")+'</span><span class="muted small">'+(known?"Đã thuộc ✓":"Bấm để lật")+'</span></span></button>'}).join("")
@@ -350,10 +355,12 @@ $("fcMain").onclick=function(){V.flip=!V.flip;renderFc()};
 $("fcMain").onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();V.flip=!V.flip;renderFc()}};
 $("fcPrev").onclick=function(){if(!V.list.length)return;V.i=(V.i-1+V.list.length)%V.list.length;V.flip=false;V.slide="prev";renderFc()};
 $("fcNext").onclick=function(){if(!V.list.length)return;V.i=(V.i+1)%V.list.length;V.flip=false;V.slide="next";renderFc()};
+$("fcStar").onclick=function(){var w=V.list[V.i];if(!w)return;S.starred=S.starred||{};var k="v::"+vocabKey(w);if(S.starred[k])delete S.starred[k];else S.starred[k]=1;save();renderFc();renderVGrid()};
 $("fcKnow").onclick=function(){var w=V.list[V.i];if(!w)return;var k=vocabKey(w);if(S.vocabKnown[k])delete S.vocabKnown[k];else S.vocabKnown[k]=1;save();renderFc();renderVGrid()};
 $("vShuffle").onclick=function(){V.list=shuffle(V.list);V.i=0;V.flip=false;renderFc();renderVGrid();toast("Đã trộn "+V.list.length+" thẻ")};
+$("vStarOnly").onclick=function(){V.starOnly=!V.starOnly;var b=$("vStarOnly");b.textContent=V.starOnly?"\u2605 Đang lọc":"Sổ tay \u2605";b.setAttribute("aria-pressed",V.starOnly?"true":"false");renderVGrid()};
 $("vHideAll").onclick=function(){V.hideAll=!V.hideAll;V.flip=false;var b=$("vHideAll");b.textContent=V.hideAll?"Hiện hết nghĩa":"Ẩn hết nghĩa";b.setAttribute("aria-pressed",V.hideAll?"true":"false");renderFc();renderVGrid()};
-["vQ","vUnit","vKind","vMode"].forEach(function(id){$(id).addEventListener("input",function(){V.hideAll=false;$("vHideAll").textContent="Ẩn hết nghĩa";renderVocab()})});
+["vQ","vUnit","vKind","vMode"].forEach(function(id){$(id).addEventListener("input",function(){V.hideAll=false;V.starOnly=false;var _sb=$("vStarOnly");if(_sb){_sb.textContent="Sổ tay \u2605";_sb.setAttribute("aria-pressed","false")}$("vHideAll").textContent="Ẩn hết nghĩa";renderVocab()})});
 document.addEventListener("keydown",function(e){
  if($("view-vocab").hidden||!V.list.length)return;
  if(e.target.matches("input,select,textarea"))return;
@@ -379,7 +386,8 @@ function weakStats(){
  var tp={};
  Q.forEach(function(q){(tp[q.topic]=tp[q.topic]||[]).push(q)});
  Object.keys(tp).forEach(function(topic){var q0=tp[topic][0];agg(topic+" · "+subjTag(q0),function(q){return q.topic===topic},{subject:q0.subject,topic:topic})});
- dims.sort(function(a,b){return a.acc-b.acc});
+ Object.keys(META).forEach(function(k){["Nhận biết","Thông hiểu","Vận dụng","Vận dụng cao"].forEach(function(d){agg(d+" · "+META[k].short,function(q){return q.subject===k&&q.difficulty===d},{subject:k,lesson:"all",level:d})})});
+  dims.sort(function(a,b){return a.acc-b.acc});
  return dims.slice(0,3);
 }
 function renderWeak(){
@@ -396,13 +404,18 @@ document.addEventListener("click",function(e){
  if(w.action.lesson!==undefined)cfg.lesson=w.action.lesson;
  if(w.action.topic)cfg.topic=w.action.topic;
  if(w.action.band!==undefined)cfg.band=w.action.band;
+  if(w.action.level)cfg.level=w.action.level;
  if(w.action.qtype)cfg.qtype=w.action.qtype;
+
  startExam(cfg);
 });
+document.addEventListener("click",function(e){var st=e.target.closest("[data-star]");if(!st)return;S.starred=S.starred||{};var id=st.dataset.star;if(S.starred[id])delete S.starred[id];else S.starred[id]=1;save();st.textContent=S.starred[id]?"★ Sổ tay":"☆ Sổ tay"});
 
 /* ---------- PROGRESS ---------- */
+function renderTrend(){var tb=$("trendBox");if(!tb)return;var days={};S.hist.forEach(function(h){days[new Date(h.when).toDateString()]=1});var streak=0,dt=new Date();if(!days[dt.toDateString()])dt=new Date(dt.getTime()-864e5);while(days[dt.toDateString()]){streak++;dt=new Date(dt.getTime()-864e5)}var wk=S.hist.filter(function(h){return h.when>=Date.now()-7*864e5}).length;var goal=S.goal||3;var last=S.hist.slice(0,14).reverse();tb.innerHTML='<div class="prog-row"><div class="lbl"><span>Chuỗi ngày học: '+streak+' ngày</span><span>Mục tiêu tuần: '+wk+'/'+goal+' đề</span></div><div class="pbar"><i style="width:'+Math.min(100,Math.round(wk/goal*100))+'%"></i></div><div class="row"><button class="btn btn-sm" data-goal="-1" aria-label="Giảm mục tiêu">−</button><button class="btn btn-sm" data-goal="1" aria-label="Tăng mục tiêu">+</button></div></div>'+ (last.length?'<div style="margin-top:14px">' +last.map(function(h){var d=new Date(h.when);return '<div class="trow"><span>'+d.toLocaleDateString("vi-VN")+'</span><span class="pbar"><i style="width:'+(h.point*10)+'%"></i></span><b>'+h.point.toFixed(1)+'</b></div>'}).join("")+'</div>':'<p class="muted">Làm bài để thấy biểu đồ điểm ở đây.</p>');}document.addEventListener("click",function(e){var g=e.target.closest("[data-goal]");if(!g)return;S.goal=Math.min(14,Math.max(1,(S.goal||3)+(+g.dataset.goal)));save();renderTrend()});
 function renderProgress(){
- $("progCards").innerHTML=Object.keys(META).map(function(k){var m=META[k];
+ renderTrend();
+  $("progCards").innerHTML=Object.keys(META).map(function(k){var m=META[k];
   var rows=lessonsOf(k).map(function(l){var p=(S.prog[k]||{})[l]||0;var n=Q.filter(function(q){return q.subject===k&&q.lesson===l}).length;
    var good=Q.filter(function(q){return q.subject===k&&q.lesson===l&&S.answered[q.id]==="ok"}).length;
    var lbl=m.lessons[l]||(m.units+" "+l);
@@ -414,7 +427,7 @@ function renderProgress(){
  :'<p class="muted">Chưa có đề nào. Hãy bắt đầu một bài kiểm tra — kết quả sẽ hiện ở đây.</p>';
  go("progress");
 }
-$("wipeBtn").onclick=function(){if(confirm("Xoá toàn bộ điểm, tiến độ và lịch sử?")){S=Object.assign(S,{best:0,exams:0,correct:0,answered:{},marked:[],hist:[],prog:{}});save();try{localStorage.removeItem(LS_EXAM)}catch(e){}renderProgress();renderHome();toast("Đã xoá dữ liệu")}};
+$("wipeBtn").onclick=function(){if(confirm("Xoá toàn bộ điểm, tiến độ và lịch sử?")){S=Object.assign(S,{best:0,exams:0,correct:0,answered:{},marked:[],hist:[],prog:{},starred:{}});save();try{localStorage.removeItem(LS_EXAM)}catch(e){}renderProgress();renderHome();toast("Đã xoá dữ liệu")}};
 
 /* resume bài dở */
 (function(){try{var raw=localStorage.getItem(LS_EXAM);if(!raw)return;var d=JSON.parse(raw);

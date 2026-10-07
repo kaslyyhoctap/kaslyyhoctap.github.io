@@ -120,7 +120,7 @@
     </div>
     <div class="quiz-grid">
       <div class="panel q-card">
-        <div id="qFlagRow"><button class="btn btn-ghost btn-sm" id="qFlag">☆ Đánh dấu xem lại</button><span id="qTopic" class="chip"></span></div>
+        <div id="qFlagRow"><button class="btn btn-ghost btn-sm" id="qStar" aria-label="Lưu vào sổ tay">☆ Sổ tay</button><button class="btn btn-ghost btn-sm" id="qFlag">☆ Đánh dấu xem lại</button><span id="qTopic" class="chip"></span></div>
         <h2 id="qText" tabindex="-1"></h2>
         <div id="qOpts" role="radiogroup" aria-label="Các đáp án"></div>
         <div class="q-nav">
@@ -156,6 +156,7 @@
       <div id="rTypes"></div>
       <div class="row wrap-btns">
         <button class="btn" id="rWrong">Xem lại câu sai</button>
+        <button class="btn" id="rDrill">Luyện câu sai</button>
         <button class="btn" id="rRetry">Làm lại đề</button>
         <button class="btn" id="rNew">Đề mới</button>
         <button class="btn btn-primary" data-nav="home">Về trang chủ</button>
@@ -174,7 +175,7 @@
         <select id="fLes" aria-label="Bài/Unit"><option value="">Mọi bài</option><option value="1">Bài/Unit 1</option><option value="2">Bài/Unit 2</option><option value="3">Bài 3</option></select>
         <select id="fDif" aria-label="Mức độ"><option value="">Mọi mức độ</option><option>Nhận biết</option><option>Thông hiểu</option><option>Vận dụng</option><option>Vận dụng cao</option></select>
         <select id="fType" aria-label="Dạng câu hỏi"><option value="">Mọi dạng</option><option value="multiple_choice">Multiple Choice</option><option value="cloze">Cloze Test</option><option value="word_usage_error">Word Usage Error</option><option value="closest_meaning">Closest Meaning</option></select>
-        <select id="fState" aria-label="Trạng thái"><option value="">Đã/chưa làm</option><option value="done">Đã làm đúng</option><option value="wrong">Đã làm sai</option><option value="todo">Chưa làm</option></select>
+        <select id="fState" aria-label="Trạng thái"><option value="">Đã/chưa làm</option><option value="done">Đã làm đúng</option><option value="wrong">Đã làm sai</option><option value="star">Đánh dấu sao</option><option value="todo">Chưa làm</option></select>
       </div>
     </div>
     <div id="bankList"></div>
@@ -191,7 +192,7 @@
         <select id="vKind" aria-label="Loại"><option value="">Từ + cụm từ</option><option value="word">Từ lẻ</option><option value="phrase">Cụm từ</option></select>
         <select id="vMode" aria-label="Chế độ"><option value="envi">Anh → Việt</option><option value="vien">Việt → Anh</option></select>
         <button class="btn btn-sm" id="vShuffle" type="button">Trộn thứ tự</button>
-        <button class="btn btn-sm btn-ghost" id="vHideAll" type="button" aria-pressed="false">Ẩn hết nghĩa</button>
+        <button class="btn btn-sm btn-ghost" id="vStarOnly" type="button" aria-pressed="false">Sổ tay ★</button><button class="btn btn-sm btn-ghost" id="vHideAll" type="button" aria-pressed="false">Ẩn hết nghĩa</button>
       </div>
       <p class="muted small" id="vocabHint">Bấm vào thẻ để lật nghĩa. Phím ←/→ chuyển thẻ.</p>
     </div>
@@ -201,7 +202,7 @@
         <button class="btn" id="fcPrev">← Trước</button>
         <span class="muted" id="fcCount">0/0</span>
         <button class="btn" id="fcNext">Tiếp →</button>
-        <button class="btn btn-ghost" id="fcKnow">Đã thuộc ✓</button>
+        <button class="btn btn-ghost" id="fcStar" aria-label="Lưu từ vào sổ tay">☆ Sổ tay</button><button class="btn btn-ghost" id="fcKnow">Đã thuộc ✓</button>
       </div>
       <div class="progress" role="progressbar" aria-label="Tiến độ flashcard" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="fcProgWrap"><div class="progress-fill" id="fcProg"></div></div>
     </div>
@@ -213,6 +214,7 @@
   <section id="view-progress" class="view" hidden>
     <h2>Tiến độ học tập</h2>
     <div class="grid2" id="progCards"></div>
+    <div class="panel"><h3>Biểu đồ tiến bộ</h3><div id="trendBox"></div></div>
     <div class="panel"><h3>Phân tích điểm yếu</h3><div id="weakBox"></div></div>
     <div class="panel"><h3>Lịch sử làm bài</h3><div id="histList"></div></div>
     <div class="row"><button class="btn btn-danger" id="wipeBtn">Xoá toàn bộ dữ liệu</button></div>
