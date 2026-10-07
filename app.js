@@ -9,18 +9,19 @@ function save(){store.set(S)}
 var META={
  history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh"}},
  biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene"}},
+ chemistry:{name:"Hóa học 12",short:"Hóa",units:"Chương",book:"Kết nối tri thức",lessons:{1:"Chương 1: Ester – Lipid",2:"Chương 2: Carbohydrate"}},
  english:{name:"Tiếng Anh 12",short:"Anh",units:"Unit",book:"Global Success",lessons:{1:"Unit 1: Life stories we admire",2:"Unit 2: A multicultural world"}}
 };
-var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning",reading_comprehension:"Reading Comprehension"};
+var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning",reading_comprehension:"Reading Comprehension",true_false:"True/False"};
 var SKILLS={Vocabulary:"Vocabulary",Grammar:"Grammar","Cloze test":"Cloze Test","Word usage":"Word Usage","Closest meaning":"Paraphrase","Reading":"Reading"};
 function lessonsOf(sub){return Object.keys(META[sub].lessons).map(Number).sort(function(a,b){return a-b})}
-function badgeCls(k){return k==="history"?"h":k==="biology"?"b":"e"}
-function btnCls(k){return k==="history"?"btn-primary":k==="biology"?"btn-bio":"btn-eng"}
-function subjTag(q){return q.subject==="history"?"Sử":q.subject==="biology"?"Sinh":"Anh"}
-function unitTag(q){return (q.subject==="english"?"U":"B")+q.lesson}
+function badgeCls(k){return k==="history"?"h":k==="biology"?"b":k==="chemistry"?"c":"e"}
+function btnCls(k){return k==="history"?"btn-primary":k==="biology"?"btn-bio":k==="chemistry"?"btn-chem":"btn-eng"}
+function subjTag(q){return q.subject==="history"?"Sử":q.subject==="biology"?"Sinh":q.subject==="chemistry"?"Hóa":"Anh"}
+function unitTag(q){return (q.subject==="english"?"U":q.subject==="chemistry"?"C":"B")+q.lesson}
 function typeOf(q){return q.type||"multiple_choice"}
 function chipFor(q){var t=q.type?TYPES[q.type]:"";if(t&&q.topic&&t.toLowerCase()===q.topic.toLowerCase())t="";return esc(q.topic)+(t?" · "+esc(t):"")+" · "+esc(q.difficulty)+(q.band?" · Band "+Number(q.band).toFixed(1):"")}
-var Q=(window.QBANK||[]).filter(function(q){return q&&q.id&&q.question&&q.options&&q.options.length===4&&q.correctAnswer>=0&&q.correctAnswer<4&&q.explanation});
+var Q=(window.QBANK||[]).filter(function(q){return q&&q.id&&q.question&&((q.options&&q.options.length===4&&q.correctAnswer>=0&&q.correctAnswer<4)||(q.type==="true_false"&&q.statements&&q.statements.length===4))&&q.explanation});
 var seen={};
 Q=Q.filter(function(q){var k=(q.passageId||"")+q.question.trim().toLowerCase();if(seen[k])return false;seen[k]=1;return true});
 if(!Q.length){document.body.insertAdjacentHTML("afterbegin",'<div class="wrap panel" style="margin-top:16px"><b>Lỗi dữ liệu:</b> chưa tải được câu hỏi. Hãy kiểm tra thư mục <code>data/</code>.</div>');return}
@@ -120,6 +121,7 @@ function pickFresh(arr,n,shQ){var a=shQ!==false?shuffle(arr):arr.slice();var r=r
 function pool(o){
  if(o.ids&&o.ids.length){var seen={},arr=[];o.ids.forEach(function(id){var q=byId(id);if(q&&!seen[id]){seen[id]=1;arr.push(q)}});return pickFresh(arr,o.count||arr.length,o.shQ)}
  var base=Q.filter(function(q){return q.subject===o.subject&&(o.lesson==="all"||q.lesson===+o.lesson)&&(!o.level||o.level==="all"||q.difficulty===o.level)&&(!o.topic||q.topic===o.topic)&&(!o.band||q.band===+o.band)});
+ if(o.subject==="chemistry"&&(!o.qtype||o.qtype==="all")){var tfs=base.filter(function(q){return typeOf(q)==="true_false"});var rest=base.filter(function(q){return typeOf(q)!=="true_false"});var k=Math.min(2,tfs.length,o.count);var sel=pickFresh(tfs,k,o.shQ).concat(pickFresh(rest,o.count-k,o.shQ));return o.shQ!==false?shuffle(sel):sel}
  if(o.subject!=="english")return pickFresh(base,o.count,o.shQ);
  var qt=o.qtype||"all";
  if(qt!=="all"){var only=base.filter(function(q){return typeOf(q)===qt});
@@ -158,7 +160,7 @@ function startExam(o){
  var list=pool(o);
  if(!list.length){toast("Không có câu hỏi phù hợp bộ lọc");return}
  if(list.length<o.count)toast("Kho đề có "+list.length+" câu phù hợp (đã lấy tối đa)");
- E={cfg:o,qs:list.map(function(q){var opts=q.options.map(function(t,i){return{t:t,ok:i===q.correctAnswer}});
+ E={cfg:o,qs:list.map(function(q){if(typeOf(q)==="true_false")return{id:q.id,tf:[-1,-1,-1,-1]};var opts=q.options.map(function(t,i){return{t:t,ok:i===q.correctAnswer}});
   if(o.shA!==false)opts=shuffle(opts);
   return{id:q.id,opts:opts}}),ans:new Array(list.length).fill(-1),flag:new Array(list.length).fill(false),i:0,practice:!!o.practice,t0:Date.now(),limit:o.time*60};
  renderQ();go("quiz");startTimer();
@@ -169,13 +171,37 @@ function tick(){if(!E)return;var el=Math.floor((Date.now()-E.t0)/1000);var left=
  var m=Math.floor(left/60),s=left%60;var t=$("qTimer");t.textContent=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;t.classList.toggle("low",left<60)}
 function curQ(){return byId(E.qs[E.i].id)}
 function saveDraft(){try{if(E&&!$("view-quiz").hidden)localStorage.setItem(LS_EXAM,JSON.stringify(E));else localStorage.removeItem(LS_EXAM)}catch(e){}}
+
+function qDoneN(n){var s=E.qs[n];return typeOf(byId(s.id))==="true_false"?s.tf.some(function(v){return v>=0}):E.ans[n]>=0}
+function tfSt(q,s,a){if(typeOf(q)!=="true_false")return a>=0?(s.opts[a].ok?"ok":"bad"):"skip";var an=s.tf.filter(function(v){return v>=0}).length;if(!an)return "skip";return q.statements.every(function(t,i){return s.tf[i]===(t.ok?1:0)})?"ok":"bad"}
+function answerTF(i,v){E.qs[E.i].tf[i]=v;renderQ()}
+function renderTF(box,q,st){
+ box.innerHTML="";
+ q.statements.forEach(function(t,i){
+  var row=document.createElement("div");row.className="tf-row";
+  var cur=st.tf[i];
+  row.innerHTML='<span class="tf-t"><b>'+"abcd"[i]+')</b> '+esc(t.t)+'</span>';
+  [["D",1],["S",0]].forEach(function(p){
+   var b=document.createElement("button");b.className="btn btn-sm"+(cur===p[1]?" btn-primary":" btn-ghost");b.textContent=p[0]==="D"?"Đúng":"Sai";
+   b.onclick=function(){answerTF(i,p[1])};row.appendChild(b)});
+  if(E.practice&&cur>=0)row.classList.add(cur===(t.ok?1:0)?"tf-ok":"tf-bad");
+  box.appendChild(row)});
+ if(E.practice&&st.tf.some(function(v){return v>=0})){var d=document.createElement("div");d.className="rev exp";d.innerHTML="<b>Giải thích:</b> "+esc(q.explanation);box.appendChild(d)}
+}
+function resultOpts(q,s,a){
+ if(typeOf(q)!=="true_false")return s.opts.map(function(op,idx){var mk=op.ok?" ✓":"";var mine=(idx===a&&!op.ok)?" ✗":"";return '<div class="opt'+(op.ok?" practice-ok":idx===a?" practice-bad":"")+'" style="cursor:default"><span class="k">'+["A","B","C","D"][idx]+'</span><span>'+esc(op.t)+mk+mine+'</span></div>'}).join("");
+ return q.statements.map(function(t,i){var mine=s.tf[i];var good=mine>=0&&mine===(t.ok?1:0);
+  return '<div class="opt'+(mine>=0?(good?" practice-ok":" practice-bad"):"")+'" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+esc(t.t)+'</span><b>'+(mine>=0?(mine?"Đúng":"Sai"):"—")+' · Đáp án: '+(t.ok?"Đúng":"Sai")+(mine>=0?(good?" ✓":" ✗"):"")+'</b></div>'}).join("");
+}
+function tfRows(q){return q.statements.map(function(s2,i){return '<div class="opt" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+esc(s2.t)+'</span><b>'+(s2.ok?"Đúng":"Sai")+'</b></div>'}).join("")}
+function bankBody(x){if(typeOf(x)!=="true_false")return '<ol type="A">'+x.options.map(function(o){return "<li>"+esc(o)+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+esc(x.explanation);return '<div class="tf-list">'+tfRows(x)+'</div><div class="exp"><b>Đáp án từng ý ở trên.</b> '+esc(x.explanation)}
 function renderQ(){
  var q=curQ(),st=E.qs[E.i],m=META[E.cfg.subject];
  var scope=E.cfg.lesson==="all"?" · Tổng hợp":(" · "+m.units+" "+E.cfg.lesson);
  var kind=E.cfg.subject==="english"&&E.cfg.qtype&&E.cfg.qtype!=="all"?(" · "+TYPES[E.cfg.qtype]):"";
  $("qTitle").textContent=(E.cfg.quick?"Kiểm tra nhanh · ":E.practice?"Luyện tập · ":"Kiểm tra · ")+m.name+scope+kind;
  $("qCount").textContent="Câu "+(E.i+1)+"/"+E.qs.length;
- var done=E.ans.filter(function(a){return a>=0}).length;
+ var done=E.qs.filter(function(x,n){return qDoneN(n)}).length;
  $("qDone").textContent="Đã làm: "+done;
  var pct=Math.round(done/E.qs.length*100);$("qProg").style.width=pct+"%";$("qProgWrap").setAttribute("aria-valuenow",pct);
  $("qFlag").textContent=(E.flag[E.i]?"★ ":"☆ ")+"Đánh dấu xem lại";
@@ -184,16 +210,16 @@ function renderQ(){
  var head=passageHtml(q);
  $("qText").innerHTML=(head?head+"<br>":"")+"Câu "+(E.i+1)+": "+esc(q.question);
  var box=$("qOpts");box.innerHTML="";
- st.opts.forEach(function(op,idx){
+ if(typeOf(q)==="true_false"){renderTF(box,q,st)}else{st.opts.forEach(function(op,idx){
   var b=document.createElement("button");b.className="opt"+(E.ans[E.i]===idx?" sel":"");b.setAttribute("role","radio");b.setAttribute("aria-checked",E.ans[E.i]===idx);
   b.innerHTML='<span class="k">'+["A","B","C","D"][idx]+'</span><span>'+esc(op.t)+'</span>';
   b.onclick=function(){answer(idx)};box.appendChild(b)});
  if(E.practice&&E.ans[E.i]>=0){box.querySelectorAll(".opt").forEach(function(el,idx){if(st.opts[idx].ok)el.classList.add("practice-ok");else if(idx===E.ans[E.i])el.classList.add("practice-bad")});
   if(!box.querySelector(".exp")){var d=document.createElement("div");d.className="rev exp";d.innerHTML="<b>Giải thích:</b> "+esc(q.explanation)+(q.wrongWord?"<br><b>Từ sai:</b> "+esc(q.wrongWord)+" → <b>nên dùng:</b> "+esc(q.correctWord):"");box.appendChild(d)}}
- var pal=$("qPal");pal.innerHTML="";
+ }var pal=$("qPal");pal.innerHTML="";
  E.qs.forEach(function(s,n){var b=document.createElement("button");b.textContent=(n+1<10?"0":"")+(n+1);
-  b.className=(E.ans[n]>=0?"done ":"")+(n===E.i?"cur":"");if(E.flag[n])b.classList.add("flag");
-  b.setAttribute("aria-label","Câu "+(n+1)+(E.ans[n]>=0?" đã làm":" chưa làm"));b.onclick=function(){E.i=n;renderQ()};pal.appendChild(b)});
+  b.className=(qDoneN(n)?"done ":"")+(n===E.i?"cur":"");if(E.flag[n])b.classList.add("flag");
+  b.setAttribute("aria-label","Câu "+(n+1)+(qDoneN(n)?" đã làm":" chưa làm"));b.onclick=function(){E.i=n;renderQ()};pal.appendChild(b)});
  $("qPrev").disabled=E.i===0;$("qNext").disabled=E.i===E.qs.length-1;
  saveDraft();
 }
@@ -204,7 +230,7 @@ $("qFlag").onclick=function(){E.flag[E.i]=!E.flag[E.i];save();renderQ()};
 $("qStar").onclick=function(){S.starred=S.starred||{};var id=curQ().id;if(S.starred[id])delete S.starred[id];else S.starred[id]=1;save();renderQ()};
 document.addEventListener("keydown",function(e){
  if($("view-quiz").hidden||!E)return;
- if(e.key>="1"&&e.key<="4"){answer(+e.key-1)}
+ if(e.key>="1"&&e.key<="4"){if(typeOf(curQ())!=="true_false")answer(+e.key-1)}
  else if(e.key==="ArrowRight"){if(E.i<E.qs.length-1){E.i++;renderQ()}}
  else if(e.key==="ArrowLeft"){if(E.i>0){E.i--;renderQ()}}});
 $("qSubmit").onclick=function(){submit(false)};$("qSubmit2").onclick=function(){submit(false)};
@@ -213,15 +239,16 @@ function verdict(p){return p<5?["Cần cố gắng","low"]:p<6.5?["Đạt","mid"
 function submit(auto){
  clearInterval(timerH);
  try{localStorage.removeItem(LS_EXAM)}catch(e){}
- var ok=0,bad=0,skip=0,topics={},types={};
- E.qs.forEach(function(s,n){var q=byId(s.id);var a=E.ans[n];
-  var st=a>=0?(s.opts[a].ok?"ok":"bad"):"skip";
-  S.answered[s.id]=st;if(st==="ok"){ok++;S.correct++}
+ var ok=0,bad=0,skip=0,pts=0,topics={},types={};
+ E.qs.forEach(function(s,n){var q=byId(s.id);var a=E.ans[n];var st,fr;
+  if(typeOf(q)==="true_false"){var gd=q.statements.reduce(function(m,t,i){return m+(s.tf[i]===(t.ok?1:0)?1:0)},0);var an=s.tf.filter(function(v){return v>=0}).length;st=an===0?"skip":(gd===4?"ok":"bad");fr=gd===4?1:(gd===3?0.5:(gd===2?0.25:0))}
+  else{st=a>=0?(s.opts[a].ok?"ok":"bad"):"skip";fr=st==="ok"?1:0}
+  pts+=fr;S.answered[s.id]=st;if(st==="ok"){ok++;S.correct++}
   if(st==="bad")bad++;else if(st==="skip")skip++;
   var tp=topics[q.topic]=topics[q.topic]||{ok:0,tot:0};tp.tot++;if(st==="ok")tp.ok++;
   if(E.cfg.subject==="english"){var ty=types[typeOf(q)]=types[typeOf(q)]||{ok:0,tot:0};ty.tot++;if(st==="ok")ty.ok++}});
  var secs=Math.min(Math.floor((Date.now()-E.t0)/1000),E.limit);
- var tot=E.qs.length,point=Math.round(ok/tot*100)/10;
+ var tot=E.qs.length,point=Math.round(pts/tot*100)/10;
  S.exams++;S.best=Math.max(S.best,point);
  Object.keys(META).forEach(function(sub){S.prog[sub]=S.prog[sub]||{};lessonsOf(sub).forEach(function(l){
   var all=Q.filter(function(q){return q.subject===sub&&q.lesson===l});
@@ -255,16 +282,15 @@ function submit(auto){
  E._wrongOnly=false;
  var renderList=function(onlyWrong){
   list.innerHTML="<h2>Chi tiết từng câu"+(onlyWrong?" (chỉ câu sai/bỏ qua)":"")+"</h2>";
-  E.qs.forEach(function(s,n){var q=byId(s.id);var a=E.ans[n];var st=a>=0?(s.opts[a].ok?"ok":"bad"):"skip";
+  E.qs.forEach(function(s,n){var q=byId(s.id);var a=E.ans[n];var st=tfSt(q,s,a);
    if(onlyWrong&&st==="ok")return;
    var d=document.createElement("div");d.className="panel rev";
    var extra=q.wrongWord?("<br><b>Từ sai:</b> "+esc(q.wrongWord)+" → <b>nên dùng:</b> "+esc(q.correctWord)):"";
    d.innerHTML='<div class="rev-head"><b>Câu '+(n+1)+'</b><button class="btn btn-sm btn-ghost" data-star="'+s.id+'">'+((S.starred&&S.starred[s.id])?"★ Sổ tay":"☆ Sổ tay")+'</button>'+'<span class="tag '+st+'">'+(st==="ok"?"Đúng":st==="bad"?"Sai":"Bỏ qua")+'</span><span class="chip">'+chipFor(q)+'</span></div>'
    +(q.passageId&&window.PASSAGES&&window.PASSAGES[q.passageId]?'<div class="passage"><b>'+esc(window.PASSAGES[q.passageId].title)+'</b><p>'+esc(window.PASSAGES[q.passageId].text)+'</p></div>':"")
    +'<p>'+esc(q.question)+'</p>'
-   +s.opts.map(function(op,idx){var mk=op.ok?" ✓":"";var mine=(idx===a&&!op.ok)?" ✗":"";
-    return '<div class="opt'+(op.ok?" practice-ok":idx===a?" practice-bad":"")+'" style="cursor:default"><span class="k">'+["A","B","C","D"][idx]+'</span><span>'+esc(op.t)+mk+mine+'</span></div>'}).join("")
-   +'<div class="exp"><b>Đáp án đúng: '+["A","B","C","D"][s.opts.findIndex(function(o){return o.ok})]+'</b><br><b>Giải thích:</b> '+esc(q.explanation)+extra+'<br><span class="muted small">Nguồn: '+esc(q.source)+(q.sourceType?" ("+esc(q.sourceType)+")":"")+'</span></div>';
+   +resultOpts(q,s,a)
+   +(typeOf(q)==="true_false"?'<div class="exp"><b>Đúng/Sai từng ý ở trên</b><br>':'<div class="exp"><b>Đáp án đúng: ')+["A","B","C","D"][s.opts.findIndex(function(o){return o.ok})]+'</b><br><b>Giải thích:</b> '+esc(q.explanation)+extra+'<br><span class="muted small">Nguồn: '+esc(q.source)+(q.sourceType?" ("+esc(q.sourceType)+")":"")+'</span></div>';
    list.appendChild(d)})};
  renderList(false);
  $("rWrong").onclick=function(){E._wrongOnly=!E._wrongOnly;renderList(E._wrongOnly);$("rWrong").textContent=E._wrongOnly?"Xem tất cả câu":"Xem lại câu sai";window.scrollTo({top:document.querySelector(".result-hero").offsetHeight})};
@@ -276,6 +302,11 @@ function submit(auto){
 }
 
 /* ---------- BANK ---------- */
+function bankItem(x,s,det){
+ var body=typeOf(x)==="true_false"
+  ?'<div class="tf-list">'+tfRows(x)+'</div><div class="exp"><b>Đáp án từng ý ở trên.</b> '+esc(x.explanation)
+  :'<ol type="A">'+x.options.map(function(o){return "<li>"+esc(o)+"</li>"}).join("")+'</ol><div class="exp"><b>Đáp án: '+["A","B","C","D"][x.correctAnswer]+'.</b> '+esc(x.explanation);
+ return bankItem(x,s,det)}
 function renderBank(){
  var sub=$("fSub").value,les=$("fLes").value,dif=$("fDif").value,st=$("fState").value,ft=$("fType").value,q=$("fQ").value.trim().toLowerCase();
  var list=Q.filter(function(x){

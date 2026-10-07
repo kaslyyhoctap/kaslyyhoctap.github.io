@@ -1,14 +1,14 @@
-# ÔnTập12 — Ôn thi Lịch Sử, Sinh Học & Tiếng Anh lớp 12
+# ÔnTập12 — Ôn thi Lịch Sử, Sinh Học, Hóa Học & Tiếng Anh lớp 12
 
 ## Giới thiệu
 
-Website ôn tập trắc nghiệm Lịch sử 12, Sinh học 12 (Kết nối tri thức, Bài 1–3) và Tiếng Anh 12 Global Success (Unit 1–2).
-464 câu hỏi, có đáp án + giải thích, chấm điểm tự động, theo dõi tiến độ.
+Website ôn tập trắc nghiệm Lịch sử 12, Sinh học 12 (Kết nối tri thức, Bài 1–3), Hóa học 12 (Chương 1–2) và Tiếng Anh 12 Global Success (Unit 1–2).
+748 câu hỏi (kèm dạng Đúng/Sai 4 ý), có đáp án + giải thích, chấm điểm tự động, theo dõi tiến độ.
 Riêng Tiếng Anh toàn bộ band 6.0–7.5, từ vựng B1–C1 chủ yếu B2, theo cấu trúc IELTS Reading (gồm cả Reading Comprehension).
 
 ## Tính năng
 
-* Ôn tập theo bài (lý thuyết tóm tắt 6 bài Sử/Sinh + 2 Unit Anh)
+* Ôn tập theo bài (lý thuyết tóm tắt 6 bài Sử/Sinh + 2 chương Hóa (kèm sơ đồ minh họa) + 2 Unit Anh)
 * Luyện trắc nghiệm (xem đáp án ngay)
 * Kiểm tra tổng hợp tính giờ (10/20/30/40/50 câu, 10–60 phút)
 * Trộn câu hỏi + trộn đáp án, ưu tiên câu chưa làm
@@ -105,6 +105,10 @@ data/
   biology-bai1.js     # 30 câu Sinh Bài 1
   biology-bai2.js     # 30 câu Sinh Bài 2
   biology-bai3.js     # 30 câu Sinh Bài 3
+  chemistry-ch1.js    # 30 câu Hóa Chương 1 (Este – Lipid)
+  chemistry-ch2.js    # 30 câu Hóa Chương 2 (Carbohydrate)
+  chemistry-ch1b.js   # 70 câu Hóa Chương 1 (50 lý thuyết + 50 vận dụng, gồm Đúng/Sai)
+  chemistry-ch2b.js   # 70 câu Hóa Chương 2 (50 lý thuyết + 50 vận dụng, gồm Đúng/Sai)
   english-unit1.js    # ~36 câu Anh Unit 1 (gốc)
   english-unit1b.js   # 50 câu Anh Unit 1 (bổ sung)
   english-unit1c.js   # 50 câu Anh Unit 1 (bổ sung)
@@ -116,7 +120,7 @@ data/
   english-unit1e.js   # 12 câu Anh Unit 1: Reading Comprehension + cloze khó
   english-unit2e.js   # 12 câu Anh Unit 2: Reading Comprehension + cloze khó
   english-vocab.js    # flashcard từ vựng Unit 1–2
-  theory.js           # tóm tắt lý thuyết Sử + Sinh
+  theory.js           # tóm tắt lý thuyết Sử + Sinh + Hóa (kèm sơ đồ SVG)
   english-theory.js   # tóm tắt lý thuyết Anh Unit 1–2
 .github/workflows/
   deploy.yml          # deploy tĩnh lên GitHub Pages

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ÔnTập12 — Ôn thi Lịch Sử, Sinh Học & Tiếng Anh lớp 12</title>
-<meta name="description" content="Ôn tập lý thuyết, luyện trắc nghiệm Lịch Sử 12, Sinh Học 12 (Kết nối tri thức, Bài 1–3) và Tiếng Anh 12 Global Success (Unit 1–2). Chấm điểm, giải thích, theo dõi tiến độ.">
+<title>ÔnTập12 — Ôn thi Lịch Sử, Sinh Học, Hóa Học & Tiếng Anh lớp 12</title>
+<meta name="description" content="Ôn tập lý thuyết, luyện trắc nghiệm Lịch Sử 12, Sinh Học 12 (Kết nối tri thức, Bài 1–3), Hóa Học 12 (Chương 1–2) và Tiếng Anh 12 Global Success (Unit 1–2). Chấm điểm, giải thích, theo dõi tiến độ.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,6 +27,7 @@
         <div class="nav-menu" id="subjMenu" role="menu" hidden>
           <button class="nav-btn" data-nav="history" role="menuitem">Lịch sử</button>
           <button class="nav-btn" data-nav="biology" role="menuitem">Sinh học</button>
+          <button class="nav-btn" data-nav="chemistry" role="menuitem">Hóa học</button>
           <button class="nav-btn" data-nav="english" role="menuitem">Tiếng Anh</button>
         </div>
       </div>
@@ -55,6 +56,7 @@
         <div class="hero-cta">
           <button class="btn btn-primary" data-nav="history">Học Lịch sử 12</button>
           <button class="btn btn-bio" data-nav="biology">Học Sinh học 12</button>
+          <button class="btn btn-chem" data-nav="chemistry">Học Hóa học 12</button>
           <button class="btn btn-eng" data-nav="english">Học Tiếng Anh 12</button>
         </div>
         <div class="hero-stats" id="heroStats"></div>
@@ -171,10 +173,10 @@
     <div class="panel filters">
       <label class="search"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="fQ" type="search" placeholder="Tìm câu hỏi..." aria-label="Tìm câu hỏi"></label>
       <div class="frow">
-        <select id="fSub" aria-label="Môn"><option value="">Mọi môn</option><option value="history">Lịch sử</option><option value="biology">Sinh học</option><option value="english">Tiếng Anh</option></select>
+        <select id="fSub" aria-label="Môn"><option value="">Mọi môn</option><option value="history">Lịch sử</option><option value="biology">Sinh học</option><option value="chemistry">Hóa học</option><option value="english">Tiếng Anh</option></select>
         <select id="fLes" aria-label="Bài/Unit"><option value="">Mọi bài</option><option value="1">Bài/Unit 1</option><option value="2">Bài/Unit 2</option><option value="3">Bài 3</option></select>
         <select id="fDif" aria-label="Mức độ"><option value="">Mọi mức độ</option><option>Nhận biết</option><option>Thông hiểu</option><option>Vận dụng</option><option>Vận dụng cao</option></select>
-        <select id="fType" aria-label="Dạng câu hỏi"><option value="">Mọi dạng</option><option value="multiple_choice">Multiple Choice</option><option value="cloze">Cloze Test</option><option value="word_usage_error">Word Usage Error</option><option value="closest_meaning">Closest Meaning</option><option value="reading_comprehension">Reading Comprehension</option></select>
+        <select id="fType" aria-label="Dạng câu hỏi"><option value="">Mọi dạng</option><option value="multiple_choice">Multiple Choice</option><option value="true_false">True/False</option><option value="cloze">Cloze Test</option><option value="word_usage_error">Word Usage Error</option><option value="closest_meaning">Closest Meaning</option><option value="reading_comprehension">Reading Comprehension</option></select>
         <select id="fState" aria-label="Trạng thái"><option value="">Đã/chưa làm</option><option value="done">Đã làm đúng</option><option value="wrong">Đã làm sai</option><option value="star">Đánh dấu sao</option><option value="todo">Chưa làm</option></select>
       </div>
     </div>
@@ -222,7 +224,7 @@
 </main>
 
 <footer class="footer"><div class="wrap">
-  <p><b>ÔnTập12</b> · Ôn Lịch Sử & Sinh Học 12 (Kết nối tri thức, Bài 1–3) + Tiếng Anh 12 Global Success (Unit 1–2) · Chạy offline, không cần đăng nhập.</p>
+  <p><b>ÔnTập12</b> · Ôn Lịch Sử & Sinh Học 12 (Kết nối tri thức, Bài 1–3) + Hóa Học 12 (Chương 1–2) + Tiếng Anh 12 Global Success (Unit 1–2) · Chạy offline, không cần đăng nhập.</p>
   <p class="muted small">Nguồn tham khảo: SGK Kết nối tri thức, SGK Global Success, SGKVN, VietJack, Loigiaihay, Hoc24, VnDoc — câu hỏi tự biên soạn lại, không sao chép nguyên văn. Từ vựng/collocation Tiếng Anh lấy từ data ôn tập do người dùng cung cấp.</p>
 </div></footer>
 
@@ -242,6 +244,10 @@
 <script src="data/english-unit2d.js"></script>
 <script src="data/english-unit1e.js"></script>
 <script src="data/english-unit2e.js"></script>
+<script src="data/chemistry-ch1.js"></script>
+<script src="data/chemistry-ch2.js"></script>
+<script src="data/chemistry-ch1b.js"></script>
+<script src="data/chemistry-ch2b.js"></script>
 <script src="data/english-vocab.js"></script>
 <script src="data/theory.js"></script>
 <script src="data/english-theory.js"></script>
