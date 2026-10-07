@@ -4,7 +4,7 @@
 
 Website ôn tập trắc nghiệm Lịch sử 12, Sinh học 12 (Kết nối tri thức, Bài 1–3) và Tiếng Anh 12 Global Success (Unit 1–2).
 464 câu hỏi, có đáp án + giải thích, chấm điểm tự động, theo dõi tiến độ.
-Riêng Tiếng Anh có 2 tầng: band 5.5–7.0 (nền tảng) và band 7.0–8.5 (nâng cao, theo cấu trúc IELTS Reading, gồm cả Reading Comprehension).
+Riêng Tiếng Anh toàn bộ band 7.0–8.5 theo cấu trúc IELTS Reading (gồm cả Reading Comprehension).
 
 ## Tính năng
 
