@@ -12,9 +12,11 @@
  */
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useAppState, STORAGE_KEY } from '@/lib/storage';
-import { META, SUBJECTS } from '@/lib/meta';
+import { META, SUBJECTS, subjectName } from '@/lib/meta';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TrendChart, { type HistEntry } from '@/components/progress/TrendChart';
 import WeaknessAnalysis from '@/components/progress/WeaknessAnalysis';
 import questions from '@/data/questions.json';
@@ -29,6 +31,8 @@ export default function ProgressView() {
   const tot = histArr.length;
   // app.js: best = S.hist.reduce((m,h)=>Math.max(m,h.point),0)
   const best = tot ? histArr.reduce((m, h) => Math.max(m, h.point), 0) : 0;
+  // Subject filter — same structure as /notebook + /bank ('' = mọi môn).
+  const [subject, setSubject] = useState('');
 
   // --- Per (subject, lesson) question count + "ok" count (single pass) ---
   // app.js: n = Q.filter(...).length ; good = Q.filter(...&&answered[q.id]==='ok').length
@@ -50,8 +54,9 @@ export default function ProgressView() {
       (a, b) => a - b,
     );
 
-  // --- progCards (app.js lines 456–461) ---
-  const progCards = SUBJECTS.map((k) => {
+  // --- progCards (app.js lines 456–461), filtered by the subject select ---
+  const progCards = SUBJECTS.filter((k) => !subject || k === subject)
+    .map((k) => {
     const m = META[k];
     if (!m) return null;
     const rows = lessonsOf(k).map((l) => {
@@ -110,9 +115,6 @@ export default function ProgressView() {
           );
         })}
       </div>
-      <p className="muted">
-        Tổng {tot} đề · điểm cao nhất {best.toFixed(1)} · {correct} câu đúng tích lũy
-      </p>
     </div>
   ) : (
     <p className="muted">
@@ -128,13 +130,45 @@ export default function ProgressView() {
     }
   };
 
+  const subItems = [
+    { value: '', label: 'Mọi môn' },
+    ...SUBJECTS.map((s) => ({ value: s, label: subjectName(s) })),
+  ];
+
   return (
     <section className="view" id="view-progress">
       <Link href="/" className="link">
         ← Trang chủ
       </Link>
 
-      <h2>Tiến độ học tập</h2>
+      {/* Filter bar — cùng cấu trúc /notebook + /bank */}
+      <div className="panel filters">
+        <div className="frow single">
+          <Select
+            value={subject}
+            onValueChange={(v) => v !== null && setSubject(v)}
+            items={subItems}
+          >
+            <SelectTrigger aria-label="Môn học">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {subItems.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <h2>
+        Tiến độ học tập{' '}
+        <small className="muted">
+          · {tot} đề · điểm cao nhất {best.toFixed(1)} · {correct} câu đúng tích lũy
+        </small>
+      </h2>
 
       <div className="grid2" id="progCards">
         {progCards}
