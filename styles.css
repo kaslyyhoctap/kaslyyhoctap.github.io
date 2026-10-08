@@ -76,6 +76,8 @@ body.nav-open .header{z-index:200}
 [data-theme="dark"] .btn-chem{background:#FB923C;border-color:#FB923C;color:#431407}
 .fig{margin:14px 0;text-align:center}
 .fig svg{max-width:100%;height:auto;background:var(--bg);border:1px solid var(--border);border-radius:12px}
+/* Theory images: white mat + centered, readable in both themes. */
+.fig img{display:block;margin:0 auto;max-width:100%;height:auto;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px}
 .figcap{font-size:.85rem;color:var(--muted-fg);margin-top:6px}
 [data-theme="dark"] .btn-eng{background:#A78BFA;border-color:#A78BFA;color:#1E1B4B}
 .btn-ghost{background:transparent} .btn-danger{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
