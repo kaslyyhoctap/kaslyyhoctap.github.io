@@ -94,7 +94,7 @@ export function Header() {
             >
               <path d="M4 7h16M4 12h16M4 17h16" />
             </svg>
-            <span>Menu</span>
+            <span id="menuLbl">Menu</span>
           </button>
 
           {/* Logo */}
@@ -246,11 +246,12 @@ export function Header() {
             </Link>
           </nav>
 
-          {/* Mobile scrim */}
+          {/* Mobile scrim — visibility fully controlled by body.nav-open (see styles.css);
+              no `hidden` attr: mobile CSS uses display:block!important which would override it */}
           <div
             className="scrim"
             id="navScrim"
-            hidden={!navOpen}
+            aria-hidden={!navOpen}
             onClick={() => setNavOpen(false)}
           />
 

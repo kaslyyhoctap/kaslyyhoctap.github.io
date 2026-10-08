@@ -1,14 +1,11 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import '../styles/globals.css';
-import { Geist } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/lib/theme';
 import { SessionProvider } from 'next-auth/react';
 import { Header } from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: {
@@ -41,12 +38,16 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="vi" data-theme="light" className={cn('scroll-smooth', 'font-sans', geist.variable)}>
+    <html lang="vi" data-theme="light" className={cn('scroll-smooth', 'font-sans')}>
       <head>
         <meta name="theme-color" content="#F0FDFA" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#0A1414" media="(prefers-color-scheme: dark)" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="antialiased">
         <ThemeProvider>
