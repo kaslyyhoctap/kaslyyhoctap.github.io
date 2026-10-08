@@ -29,6 +29,8 @@ export const questions = pgTable('questions', {
   options: text('options').array(),
   correctAnswer: integer('correct_answer'),
   statements: jsonb('statements'), // true_false only: [{ t: string, ok: boolean }]
+  answer: text('answer'), // short_answer only: expected short answer
+  maxLen: integer('max_len'), // short_answer only: input maxLength
   explanation: text('explanation'),
   wrongWord: text('wrong_word'), // word_usage_error only
   correctWord: text('correct_word'),

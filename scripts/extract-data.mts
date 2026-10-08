@@ -43,7 +43,9 @@ function isValidQuestion(q: any): boolean {
   if (!(q && q.id && q.question && q.explanation)) return false;
   const hasMc = q.options && q.options.length === 4 && q.correctAnswer >= 0 && q.correctAnswer < 4;
   const hasTf = q.type === "true_false" && q.statements && q.statements.length === 4;
-  return hasMc || hasTf;
+  // Legacy app.js line 24 accepts string answers for the short-answer type.
+  const hasSa = q.type === "short_answer" && typeof q.answer === "string";
+  return hasMc || hasTf || hasSa;
 }
 
 function main() {

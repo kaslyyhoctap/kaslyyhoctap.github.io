@@ -8,6 +8,13 @@
       "when": 1791398179571,
       "tag": "0000_sloppy_lifeguard",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791481443873,
+      "tag": "0001_tired_rumiko_fujikawa",
+      "breakpoints": true
     }
   ]
 }

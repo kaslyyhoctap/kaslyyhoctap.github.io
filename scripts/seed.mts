@@ -10,6 +10,7 @@ config({ path: '.env.local' });
 // Dynamic imports after env is loaded (db/index.ts calls neon() at module eval time)
 const { db } = await import('@/db/index');
 const { questions, passages, theory, vocabulary } = await import('@/db/schema');
+const { sql } = await import('drizzle-orm');
 
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -33,6 +34,8 @@ async function seedQuestions(data: any[]): Promise<void> {
     options: q.options ?? null,
     correctAnswer: q.correctAnswer ?? null,
     statements: q.statements ?? null,
+    answer: q.answer ?? null,
+    maxLen: q.maxLen ?? null,
     explanation: q.explanation ?? null,
     wrongWord: q.wrongWord ?? null,
     correctWord: q.correctWord ?? null,
@@ -50,24 +53,29 @@ async function seedQuestions(data: any[]): Promise<void> {
       .values(batch)
       .onConflictDoUpdate({
         target: questions.id,
+        // excluded.* = the incoming row — actually overwrites on conflict.
+        // (Referencing questions.x here is the OLD bug: it copies the
+        // existing row onto itself, so edits never landed.)
         set: {
-          subject: questions.subject,
-          lesson: questions.lesson,
-          type: questions.type,
-          topic: questions.topic,
-          difficulty: questions.difficulty,
-          band: questions.band,
-          question: questions.question,
-          options: questions.options,
-          correctAnswer: questions.correctAnswer,
-          statements: questions.statements,
-          explanation: questions.explanation,
-          wrongWord: questions.wrongWord,
-          correctWord: questions.correctWord,
-          source: questions.source,
-          sourceType: questions.sourceType,
-          sourceUrl: questions.sourceUrl,
-          passageId: questions.passageId,
+          subject: sql`excluded.subject`,
+          lesson: sql`excluded.lesson`,
+          type: sql`excluded.type`,
+          topic: sql`excluded.topic`,
+          difficulty: sql`excluded.difficulty`,
+          band: sql`excluded.band`,
+          question: sql`excluded.question`,
+          options: sql`excluded.options`,
+          correctAnswer: sql`excluded.correct_answer`,
+          statements: sql`excluded.statements`,
+          answer: sql`excluded.answer`,
+          maxLen: sql`excluded.max_len`,
+          explanation: sql`excluded.explanation`,
+          wrongWord: sql`excluded.wrong_word`,
+          correctWord: sql`excluded.correct_word`,
+          source: sql`excluded.source`,
+          sourceType: sql`excluded.source_type`,
+          sourceUrl: sql`excluded.source_url`,
+          passageId: sql`excluded.passage_id`,
         },
       });
     console.log(`  batch ${i / batchSize + 1}/${Math.ceil(rows.length / batchSize)}`);
@@ -87,7 +95,10 @@ async function seedPassages(data: Record<string, { title: string; text: string }
     .values(rows)
     .onConflictDoUpdate({
       target: passages.passageId,
-      set: { title: passages.title, text: passages.text },
+      set: {
+        title: sql`excluded.title`,
+        text: sql`excluded.text`,
+      },
     });
   console.log(`\u2705 passages: ${rows.length} rows`);
 }
@@ -119,9 +130,9 @@ async function seedTheory(
     .onConflictDoUpdate({
       target: [theory.subject, theory.lesson],
       set: {
-        title: theory.title,
-        description: theory.description,
-        html: theory.html,
+        title: sql`excluded.title`,
+        description: sql`excluded.description`,
+        html: sql`excluded.html`,
       },
     });
   console.log(`\u2705 theory: ${rows.length} rows`);
@@ -150,10 +161,10 @@ async function seedVocabulary(data: Record<string, any[]>): Promise<void> {
     .onConflictDoUpdate({
       target: [vocabulary.unit, vocabulary.en],
       set: {
-        vi: vocabulary.vi,
-        pos: vocabulary.pos,
-        ipa: vocabulary.ipa,
-        kind: vocabulary.kind,
+        vi: sql`excluded.vi`,
+        pos: sql`excluded.pos`,
+        ipa: sql`excluded.ipa`,
+        kind: sql`excluded.kind`,
       },
     });
   console.log(`\u2705 vocabulary: ${rows.length} rows`);

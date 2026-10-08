@@ -76,6 +76,7 @@ export const TYPES: Record<string, string> = {
   closest_meaning: 'Từ đồng nghĩa',
   reading_comprehension: 'Đọc hiểu',
   true_false: 'Đúng/Sai',
+  short_answer: 'Trả lời ngắn',
 };
 
 /**
@@ -91,6 +92,7 @@ const TYPE_NAMES: Record<string, string> = {
   closest_meaning: 'closest meaning',
   reading_comprehension: 'reading comprehension',
   true_false: 'true/false',
+  short_answer: 'short answer',
 };
 
 /** True when the question's topic already names its type (app.js chipFor). */
@@ -99,7 +101,11 @@ export function topicNamesType(
   typeKey: string,
 ): boolean {
   const name = TYPE_NAMES[typeKey];
-  return !!name && !!topic && name === topic.toLowerCase();
+  // Data topics may use either the English name ("Cloze test") or the
+  // translated label ("Trả lời ngắn") — match either.
+  const label = TYPES[typeKey]?.toLowerCase();
+  const t = topic?.toLowerCase();
+  return !!topic && (name === t || label === t);
 }
 
 /** English skill categories for the result breakdown. Keys match data topics. */

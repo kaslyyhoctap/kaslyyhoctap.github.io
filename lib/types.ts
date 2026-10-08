@@ -27,6 +27,8 @@ export interface Question {
   options?: string[] | null;
   correctAnswer?: number | null;
   statements?: Statement[] | null; // true_false only
+  answer?: string | null; // short_answer only
+  maxLen?: number | null; // short_answer only: input maxLength
   explanation?: string | null;
   wrongWord?: string | null; // word_usage_error only
   correctWord?: string | null;

@@ -33,12 +33,16 @@ interface BankViewProps {
 /**
  * app.js `Q` validity predicate (lines 24–26): a question is part of the bank
  * when it has id + question text + explanation, and is either a valid 4-option
- * MCQ (correctAnswer in 0–3) or a 4-statement true/false question.
+ * MCQ (correctAnswer in 0–3), a 4-statement true/false question, or a
+ * short_answer question with a string answer.
  */
 function isValidBankQuestion(q: Question): boolean {
   if (!q?.id || !q.question || !q.explanation) return false;
   if (typeOf(q) === 'true_false') {
     return !!(q.statements && q.statements.length === 4);
+  }
+  if (typeOf(q) === 'short_answer') {
+    return typeof q.answer === 'string';
   }
   return (
     !!(q.options && q.options.length === 4) &&

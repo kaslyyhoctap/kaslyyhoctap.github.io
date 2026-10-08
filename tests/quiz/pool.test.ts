@@ -83,6 +83,15 @@ describe('pool — non-english (history/biology)', () => {
     const sel = pool(all, { subject: 'history', lesson: 2, count: 5, time: 10, practice: false, shQ: false });
     expect(sel.map((q) => q.id)).toEqual(['h2.1']);
   });
+
+  it('excludes short_answer until the SA input UI is ported', () => {
+    const sa = { ...mcq('h1-sa-1', 'history', 1, 'Trả lời ngắn', 'Nhận biết', 0), type: 'short_answer', answer: '1945', maxLen: 4 } as Question;
+    const sel = pool(
+      [sa, mcq('h1.1', 'history', 1, 't', 'Nhận biết', 0)],
+      { subject: 'history', lesson: 'all', count: 10, time: 10, practice: false, shQ: false },
+    );
+    expect(sel.map((q) => q.id)).toEqual(['h1.1']);
+  });
 });
 
 describe('pool — english', () => {

@@ -60,6 +60,7 @@ function questionHtml(q: Question): string {
 export default function BankItem({ q, status, isStarred, onToggleStar, passage }: BankItemProps) {
   const isChem = q.subject === 'chemistry';
   const isTF = typeOf(q) === 'true_false';
+  const isSA = typeOf(q) === 'short_answer';
   // subject/unit tag (app.js subjTag/unitTag, lines 20–21).
   const subj = subjectShort(q.subject);
   const unitTag = `${unitPrefix(subjectUnits(q.subject))}${q.lesson}`;
@@ -140,6 +141,20 @@ export default function BankItem({ q, status, isStarred, onToggleStar, passage }
             )}
           </div>
         </>
+      ) : isSA ? (
+        /* Legacy app.js line 318: "Đáp án: {answer}. {explanation}" */
+        <div className="exp">
+          <b>
+            Đáp án:{' '}
+            {isMathSubject(q.subject) ? (
+              <span dangerouslySetInnerHTML={{ __html: chemFormat(q.answer || '') }} />
+            ) : (
+              q.answer || ''
+            )}
+            .
+          </b>{' '}
+          <span dangerouslySetInnerHTML={{ __html: expText }} />
+        </div>
       ) : (
         <>
           <ol type="A">
