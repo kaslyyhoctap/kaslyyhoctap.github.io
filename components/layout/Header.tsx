@@ -118,7 +118,7 @@ export function Header() {
             <span className="logo-t">
               Ôn Tập<b>12</b>
             </span>
-            <span className="logo-sub">Kết nốp tri thức</span>
+            <span className="logo-sub">Kết nối tri thức</span>
           </Link>
 
           {/* Desktop nav */}

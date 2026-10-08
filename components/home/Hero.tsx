@@ -53,7 +53,7 @@ export default function Hero({
     <section className="view">
       <div className="hero">
         <div className="hero-txt">
-          <p className="eyebrow">Lớp 12 · Kết nốp tri thức + Global Success</p>
+          <p className="eyebrow">Lớp 12 · Kết nối tri thức + Global Success</p>
           <h1>ÔN TẬP LỚP 12</h1>
           <p className="hero-sub">Ôn đúng trọng tâm – Luyện đúng dạng – Kiểm tra hiệu quả</p>
 

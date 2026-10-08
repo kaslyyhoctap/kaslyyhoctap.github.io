@@ -13,16 +13,16 @@ export const metadata: Metadata = {
     template: `%s | Ôn Tập 12`,
   },
   description:
-    'Ôn tập lý thuyết, luyện trắc nghiệm Lịch Sử 12, Sinh học 12 (Kết nốp tri thức, Bài 1–3), Hóa học 12 (Chương 1–2) và Tiếng Anh 12 Global Success (Unit 1–2). Chấm điểm, giải thích, theo dõi tiến độ.',
+    'Ôn tập lý thuyết, luyện trắc nghiệm Lịch Sử 12, Sinh học 12 (Kết nối tri thức, Bài 1–3), Hóa học 12 (Chương 1–2) và Tiếng Anh 12 Global Success (Unit 1–2). Chấm điểm, giải thích, theo dõi tiến độ.',
   keywords: [
-    'Õn tập',
+    'Ôn tập',
     'trắc nghiệm',
     'lịch sử 12',
     'sinh học 12',
     'hóa học 12',
     'tiếng anh 12',
     'global success',
-    'kết nốp tri thức',
+    'kết nối tri thức',
   ],
   openGraph: {
     type: 'website',

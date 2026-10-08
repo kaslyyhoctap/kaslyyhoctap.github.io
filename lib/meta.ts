@@ -10,7 +10,7 @@ export interface SubjectConfig {
   name: string; // e.g. "Lịch sử 12"
   short: string; // e.g. "Sử"
   units: string; // e.g. "Bài" | "Chương" | "Unit"
-  book: string; // e.g. "Kết nốp tri thức"
+  book: string; // e.g. "Kết nối tri thức"
 }
 
 export const META: Record<string, SubjectConfig> = {
@@ -18,19 +18,19 @@ export const META: Record<string, SubjectConfig> = {
     name: 'Lịch sử 12',
     short: 'Sử',
     units: 'Bài',
-    book: 'Kết nốp tri thức',
+    book: 'Kết nối tri thức',
   },
   biology: {
     name: 'Sinh học 12',
     short: 'Sinh',
     units: 'Bài',
-    book: 'Kết nốp tri thức',
+    book: 'Kết nối tri thức',
   },
   chemistry: {
     name: 'Hóa học 12',
     short: 'Hóa',
     units: 'Chương',
-    book: 'Kết nốp tri thức',
+    book: 'Kết nối tri thức',
   },
   english: {
     name: 'Tiếng Anh 12',
