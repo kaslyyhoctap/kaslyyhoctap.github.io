@@ -10,6 +10,8 @@ out/
 # Build artifacts
 dist/
 build/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
 
 # ┌─────────────────────────────────────────────────────────────────────────┐
 # │ Environment                                                        │
