@@ -9,4 +9,4 @@ const nextConfig = {
   serverExternalPackages: ['@neondatabase/serverless', 'drizzle-orm'],
 };
 
-module.exports = nextConfig;
+export default nextConfig;

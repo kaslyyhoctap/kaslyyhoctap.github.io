@@ -19,6 +19,7 @@ import {
   exam_results,
   ai_generated_tests,
   ai_explain_logs,
+  users,
 } from '@/db/schema';
 import { and, desc, eq, gte, inArray, sql, type SQLWrapper } from 'drizzle-orm';
 import type {
@@ -370,4 +371,53 @@ export async function countAiExplainRequests(userId: string, since: Date): Promi
 /** Record a single explain request for rate-limit accounting. */
 export async function logAiExplain(userId: string, questionId?: string): Promise<void> {
   await db.insert(ai_explain_logs).values({ userId, questionId });
+}
+
+// ── Admin: Question CRUD ────────────────────────────────────────────
+
+/**
+ * Insert a new question. `id` is caller-provided (text primary key), so
+ * the input must include it. Returns the inserted row.
+ */
+export async function createQuestion(data: Omit<Question, 'createdAt'>): Promise<Question> {
+  const rows = await db.insert(questions).values(data).returning();
+  return rows[0] as Question;
+}
+
+/** Update an existing question by id. Returns the updated row or null. */
+export async function updateQuestion(
+  id: string,
+  data: Partial<Omit<Question, 'createdAt'>>,
+): Promise<Question | null> {
+  const rows = await db
+    .update(questions)
+    .set(data)
+    .where(eq(questions.id, id))
+    .returning();
+  return (rows[0] as Question | undefined) ?? null;
+}
+
+/** Delete a question by id. */
+export async function deleteQuestion(id: string): Promise<void> {
+  await db.delete(questions).where(eq(questions.id, id));
+}
+
+// ── Admin: aggregate stats ──────────────────────────────────────────
+
+/** Count distinct registered users (from the auth `users` table). */
+export async function countUsers(): Promise<number> {
+  const rows = await db.select({ count: sql<number>`count(*)` }).from(users);
+  return Number(rows[0]?.count ?? 0);
+}
+
+/**
+ * Most-recent exam results across ALL users, newest first.
+ * Used by the admin dashboard's "recent activity" panel.
+ */
+export async function getRecentExams(limit = 10): Promise<ExamResult[]> {
+  return (await db
+    .select()
+    .from(exam_results)
+    .orderBy(desc(exam_results.createdAt))
+    .limit(limit)) as ExamResult[];
 }
