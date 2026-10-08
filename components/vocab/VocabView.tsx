@@ -20,6 +20,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppState, STORAGE_KEY } from '@/lib/storage';
 import { shuffle } from '@/lib/quiz/pool';
+import { toast } from '@/components/ui/toast';
 import {
   vocabFilter,
   vocabKey,
@@ -68,13 +69,9 @@ export default function VocabView({ vocabulary, unit, units }: VocabViewProps) {
     appState.vocabKnown || {},
   );
 
-  // ── Simple toast (app.js toast(), line 29) ──────────────────────────
-  const [toastMsg, setToastMsg] = useState('');
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // ── Toast (app.js toast(), line 29) — global top-right component ───
   const showToast = useCallback((msg: string) => {
-    setToastMsg(msg);
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    toastTimerRef.current = setTimeout(() => setToastMsg(''), 2000);
+    toast.add({ title: msg, type: 'success' });
   }, []);
 
   // ── Derived: filtered + (optionally) shuffled list ─────────────────
@@ -246,11 +243,6 @@ export default function VocabView({ vocabulary, unit, units }: VocabViewProps) {
     return () => window.removeEventListener('keydown', handler);
   }, [list.length, goNext, goPrev, toggleFlip]);
 
-  // ── Cleanup toast timer ────────────────────────────────────────────
-  useEffect(() => () => {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-  }, []);
-
   const currentWord =
     list.length > 0 ? list[Math.min(index, Math.max(0, list.length - 1))] : null;
 
@@ -308,8 +300,7 @@ export default function VocabView({ vocabulary, unit, units }: VocabViewProps) {
         onToggleMask={toggleCardMask}
       />
 
-      {/* ── Toast ── */}
-      {toastMsg && <div className="toast">{toastMsg}</div>}
+      {/* ── Toast: rendered globally by <Toaster /> in the root layout ── */}
     </div>
   );
 }

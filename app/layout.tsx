@@ -8,6 +8,7 @@ import { Header } from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import SwRegister from '@/components/layout/SwRegister';
 import { ProgressSyncProvider } from '@/components/layout/ProgressSyncProvider';
+import { Toaster } from '@/components/ui/toast';
 
 export const metadata: Metadata = {
   title: {
@@ -53,6 +54,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <SwRegister />
+        <Toaster />
         <ThemeProvider>
           <SessionProvider>
             <ProgressSyncProvider />
