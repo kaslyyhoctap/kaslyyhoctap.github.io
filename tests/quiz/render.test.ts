@@ -35,3 +35,26 @@ describe('chemFormat math', () => {
     expect(chemFormat('Số DNA con')).toBe('Số DNA con');
   });
 });
+
+describe('chemFormat biology gene-math', () => {
+  it('`nu N` becomes n with subscript N', () => {
+    expect(chemFormat('Bước 1: tổng nu N = (L/3,4)×2 = 1500×2 = 3000 nu.')).toBe(
+      'Bước 1: tổng n<sub>N</sub> = (L/3,4)×2 = 1500×2 = 3000 nu.',
+    );
+  });
+  it('`N gene` becomes N with subscript gene', () => {
+    expect(chemFormat('N gene = (4080/3,4)×2 = 2400 nu.')).toBe(
+      'N<sub>gene</sub> = (4080/3,4)×2 = 2400 nu.',
+    );
+  });
+  it('standalone `nu` (nucleotide abbreviation) stays', () => {
+    expect(chemFormat('nhân thực dài 100–200 nu')).toBe(
+      'nhân thực dài 100–200 nu',
+    );
+  });
+  it('English grammar `+ N` placeholder untouched', () => {
+    expect(chemFormat('Despite + N = Although + mệnh đề')).toBe(
+      'Despite + N = Although + mệnh đề',
+    );
+  });
+});

@@ -17,7 +17,7 @@
 'use client';
 
 import { typeOf } from '@/lib/quiz/pool';
-import { chemFormat, escapeHtml, LETTERS } from '@/lib/quiz/render';
+import { chemFormat, escapeHtml, isMathSubject, LETTERS } from '@/lib/quiz/render';
 import { subjectShort, subjectUnits, TYPES, topicNamesType } from '@/lib/meta';
 import { unitPrefix } from '@/lib/storage';
 import type { Question } from '@/lib/types';
@@ -52,10 +52,9 @@ function chipText(q: Question): string {
   return parts.join(' · ') || '—';
 }
 
-/** Question text, chemistry-formatted when applicable (app.js summary line, line 309). */
+/** Question text, notation-formatted when applicable (app.js summary line, line 309). */
 function questionHtml(q: Question): string {
-  const isChem = q.subject === 'chemistry';
-  return isChem ? chemFormat(q.question) : escapeHtml(q.question);
+  return isMathSubject(q.subject) ? chemFormat(q.question) : escapeHtml(q.question);
 }
 
 export default function BankItem({ q, status, isStarred, onToggleStar, passage }: BankItemProps) {
@@ -70,7 +69,7 @@ export default function BankItem({ q, status, isStarred, onToggleStar, passage }
   const headerHtml = `[${subj} ${unitTag}${typeLabel ? ' · ' + typeLabel : ''}] ${questionHtml(q)}`;
 
   // explanation body text (app.js bankItem body, lines 307–308).
-  const expText = isChem
+  const expText = isMathSubject(q.subject)
     ? chemFormat(q.explanation || '')
     : escapeHtml(q.explanation || '');
 
@@ -146,7 +145,7 @@ export default function BankItem({ q, status, isStarred, onToggleStar, passage }
           <ol type="A">
             {q.options?.map((o, i) => (
               <li key={i}>
-                {isChem ? (
+                {isMathSubject(q.subject) ? (
                   <span dangerouslySetInnerHTML={{ __html: chemFormat(o) }} />
                 ) : (
                   o

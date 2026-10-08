@@ -29,6 +29,9 @@ export function escapeHtml(s: unknown): string {
  * - Math: `^x` / `**x` / `^{...}` exponents become superscripts
  *   (e.g. `2^k` → `2<sup>k</sup>`), so legacy plain-text formulas
  *   render correctly project-wide (quiz, bank, result, theory).
+ * - Biology gene-math: `nu N` → n with subscript N (tổng nucleotide),
+ *   `N gene` → N with subscript gene. Plain `nu` (nucleotide abbreviation,
+ *   e.g. "100–200 nu") is left as-is.
  */
 export function chemFormat(s: unknown): string {
   const PLACEHOLDER = '\u0001';
@@ -38,11 +41,22 @@ export function chemFormat(s: unknown): string {
         .replace(/\bE5\b/g, `E${PLACEHOLDER}5${PLACEHOLDER}`)
         .replace(/\bB(\d+)\b/g, `B${PLACEHOLDER}$1${PLACEHOLDER}`),
     )
+      .replace(/\bnu\s+N\b/g, 'n<sub>N</sub>')
+      .replace(/\bN\s+gene\b/g, 'N<sub>gene</sub>')
       .replace(/\*\*\{([^}]+)\}|\^\{([^}]+)\}/g, '<sup>$1$2</sup>')
       .replace(/(\*\*|\^)([A-Za-z0-9]+)/g, '<sup>$2</sup>')
       .replace(/([A-Za-z)\]])(\d+)/g, `$1<sub>$2</sub>`)
       .replace(/\u0001/g, '')
   );
+}
+
+/**
+ * Subjects whose question/explanation text goes through `chemFormat`
+ * (chemistry formulas; biology gene-math notation). English/history text
+ * keeps plain escaping.
+ */
+export function isMathSubject(subject: string | null | undefined): boolean {
+  return subject === 'chemistry' || subject === 'biology';
 }
 
 /** Option / statement label letters, in display order (app.js `"abcd"[i]`). */

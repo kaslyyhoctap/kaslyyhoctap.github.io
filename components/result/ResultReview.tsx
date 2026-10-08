@@ -14,7 +14,7 @@
 
 import { useState, useEffect } from 'react';
 import { typeOf } from '@/lib/quiz/pool';
-import { chemFormat, LETTERS } from '@/lib/quiz/render';
+import { chemFormat, isMathSubject, LETTERS } from '@/lib/quiz/render';
 import {
   questionStatus,
   type RuntimeQuestion,
@@ -65,7 +65,7 @@ function correctLetter(s: RuntimeQuestion): string {
 
 /** Render the result options with ✓/✗ markers (app.js `resultOpts`, lines 192–196). */
 function ResultOpts({ q, a }: { q: RuntimeQuestion; a: number }) {
-  const isChem = q.subject === 'chemistry';
+  const isMath = isMathSubject(q.subject);
 
   if (typeOf(q) === 'true_false') {
     return q.statements?.map((t, i) => {
@@ -81,7 +81,7 @@ function ResultOpts({ q, a }: { q: RuntimeQuestion; a: number }) {
         >
           <span className="k">{LETTERS[i].toLowerCase()}</span>
           <span>
-            {isChem ? (
+            {isMath ? (
               <span dangerouslySetInnerHTML={{ __html: chemFormat(t.t) }} />
             ) : (
               t.t
@@ -111,7 +111,7 @@ function ResultOpts({ q, a }: { q: RuntimeQuestion; a: number }) {
       >
         <span className="k">{LETTERS[idx]}</span>
         <span>
-          {isChem ? (
+          {isMath ? (
             <span dangerouslySetInnerHTML={{ __html: chemFormat(op.t) }} />
           ) : (
             op.t
@@ -169,7 +169,7 @@ export default function ResultReview({ qs, ans, cfg, passages, onlyWrong, onTogg
       ) : (
         visible.map(({ s, n }) => {
           const st = questionStatus(s, s, ans[n]);
-          const isChem = s.subject === 'chemistry';
+          const isMath = isMathSubject(s.subject);
           const isTF = typeOf(s) === 'true_false';
 
           return (
@@ -205,7 +205,7 @@ export default function ResultReview({ qs, ans, cfg, passages, onlyWrong, onTogg
 
               {/* Question text (app.js line 291) */}
               <p>
-                {isChem ? (
+                {isMath ? (
                   <span
                     dangerouslySetInnerHTML={{
                       __html: chemFormat(s.question || ''),
@@ -228,7 +228,7 @@ export default function ResultReview({ qs, ans, cfg, passages, onlyWrong, onTogg
                     <b>Đúng/Sai từng ý ở trên</b>
                     <br />
                     <b>Giải thích:</b>{' '}
-                    {isChem ? (
+                    {isMath ? (
                       <span
                         dangerouslySetInnerHTML={{
                           __html: chemFormat(s.explanation || ''),
@@ -243,7 +243,7 @@ export default function ResultReview({ qs, ans, cfg, passages, onlyWrong, onTogg
                     <b>Đáp án đúng: {correctLetter(s)}</b>
                     <br />
                     <b>Giải thích:</b>{' '}
-                    {isChem ? (
+                    {isMath ? (
                       <span
                         dangerouslySetInnerHTML={{
                           __html: chemFormat(s.explanation || ''),
