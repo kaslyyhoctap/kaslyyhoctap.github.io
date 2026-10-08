@@ -79,11 +79,10 @@ export default async function SubjectPage({
 
   return (
     <>
-      <Link href="/" className="link">
-        ← Trang chủ
-      </Link>
-
       <div id="subjectHead" className="panel">
+        <Link href="/" className="link subj-back">
+          ← Trang chủ
+        </Link>
         <h2>
           {cfg.name}{' '}
           <small className="muted">

@@ -136,6 +136,9 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 .how li::marker{font-weight:700;color:var(--primary)}
 /* config */
 .cfg{margin:18px 0} .cfg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}
+/* Subject head: back link sits inline at the panel top, not on its own row. */
+#subjectHead .subj-back{display:inline-block;padding:0 0 4px}
+#subjectHead h2{margin-top:0}
 .cfg-grid label:nth-child(5){grid-column:span 2}
 .cfg label{display:grid;gap:6px;font-size:.88rem;font-weight:600}
 .cfg select,.filters select,.filters input,.cfg [data-slot=select-trigger],.filters [data-slot=select-trigger]{background:var(--bg);border:1px solid var(--border);color:var(--fg);border-radius:10px;padding:11px 12px;font:inherit;min-height:44px;width:100%}
