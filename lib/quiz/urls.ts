@@ -13,11 +13,13 @@
 
 export interface QuizParams {
   subject: string;
-  lesson: string | number;
+  /** 'all' | a single lesson | several checked lessons (checkbox UI). */
+  lesson: 'all' | string | number | (string | number)[];
   count: number;
   time: number;
   level?: string;
-  qtype?: string;
+  /** 'all' | a single type | several checked types (checkbox UI). */
+  qtype?: 'all' | string | string[];
   practice: boolean;
   shQ?: boolean;
   shA?: boolean;
@@ -28,12 +30,15 @@ export interface QuizParams {
 
 export function buildQuizUrl(p: QuizParams): string {
   const sp = new URLSearchParams();
+  // Arrays (multi-checked) serialise comma-joined: lesson=1,3 qtype=a,b.
+  const list = (v: 'all' | string | number | (string | number)[]) =>
+    Array.isArray(v) ? v.map(String).join(',') : String(v);
   sp.set('subject', p.subject);
-  sp.set('lesson', String(p.lesson));
+  sp.set('lesson', list(p.lesson));
   sp.set('count', String(p.count));
   sp.set('time', String(p.time));
   sp.set('level', p.level ?? 'all');
-  sp.set('qtype', p.qtype ?? 'all');
+  sp.set('qtype', p.qtype == null ? 'all' : list(p.qtype));
   sp.set('practice', String(p.practice));
   sp.set('shQ', p.shQ === false ? 'false' : 'true');
   sp.set('shA', p.shA === false ? 'false' : 'true');

@@ -23,7 +23,7 @@ interface QuestionCardProps {
   tf: number[];
   practice: boolean;
   /** Quiz type filter — controls whether the topic chip appends the type. */
-  qtype?: string;
+  qtype?: 'all' | string | string[];
   onSelect: (idx: number) => void;
   onTF: (idx: number, val: 0 | 1) => void;
   passages: PassageMap;

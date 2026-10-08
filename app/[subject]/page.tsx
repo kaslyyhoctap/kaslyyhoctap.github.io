@@ -50,11 +50,15 @@ export default async function SubjectPage({
   const subj = subjects.find((s) => s.subject === subject);
   if (!subj) notFound();
 
-  // Compute per-lesson question counts + English type counts (server-side).
+  // Compute per-lesson question counts + per-type counts (server-side).
   const lessonCounts: Record<number, number> = {};
   const engTypeCounts: Record<number, Record<string, number>> = {};
+  const typeCounts: Record<string, number> = {};
   for (const q of questions) {
     lessonCounts[q.lesson] = (lessonCounts[q.lesson] || 0) + 1;
+    // Untyped rows are implicit multiple_choice (typeOf).
+    const t = q.type ?? 'multiple_choice';
+    typeCounts[t] = (typeCounts[t] || 0) + 1;
     if (subject === 'english' && q.type) {
       const m = (engTypeCounts[q.lesson] ||= {});
       m[q.type] = (m[q.type] || 0) + 1;
@@ -99,7 +103,7 @@ export default async function SubjectPage({
         </div>
       </div>
 
-      <TestConfig subject={subject} lessons={subj.lessons} />
+      <TestConfig subject={subject} lessons={subj.lessons} typeCounts={typeCounts} />
 
       <LessonList
         subject={subject}

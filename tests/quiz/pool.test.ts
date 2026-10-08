@@ -94,6 +94,38 @@ describe('pool — non-english (history/biology)', () => {
   });
 });
 
+describe('pool — checkbox era (multi lesson/type + chem hard quota)', () => {
+  it('lesson array keeps only the checked lessons', () => {
+    const all = [
+      mcq('c1', 'chemistry', 1, 't', 'Nhận biết', 0),
+      mcq('c2', 'chemistry', 2, 't', 'Nhận biết', 0),
+      mcq('c3', 'chemistry', 3, 't', 'Nhận biết', 0),
+    ];
+    const sel = pool(all, {
+      subject: 'chemistry', lesson: [1, 3], count: 10, time: 10, practice: false, shQ: false,
+    });
+    expect(sel.map((q) => q.id).sort()).toEqual(['c1', 'c3']);
+  });
+
+  it('qtype array keeps only the checked types', () => {
+    const sel = pool(CHEM_QUESTIONS, {
+      subject: 'chemistry', lesson: 1, qtype: ['true_false'], count: 10, time: 10,
+      practice: false, shQ: false,
+    });
+    expect(sel.length).toBeGreaterThan(0);
+    expect(sel.every((q) => typeOf(q) === 'true_false')).toBe(true);
+  });
+
+  it('chemistry all-types: ≥30% hard questions when count≥10 (quota)', () => {
+    // shQ=false → deterministic: 2 TF (Thông hiểu) first, then 3 hard MCQs.
+    const sel = pool(CHEM_QUESTIONS, cfg({ lesson: 1, count: 10, shQ: false }));
+    const isHard = (q: Question) =>
+      q.difficulty === 'Vận dụng' || q.difficulty === 'Vận dụng cao';
+    expect(sel).toHaveLength(10);
+    expect(sel.filter(isHard).length).toBeGreaterThanOrEqual(Math.ceil(10 * 0.3));
+  });
+});
+
 describe('pool — english', () => {
   it('all-types respects WUE/CM quotas + keeps passage whole', () => {
     // count=10: wantWUE=1, wantCM=1, 1 passage (cloze, 6 q) + reading passage.

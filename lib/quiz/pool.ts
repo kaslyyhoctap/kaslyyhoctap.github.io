@@ -123,44 +123,68 @@ export function pool(
     return pickFresh(arr, opts.count || arr.length, shQ, answeredMap);
   }
 
-  // ── base filter (app.js line 124) ─────────────────────────────
-  const lesson = opts.lesson;
-  const isAllLesson = lesson === 'all';
-  const lessonNum = Number(lesson);
+  // ── base filter (app.js line 124, checkbox era: lesson/qtype can be arrays) ──
+  // 'all' (or empty array) means no filtering; a scalar is a 1-element array.
+  const lessonRaw = opts.lesson;
+  const lessons =
+    lessonRaw === 'all' || lessonRaw == null
+      ? null
+      : (Array.isArray(lessonRaw) ? lessonRaw.map(String) : [String(lessonRaw)]);
+  const qtypeRaw = opts.qtype;
+  const qts =
+    qtypeRaw === 'all' || qtypeRaw == null
+      ? null
+      : (Array.isArray(qtypeRaw) ? qtypeRaw.slice() : [qtypeRaw as string]);
 
   // ponytail: short_answer có trong bank (Xem ngân hàng câu hỏi) nhưng UI
   // nhập đáp án chưa được port — tạm bỏ khỏi mọi đề; đưa vào khi có ô nhập.
-  const base = questions.filter((q) => {
+  let base = questions.filter((q) => {
     if (q.subject !== opts.subject) return false;
-    if (!isAllLesson && q.lesson !== lessonNum) return false;
+    if (lessons && !lessons.includes(String(q.lesson))) return false;
     if (opts.level && opts.level !== 'all' && q.difficulty !== opts.level) return false;
     if (opts.topic && q.topic !== opts.topic) return false;
     if (opts.band && q.band !== +opts.band) return false;
     if (typeOf(q) === 'short_answer') return false;
     return true;
   });
+  // Checked type boxes (app.js line 129): keep only the requested types.
+  if (qts) base = base.filter((q) => qts.includes(typeOf(q)));
 
-  // ── chemistry: 2 true_false + rest (app.js line 125) ───────────
-  if (opts.subject === 'chemistry' && (!opts.qtype || opts.qtype === 'all')) {
+  // ── chemistry: 2 true_false + 30% hard quota + rest (app.js line 130) ──
+  // Only for the unfiltered ("Tất cả") case — a type checkbox set wins.
+  if (opts.subject === 'chemistry' && !qts) {
     const tfs = base.filter((q) => typeOf(q) === 'true_false');
-    const rest = base.filter((q) => typeOf(q) !== 'true_false');
     const k = Math.min(2, tfs.length, N);
-    const sel = pickFresh(tfs, k, shQ, answeredMap).concat(
-      pickFresh(rest, N - k, shQ, answeredMap),
+    const sel = pickFresh(tfs, k, shQ, answeredMap);
+    const isHard = (q: Question) =>
+      q.difficulty === 'Vận dụng' || q.difficulty === 'Vận dụng cao';
+    // Hóa: mỗi đề ≥30% câu khó (Vận dụng / Vận dụng cao) khi ≥10 câu, mọi mức độ.
+    const hNeed =
+      (!opts.level || opts.level === 'all') && N >= 10
+        ? Math.max(0, Math.ceil(N * 0.3) - sel.filter(isHard).length)
+        : 0;
+    const hPool = base.filter(
+      (q) => typeOf(q) !== 'true_false' && isHard(q) && !sel.includes(q),
     );
-    return shQ ? shuffle(sel) : sel;
+    const hardSel = pickFresh(hPool, Math.min(hNeed, hPool.length), shQ, answeredMap);
+    const picked = sel.concat(hardSel);
+    const used = new Set(picked.map((q) => q.id));
+    const rest = base.filter((q) => !used.has(q.id));
+    const final = picked.concat(pickFresh(rest, N - picked.length, shQ, answeredMap));
+    return shQ ? shuffle(final) : final;
   }
 
-  // ── non-english (history/biology) or chemistry w/ specific qtype ─
+  // ── history / biology ─────────────────────────────────────────
   if (opts.subject !== 'english') {
     return pickFresh(base, N, shQ, answeredMap);
   }
 
-  // ── english ────────────────────────────────────────────────────
-  const qt = opts.qtype || 'all';
+  // ── english (app.js line 132) ─────────────────────────────────
+  // qt: 'all' (no type filter) | the single checked type | 'multi'.
+  const qt = !qts ? 'all' : qts.length === 1 ? qts[0] : 'multi';
 
   // Single question-type requested.
-  if (qt !== 'all') {
+  if (qt !== 'all' && qt !== 'multi') {
     const only = base.filter((q) => typeOf(q) === qt);
 
     // cloze / reading_comprehension: keep whole passage blocks together
@@ -246,11 +270,10 @@ export function pool(
   });
   const fullPs = shQ ? shuffle(passGroups) : passGroups;
 
-  // maxPass: how many full passages to pull in (app.js line 146).
+  // maxPass: how many full passages to pull in (app.js line 146–151).
+  // (The cloze/reading special case lives in the single-type branch above.)
   let maxPass: number;
-  if (opts.qtype === 'cloze' || opts.qtype === 'reading_comprehension') {
-    maxPass = fullPs.length;
-  } else if (opts.lesson === 'all') {
+  if (opts.lesson === 'all') {
     maxPass = N >= 40 ? Math.min(2, fullPs.length) : Math.min(1, fullPs.length);
   } else {
     maxPass = Math.min(1, fullPs.length);

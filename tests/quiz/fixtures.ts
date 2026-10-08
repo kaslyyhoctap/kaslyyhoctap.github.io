@@ -53,11 +53,17 @@ function tf(
   };
 }
 
-// ── Chemistry bank (Chương 1): 20 MCQ + 4 true/false ──────────────
+// ── Chemistry bank (Chương 1): 24 MCQ (incl. 4 hard) + 4 true/false ──
 const CHEM: Question[] = [
   ...Array.from({ length: 20 }, (_, i) =>
     mcq(`chem1-mc-${i + 1}`, 'chemistry', 1, 'Lý thuyết', i < 10 ? 'Nhận biết' : 'Thông hiểu', 0),
   ),
+  // Hard-tier MCQs for the 30% quota test (app.js line 130).
+  mcq('chem1-mc-21', 'chemistry', 1, 'Tính toán', 'Vận dụng', 0),
+  mcq('chem1-mc-22', 'chemistry', 1, 'Tính toán', 'Vận dụng', 1),
+  mcq('chem1-mc-23', 'chemistry', 1, 'Tính toán', 'Vận dụng cao', 2),
+  mcq('chem1-mc-24', 'chemistry', 1, 'Tính toán', 'Vận dụng cao', 3),
+  mcq('chem2-mc-1', 'chemistry', 2, 'Chương 2', 'Nhận biết', 0),
   tf('chem1-tf-1', 'chemistry', 1, 'Ly thuyết', 'Thông hiểu', [
     { t: 'Ester tạo thành từ acid + alcohol', ok: true },
     { t: 'Ester tan trong nước', ok: false },

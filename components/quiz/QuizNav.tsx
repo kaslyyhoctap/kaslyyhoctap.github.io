@@ -69,9 +69,11 @@ export default function QuizNav({
 interface QuizTopProps {
   subject: string;
   subjectName: string;
-  lesson: string | number;
+  /** 'all' | single lesson | several checked lessons (checkbox UI). */
+  lesson: 'all' | string | number | (string | number)[];
   units: string;
-  qtype?: string;
+  /** 'all' | single type | several checked types (checkbox UI). */
+  qtype?: 'all' | string | string[];
   quick?: boolean;
   practice: boolean;
   i: number;
@@ -106,10 +108,16 @@ export function QuizTop({
   timeLeft,
 }: QuizTopProps) {
   const isEnglish = subject === 'english';
+  const lessonLabel = Array.isArray(lesson) ? lesson.join(', ') : lesson;
   const scope =
-    lesson === 'all' ? ' · Tổng hợp' : ` · ${units} ${lesson}`;
-  const kind =
-    isEnglish && qtype && qtype !== 'all' ? ` · ${TYPES[qtype]}` : '';
+    lesson === 'all' ? ' · Tổng hợp' : ` · ${units} ${lessonLabel}`;
+  // Checkbox era: qtype is 'all' | one type | several; show the mix label.
+  const qtypeLabel = Array.isArray(qtype)
+    ? qtype.map((t) => TYPES[t]).join('+')
+    : qtype && qtype !== 'all'
+      ? TYPES[qtype]
+      : '';
+  const kind = isEnglish && qtypeLabel ? ` · ${qtypeLabel}` : '';
   const title = `${quick ? 'Kiểm tra nhanh · ' : practice ? 'Luyện tập · ' : 'Kiểm tra · '}${subjectName}${scope}${kind}`;
 
   return (

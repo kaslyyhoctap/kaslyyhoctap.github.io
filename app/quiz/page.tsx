@@ -26,13 +26,16 @@ export default async function QuizPage({
   const sp = await searchParams;
 
   // All values arrive as strings from the URL (see buildQuizUrl).
+  // Comma-joined lists (checkbox UI) become arrays: lesson=1,3 qtype=a,b.
+  const parseList = (v: string | string[] | undefined): string | string[] | undefined =>
+    typeof v === 'string' && v.includes(',') ? v.split(',') : v;
   const subject = (sp.subject as string) || 'history';
-  const lesson = sp.lesson ? String(sp.lesson) : 'all';
+  const lesson = (parseList(sp.lesson as string) ?? 'all') as ExamConfig['lesson'];
   const count = Number(sp.count) || 20;
   const time = Number(sp.time) || 20;
   const practice = (sp.practice as string | undefined) === 'true';
   const level = (sp.level as string) || 'all';
-  const qtype = (sp.qtype as string) || 'all';
+  const qtype = (parseList(sp.qtype as string) ?? 'all') as ExamConfig['qtype'];
   const shQ = sp.shQ !== 'false';
   const shA = sp.shA !== 'false';
   const quick = (sp.quick as string | undefined) === 'true';

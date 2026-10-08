@@ -8,20 +8,18 @@ import type { RuntimeQuestion } from '@/lib/quiz/scoring';
 
 interface TopicChipProps {
   subject: string;
-  qtype?: string;
+  /** 'all' | single type | several checked types (checkbox UI). */
+  qtype?: 'all' | string | string[];
   q: RuntimeQuestion;
 }
 
 export default function TopicChip({ subject, qtype, q }: TopicChipProps) {
   const isEnglish = subject === 'english';
+  // The type suffix shows when a specific type (or set) is selected.
+  const typeFilterActive =
+    qtype != null && (Array.isArray(qtype) ? qtype.length > 0 : qtype !== 'all');
   const parts = [q.topic];
-  if (
-    isEnglish &&
-    qtype &&
-    qtype !== 'all' &&
-    q.type &&
-    !topicNamesType(q.topic, q.type)
-  ) {
+  if (isEnglish && typeFilterActive && q.type && !topicNamesType(q.topic, q.type)) {
     parts.push(TYPES[q.type]);
   }
   parts.push(q.difficulty);
