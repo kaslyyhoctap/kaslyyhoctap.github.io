@@ -24,6 +24,7 @@ export type { PassageMap } from './QuestionCard';
 import QuestionCard, { type PassageMap } from './QuestionCard';
 import QuestionPalette from './QuestionPalette';
 import QuizNav, { QuizTop } from './QuizNav';
+import TopicChip from './TopicChip';
 
 interface QuizViewProps {
   cfg: ExamConfig;
@@ -173,6 +174,10 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
         q={q}
         timeLeft={quiz.timeLeft}
       />
+
+      <div className="quiz-section-head">
+        <TopicChip subject={cfg.subject} qtype={cfg.qtype} q={q} />
+      </div>
 
       <div className="quiz-grid">
         <QuestionCard

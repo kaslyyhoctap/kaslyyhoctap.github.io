@@ -18,7 +18,7 @@
 
 import { typeOf } from '@/lib/quiz/pool';
 import { chemFormat, escapeHtml, LETTERS } from '@/lib/quiz/render';
-import { subjectShort, subjectUnits, TYPES } from '@/lib/meta';
+import { subjectShort, subjectUnits, TYPES, topicNamesType } from '@/lib/meta';
 import { unitPrefix } from '@/lib/storage';
 import type { Question } from '@/lib/types';
 
@@ -41,7 +41,7 @@ function chipText(q: Question): string {
   const typeLabel = q.type ? TYPES[q.type] : '';
   // Hide the type when it merely repeats the topic (app.js chipFor).
   const showType =
-    typeLabel && q.topic && typeLabel.toLowerCase() !== String(q.topic).toLowerCase()
+    typeLabel && q.topic && !topicNamesType(q.topic, q.type!)
       ? typeLabel
       : '';
   const parts: string[] = [];
@@ -82,21 +82,28 @@ export default function BankItem({ q, status, isStarred, onToggleStar, passage }
   return (
     <details className="panel bank-item">
       <summary>
-        <span dangerouslySetInnerHTML={{ __html: headerHtml }} />
-        {status && (
-          <span className={`tag ${status === 'ok' ? 'ok' : 'bad'}`}>
-            {status === 'ok' ? 'Đã đúng' : 'Đã sai'}
-          </span>
-        )}
-        <button
-          type="button"
-          className="btn btn-sm btn-ghost"
-          aria-label={isStarred ? 'Bỏ sao chép' : 'Lưu vào sổ tay'}
-          onClick={() => onToggleStar(q.id)}
-        >
-          {isStarred ? '★' : '☆'}
-        </button>
-        <br />
+        <div className="bank-head">
+          <span dangerouslySetInnerHTML={{ __html: headerHtml }} />
+          {status && (
+            <span className={`tag ${status === 'ok' ? 'ok' : 'bad'}`}>
+              {status === 'ok' ? 'Đã đúng' : 'Đã sai'}
+            </span>
+          )}
+          <button
+            type="button"
+            className="bank-star"
+            aria-label={isStarred ? 'Bỏ sao chép' : 'Lưu vào sổ tay'}
+            aria-pressed={isStarred}
+            // Keep the star from also toggling the <details> (summary default).
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleStar(q.id);
+            }}
+          >
+            {isStarred ? '★' : '☆'}
+          </button>
+        </div>
         <span className="muted small">
           {chipText(q)} · Nguồn: {q.source || ''}
         </span>

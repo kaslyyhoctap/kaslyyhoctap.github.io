@@ -38,7 +38,7 @@ export default function LessonCard({
   // English: show type counts; other subjects: fixed difficulty range label.
   const metaText = typeCounts
     ? Object.entries(typeCounts)
-        .map(([t, n]) => `${n} ${TYPES[t]?.split(' ')[0]}`)
+        .map(([t, n]) => `${n} ${TYPES[t]}`)
         .filter((s) => s.trim())
         .join(' · ') || '—'
     : 'Nhận biết → Vận dụng cao';

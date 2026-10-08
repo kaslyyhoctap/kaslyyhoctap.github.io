@@ -187,7 +187,7 @@ export default function VocabControls({
           </button>
         </div>
 
-        <p className="muted small" id="vocabHint">
+        <p className="muted small mt-3" id="vocabHint">
           Bấm vào thẻ để lật nghĩa. Phím ←/→ chuyển thẻ.
         </p>
       </div>

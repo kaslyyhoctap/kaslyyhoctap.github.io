@@ -50,7 +50,7 @@ export default function LessonList({
           ? Object.keys(TYPES)
               .map((t) => {
                 const n = l.typeCounts?.[t] ?? 0;
-                return `${n} ${TYPES[t].split(' ')[0]}`;
+                return `${n} ${TYPES[t]}`;
               })
               .join(' · ')
           : 'Nhận biết → Vận dụng cao';

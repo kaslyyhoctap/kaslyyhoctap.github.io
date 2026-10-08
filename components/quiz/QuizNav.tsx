@@ -9,7 +9,6 @@
 'use client';
 
 import { TYPES } from '@/lib/meta';
-import { chemFormat } from '@/lib/quiz/render';
 import type { RuntimeQuestion } from '@/lib/quiz/scoring';
 import Timer from './Timer';
 
@@ -113,14 +112,6 @@ export function QuizTop({
     isEnglish && qtype && qtype !== 'all' ? ` · ${TYPES[qtype]}` : '';
   const title = `${quick ? 'Kiểm tra nhanh · ' : practice ? 'Luyện tập · ' : 'Kiểm tra · '}${subjectName}${scope}${kind}`;
 
-  const topicParts = [q.topic];
-  if (isEnglish && q.type && TYPES[q.type].toLowerCase() !== String(q.topic).toLowerCase()) {
-    topicParts.push(TYPES[q.type]);
-  }
-  topicParts.push(q.difficulty);
-  if (q.band) topicParts.push(`Band ${Number(q.band).toFixed(1)}`);
-  const topicLabel = topicParts.filter(Boolean).join(' · ');
-
   return (
     <div className="quiz-top panel">
       <div className="quiz-meta">
@@ -132,30 +123,24 @@ export function QuizTop({
         <span id="qCount">Câu {i + 1}/{total}</span>
         <button
           type="button"
-          className={`btn btn-sm${flagged ? ' btn-primary' : ' btn-ghost'}`}
+          className="btn btn-sm btn-act"
           id="qFlag"
           onClick={onToggleFlag}
           aria-pressed={flagged}
         >
-          {flagged ? '\u2605 ' : '\u2606 '}Đánh dấu xem lại
+          <FlagIcon active={flagged} />
+          Đánh dấu xem lại
         </button>
         <button
           type="button"
-          className={`btn btn-sm${starred ? ' btn-primary' : ' btn-ghost'}`}
+          className="btn btn-sm btn-act"
           id="qStar"
           onClick={onToggleStar}
           aria-pressed={starred}
         >
-          {starred ? '\u2605 Sổ tay' : '\u2606 Sổ tay'}
+          <StarIcon active={starred} />
+          Sổ tay
         </button>
-      </div>
-
-      <div id="qTopic" className="chip">
-        {subject === 'chemistry' ? (
-          <span dangerouslySetInnerHTML={{ __html: chemFormat(topicLabel) }} />
-        ) : (
-          topicLabel
-        )}
       </div>
 
       <div className="progress">
@@ -165,9 +150,49 @@ export function QuizTop({
           style={{ width: `${progressPct}%` }}
         />
       </div>
+
       <div className="quiz-sub">
         <span id="qDone">Đã làm: {doneCount}</span>
       </div>
     </div>
+  );
+}
+
+/** Flag (Đánh dấu xem lại) — outline when off, filled when on. */
+function FlagIcon({ active }: { active: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="15"
+      height="15"
+      fill={active ? 'currentColor' : 'none'}
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 21V4" />
+      <path d="M5 4h12l-2.5 4L17 12H5" />
+    </svg>
+  );
+}
+
+/** Star (Sổ tay) — outline when off, filled when on. */
+function StarIcon({ active }: { active: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="15"
+      height="15"
+      fill={active ? 'currentColor' : 'none'}
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z" />
+    </svg>
   );
 }

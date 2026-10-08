@@ -28,7 +28,7 @@ export default async function TheoryPage({
   if (!th) {
     return (
       <>
-        <Link href={`/${subject}`} className="link">
+        <Link href={`/${subject}`} className="link theory-back">
           ← Quay lại
         </Link>
         <div className="panel">
@@ -42,7 +42,7 @@ export default async function TheoryPage({
 
   return (
     <>
-      <Link href={`/${subject}`} className="link">
+      <Link href={`/${subject}`} className="link theory-back">
         ← Quay lại
       </Link>
 

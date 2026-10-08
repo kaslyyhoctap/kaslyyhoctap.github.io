@@ -68,24 +68,48 @@ export function btnCls(sub: string): string {
         : 'btn-eng';
 }
 
-/** Question type labels (app.js line 15). */
+/** Question type labels — Vietnamese (app.js line 15, translated). */
 export const TYPES: Record<string, string> = {
-  multiple_choice: 'Multiple Choice',
-  cloze: 'Cloze Test',
-  word_usage_error: 'Word Usage Error',
-  closest_meaning: 'Closest Meaning',
-  reading_comprehension: 'Reading Comprehension',
-  true_false: 'True/False',
+  multiple_choice: 'Trắc nghiệm',
+  cloze: 'Điền từ',
+  word_usage_error: 'Lỗi dùng từ',
+  closest_meaning: 'Từ đồng nghĩa',
+  reading_comprehension: 'Đọc hiểu',
+  true_false: 'Đúng/Sai',
 };
 
-/** English skill categories for the result type breakdown (app.js line 16). */
+/**
+ * Type key as a plain phrase — used to detect when a question's `topic`
+ * already names its type (e.g. topic "Cloze test" ↔ type `cloze`), so the
+ * chip can skip the redundant type label. Keys never change with display
+ * translations; the data topics are English.
+ */
+const TYPE_NAMES: Record<string, string> = {
+  multiple_choice: 'multiple choice',
+  cloze: 'cloze test',
+  word_usage_error: 'word usage error',
+  closest_meaning: 'closest meaning',
+  reading_comprehension: 'reading comprehension',
+  true_false: 'true/false',
+};
+
+/** True when the question's topic already names its type (app.js chipFor). */
+export function topicNamesType(
+  topic: string | null | undefined,
+  typeKey: string,
+): boolean {
+  const name = TYPE_NAMES[typeKey];
+  return !!name && !!topic && name === topic.toLowerCase();
+}
+
+/** English skill categories for the result breakdown. Keys match data topics. */
 export const SKILLS: Record<string, string> = {
-  Vocabulary: 'Vocabulary',
-  Grammar: 'Grammar',
-  'Cloze test': 'Cloze Test',
-  'Word usage': 'Word Usage',
-  'Closest meaning': 'Paraphrase',
-  Reading: 'Reading',
+  Vocabulary: 'Từ vựng',
+  Grammar: 'Ngữ pháp',
+  'Cloze test': 'Điền từ',
+  'Word usage': 'Cách dùng từ',
+  'Closest meaning': 'Từ đồng nghĩa',
+  Reading: 'Đọc hiểu',
 };
 
 /** Difficulty levels for the filter dropdown. */
