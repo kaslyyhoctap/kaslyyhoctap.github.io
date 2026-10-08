@@ -128,3 +128,47 @@ data/
 
 Schema câu hỏi: `{id, subject, lesson, type, topic, question, options[4], correctAnswer, explanation, difficulty, band, source, sourceType, sourceUrl[, passageId, wrongWord, correctWord]}`.
 Muốn thêm bộ sách khác: thêm file `data/...` mới + khai báo trong `index.html`, không sửa `app.js`.
+
+---
+
+## Fullstack (Next.js 16)
+
+Phiên bản nâng cấp: Next.js 16 (App Router, Turbopack) + Drizzle ORM + Neon + NextAuth (Google) + shadcn/ui + Tailwind CSS v4.
+
+### Cài đặt
+
+```bash
+# 1. Cài dependencies
+bun install
+
+# 2. Tạo file môi trường
+cp .env.example .env.local
+# Điền: DATABASE_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+#      NEXTAUTH_SECRET, GOOGLE_AI_API_KEY, ADMIN_EMAIL
+
+# 3. Đẩy schema DB lên Neon
+bunx drizzle-kit push
+
+# 4. Nhập dữ liệu (748 câu hỏi, lý thuyết, từ vựng)
+bunx tsx scripts/seed.mts
+
+# 5. Chạy dev server
+bun run dev
+# → http://localhost:3000
+```
+
+### Deploy
+
+```bash
+# Commit code → Vercel tự động build + deploy
+# Thiết lập env vars trên Vercel Dashboard:
+#   DATABASE_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+#   NEXTAUTH_SECRET, GOOGLE_AI_API_KEY, ADMIN_EMAIL
+```
+
+### PWA
+
+- `app/manifest.ts` — Web App Manifest (standalone display, icon 192/512).
+- `public/icon-192.png`, `public/icon-512.png` — PWA icons.
+- `next.config.mjs` — cấu hình Turbopack, hình ảnh Google OAuth, server-external packages.
+- Dark mode: `ThemeProvider` (`lib/theme.tsx`) gán `data-theme="dark"` lên `<html>`, consumed bởi `styles.css`.

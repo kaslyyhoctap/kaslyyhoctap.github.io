@@ -49,6 +49,17 @@ export function readAppState(): AppState {
   }
 }
 
+/** Persist the full app state to localStorage under STORAGE_KEY. */
+export function writeAppState(state: Partial<AppState>): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const current = readAppState();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...current, ...state }));
+  } catch {
+    /* ignore — localStorage full or private mode */
+  }
+}
+
 /** Hook that reads localStorage and re-reads on `storage` events. */
 export function useAppState(): AppState {
   const [state, setState] = useState<AppState>(readAppState);
