@@ -107,7 +107,13 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
   if (!quiz.started || quiz.qs.length === 0) {
     return (
       <div className="panel">
-        <p className="muted">Không có câu hỏi nào phù hợp với bộ lọc.</p>
+        <p className="muted">
+          Không có câu hỏi nào phù hợp với bộ lọc
+          {cfg.qtype && cfg.qtype !== 'all'
+            ? ` (dạng ${cfg.qtype === 'true_false' ? 'Đúng/Sai' : cfg.qtype})`
+            : ''}
+          . Hãy thử nới lỏng bộ lọc.
+        </p>
       </div>
     );
   }

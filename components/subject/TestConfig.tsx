@@ -25,7 +25,6 @@ const LEVEL_OPTIONS: { value: string; label: string }[] = LEVELS.map((v) => ({
 
 export default function TestConfig({ subject, lessons }: TestConfigProps) {
   const units = subjectUnits(subject);
-  const isEnglish = subject === 'english';
   const router = useRouter();
 
   const [count, setCount] = useState(20);
@@ -49,13 +48,15 @@ export default function TestConfig({ subject, lessons }: TestConfigProps) {
   ];
 
   // Ports collectCfg() — builds the exam config object (app.js line 106).
+  // qtype applies to every subject that has typed questions (english 5 types,
+  // chemistry true_false); subjects with MCQ only ignore it in pool().
   const buildConfig = (practice: boolean) => ({
     subject,
     lesson: lesson === 'all' ? 'all' : Number(lesson),
     count,
     time,
     level,
-    qtype: isEnglish ? type : 'all',
+    qtype: type,
     shQ: shuffleQ,
     shA: shuffleA,
     practice,
@@ -156,28 +157,27 @@ export default function TestConfig({ subject, lessons }: TestConfigProps) {
             </Select>
           </label>
 
-          {/* Only shown for English (app.js line 96: cfgTypeWrap display toggle) */}
-          {isEnglish && (
-            <label>
-              Dạng bài (Tiếng Anh)
-              <Select
-                value={type}
-                onValueChange={(v) => v !== null && setType(v)}
-                items={typeItems}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {typeItems.map((o) => (
-                    <SelectItem key={o.value} value={o.value}>
-                      {o.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </label>
-          )}
+          {/* Question type filter — every subject (english has 5 types,
+              chemistry has true_false; MCQ-only subjects show just that) */}
+          <label>
+            Dạng bài
+            <Select
+              value={type}
+              onValueChange={(v) => v !== null && setType(v)}
+              items={typeItems}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {typeItems.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
 
           <label className="chk">
             <input

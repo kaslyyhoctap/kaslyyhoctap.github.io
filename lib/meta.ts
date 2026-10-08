@@ -92,7 +92,7 @@ export const SKILLS: Record<string, string> = {
 export const LEVELS: string[] = ['all', 'Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao'];
 
 /** Question count options for the test config. */
-export const COUNT_OPTIONS: number[] = [10, 20, 30, 40, 50];
+export const COUNT_OPTIONS: number[] = [10, 20, 30, 40, 50, 70, 100];
 
 /** Time limit options (minutes). */
 export const TIME_OPTIONS: number[] = [10, 20, 30, 45, 60];
