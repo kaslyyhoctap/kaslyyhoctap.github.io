@@ -208,7 +208,8 @@ kbd{background:var(--muted);border:1px solid var(--border);border-radius:6px;pad
 .pal button{aspect-ratio:1;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--fg);font:inherit;font-weight:700;font-size:.85rem;cursor:pointer;min-height:44px;transition:all .18s}
 .pal button.done{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
 .pal button.cur{outline:3px solid var(--accent);outline-offset:1px}
-.pal button.flag::after{content:" ★";color:#B45309}
+/* Flagged: yellow bg (matches the legend's gold dot) — after .done so it wins */
+.pal button.flag{background:gold;border-color:gold;color:#422F06}
 /* result */
 .result-hero{text-align:center;margin:16px 0} .r-score{font-size:clamp(3rem,10vw,4rem);font-weight:800;line-height:1;color:var(--primary)} .r-score small{font-size:1.3rem;color:var(--muted-fg)}
 .r-frac{font-weight:700} .r-verdict{display:inline-block;padding:6px 18px;border-radius:99px;font-weight:700;background:var(--muted)}
