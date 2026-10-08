@@ -71,19 +71,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light'); // SSR default
 
   // Once-mounted: read persisted theme (or system preference).
+  // NOTE: persist happens ONLY in toggleTheme below — never in an effect.
+  // A [theme] write-effect would fire on mount with the SSR default and
+  // clobber the stored value before the init above takes effect.
   useEffect(() => {
     const initial = getInitialTheme();
     setTheme(initial);
     applyTheme(initial);
   }, []);
 
-  // Apply theme to <html> and persist whenever it changes.
-  useEffect(() => {
-    applyTheme(theme);
-    writeTheme(theme);
-  }, [theme]);
-
-  const toggleTheme = () => setTheme((t) => (t === 'light' ? 'dark' : 'light'));
+  const toggleTheme = () => {
+    const next: Theme = theme === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    applyTheme(next);
+    writeTheme(next);
+  };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>
