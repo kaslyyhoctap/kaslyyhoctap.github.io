@@ -69,7 +69,16 @@ html: `<h2>1. Khái niệm và ý nghĩa</h2><p>Điều hoà biểu hiện gene 
 <tr><td>Không lactose</td><td>Bám operator</td><td><b>Đóng (off)</b> — chặn RNA pol</td></tr>
 <tr><td>Có lactose</td><td>Allolactose gắn repressor → rời operator</td><td><b>Mở (on)</b> — phiên mã ZYA</td></tr></table>
 <div class="key"><b>Lac là operon cảm ứng</b> (cần chất để bật), ngược với trp (ức chế: dư tryptophan thì tắt). Đột biến lacI– hoặc operator Oc → mở cấu định (luôn mở); mất promoter → tắt hoàn toàn.</div>
-<h2>3. Ở nhân thực và ứng dụng</h2><p>Phức tạp hơn: chromatin, enhancer/silencer, splicing thay thế, miRNA. Ứng dụng: vector lac + IPTG (giả inducer) sản xuất protein tái tổ hợp (insulin, enzyme).</p>` }
+<h2>3. Ở nhân thực và ứng dụng</h2><p>Phức tạp hơn: chromatin, enhancer/silencer, splicing thay thế, miRNA. Ứng dụng: vector lac + IPTG (giả inducer) sản xuất protein tái tổ hợp (insulin, enzyme).</p>` },
+4: { title: "Bài 4: Đột biến gene", desc: "Khái niệm, nguyên nhân, các dạng, hậu quả và ứng dụng đột biến gene.",
+html: `<h2>1. Khái niệm và nguyên nhân</h2><p>Đột biến gene là biến đổi trình tự nucleotide của gene (1 đến vài cặp). <b>Tự phát:</b> rối loạn sao chép. <b>Cảm ứng:</b> vật lý (tia tử ngoại, phóng xạ), hóa học (EMS, 5BU), sinh học (virus).</p>
+<h2>2. Các dạng đột biến điểm</h2>
+<table><tr><th>Dạng</th><th>Bản chất</th><th>Hậu quả</th></tr>
+<tr><td>Thay thế 1 cặp</td><td>Đổi 1 cặp nu</td><td>Nhầm nghĩa (đổi 1 aa), vô nghĩa (codon dừng sớm), im lặng (không đổi aa)</td></tr>
+<tr><td>Thêm/mất 1 cặp</td><td>Không phải bội số của 3</td><td><b>Dịch khung</b> — nghiêm trọng nhất</td></tr>
+<tr><td>Thêm/mất bội số của 3</td><td>Giữ khung đọc</td><td>Thêm/mất amino acid</td></tr></table>
+<h2>3. Hậu quả và ý nghĩa</h2><p>Ngẫu nhiên, vô hướng, tần số thấp. Phần lớn <b>có hại</b>, số ít trung tính, hiếm có lợi. Đột biến giao tử di truyền hữu tính; đột biến soma không. Ví dụ: hồng cầu liềm (Glu thành Val), bạch tạng (thiếu tyrosinase), máu khó đông (liên kết X).</p>
+<h2>4. Ứng dụng</h2><div class="key"><b>Gây đột biến nhân tạo</b> (tia gamma, hóa chất) tạo biến dị mới cho chọn giống. <b>Sửa chữa:</b> DNA polymerase đọc sửa, quang phục hoạt. <b>Ý nghĩa tiến hóa:</b> nguyên liệu sơ cấp.</div>` }
 },
 chemistry: {
 1: { title: "Chương 1: Ester – Lipid", desc: "Khái niệm, danh pháp, tính chất ester; chất béo, acid béo và phản ứng xà phòng hóa.",

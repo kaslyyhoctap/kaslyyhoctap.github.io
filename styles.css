@@ -162,6 +162,10 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 #subjectHead h2{margin-top:0}
 .cfg-grid label:nth-child(5){grid-column:span 2}
 .cfg label{display:grid;gap:6px;font-size:.88rem;font-weight:600}
+.cfg-group{display:grid;gap:6px;font-size:.88rem;font-weight:600}
+.chk-grid{display:flex;gap:8px;flex-wrap:wrap}
+.chk-grid .chk{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 12px;min-height:44px;align-items:center;cursor:pointer}
+.chk-grid .chk.dis{opacity:.45;cursor:not-allowed}
 .cfg select,.filters select,.filters input,.cfg [data-slot=select-trigger],.filters [data-slot=select-trigger]{background:var(--bg);border:1px solid var(--border);color:var(--fg);border-radius:10px;padding:11px 12px;font:inherit;min-height:44px;width:100%}
 .cfg label.chk{grid-template-columns:auto minmax(0,1fr);grid-auto-flow:column;align-items:center;justify-content:start;gap:8px;align-self:end;padding-bottom:10px;white-space:nowrap}
 .cfg input[type=checkbox]{width:20px;height:20px;accent-color:var(--primary);flex:none}
@@ -192,6 +196,7 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 .tf-row .btn{flex:none}
 .tf-ok{border-color:var(--ok);background:var(--ok-bg)} .tf-bad{border-color:var(--bad);background:var(--bad-bg)}
 .tf-list{display:grid;gap:12px;margin:8px 0}
+#saIn{width:100%;border:1.5px solid var(--border);background:var(--bg);color:var(--fg);border-radius:12px;padding:13px 14px;font:inherit;font-size:1.05rem;min-height:52px}#saIn:focus{border-color:var(--primary);outline:none}#saIn.practice-ok{border-color:var(--ok);background:var(--ok-bg)}#saIn.practice-bad{border-color:var(--bad);background:var(--bad-bg)}
 .opt>span:last-child{overflow-wrap:break-word}
 .opt.practice-ok{border-color:var(--ok);background:var(--ok-bg)} .opt.practice-bad{border-color:var(--bad);background:var(--bad-bg)}
 .q-nav{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap} .q-nav .btn-primary,.q-nav #qSubmit{margin-left:auto}
