@@ -9,7 +9,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { AuthButton } from '@/components/auth/AuthButton';
 import { META, SUBJECTS, subjectName } from '@/lib/meta';
 
 export function Header() {
@@ -17,6 +19,7 @@ export function Header() {
   const [subjOpen, setSubjOpen] = useState(false);
   const [explOpen, setExplOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   // Close nav + dropdown on Escape.
   useEffect(() => {
@@ -244,6 +247,20 @@ export function Header() {
             >
               Tạo đề AI
             </Link>
+            {/* Mobile-only: auth in the drawer (`.auth-btn` is hidden at ≤320px) */}
+            {session ? (
+              <button
+                type="button"
+                className="nav-btn auth-drawer-btn"
+                onClick={() => void signOut()}
+              >
+                Đăng xuất{session.user?.name ? ` (${session.user.name})` : ''}
+              </button>
+            ) : (
+              <Link href="/login" className="nav-btn auth-drawer-btn" onClick={closeNav}>
+                Đăng nhập
+              </Link>
+            )}
           </nav>
 
           {/* Mobile scrim — visibility fully controlled by body.nav-open (see styles.css);
@@ -257,6 +274,7 @@ export function Header() {
 
           {/* Right-side actions */}
           <div className="header-act">
+            <AuthButton />
             <ThemeToggle />
             <Link href="/quick" className="btn btn-primary btn-sm">
               Kiểm tra nhanh

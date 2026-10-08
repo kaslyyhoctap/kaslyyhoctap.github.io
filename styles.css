@@ -61,6 +61,18 @@ body.nav-open .header{z-index:200}
 @media(min-width:901px){body.subj-open .nav{overflow:visible}}
 .header-act{display:flex;align-items:center;gap:10px;white-space:nowrap}
 .header-act .btn,.icon-btn{white-space:nowrap;flex:none}
+/* Auth button: Google sign-in or avatar sign-out */
+.auth-btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--fg);padding:9px 12px;border-radius:12px;cursor:pointer;min-height:44px;transition:transform .16s,background .18s,box-shadow .18s;font-size:.88rem;text-decoration:none}
+.auth-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.auth-btn:active{transform:translateY(0)}
+.auth-btn-skeleton{width:110px;height:38px;background:var(--border);border-radius:12px;animation:pulse 1.5s infinite}
+.auth-btn-signed{background:var(--bg);border-color:var(--border);padding:4px}
+.auth-btn-signed:hover{transform:translateY(-1px)}
+.auth-avatar{border-radius:50%;object-fit:cover}
+.auth-initial{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--primary);color:var(--on-primary);font-size:13px;font-weight:700}
+/* Mobile drawer auth link (header .auth-btn hidden at ≤320px; drawer holds it) */
+.auth-drawer-btn{display:none}
+@media(max-width:901px){.auth-drawer-btn{display:flex;margin-top:auto;border-top:1px solid var(--border);padding-top:12px}}
 /* buttons */
 .btn{font:inherit;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--fg);padding:11px 18px;border-radius:12px;cursor:pointer;min-height:44px;transition:transform .16s,background .18s,box-shadow .18s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
 .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
@@ -398,5 +410,6 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
   #themeLbl{display:none}
   /* ponytail: header 3 cột auto/1fr/auto min-content ~390px > 320px — ẩn CTA, drawer vẫn có link */
   .header-act .btn{display:none}
+  .auth-btn{display:none}
   .fx-block{padding:8px 10px}
 }

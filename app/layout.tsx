@@ -7,6 +7,7 @@ import { SessionProvider } from 'next-auth/react';
 import { Header } from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import SwRegister from '@/components/layout/SwRegister';
+import { ProgressSyncProvider } from '@/components/layout/ProgressSyncProvider';
 
 export const metadata: Metadata = {
   title: {
@@ -54,6 +55,7 @@ export default function RootLayout({
         <SwRegister />
         <ThemeProvider>
           <SessionProvider>
+            <ProgressSyncProvider />
             <Header />
             <main id="main" className="wrap">
               {children}
