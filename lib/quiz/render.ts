@@ -23,9 +23,12 @@ export function escapeHtml(s: unknown): string {
 }
 
 /**
- * Escape + subscriptify a chemistry string (app.js `chem`).
- * Replaces `E5`→`E₅`, `B2`→`B₂` (via a temporary placeholder), then turns
- * letters/brackets followed by digits into subscripts.
+ * Escape + format a chemistry/math string (app.js `chem`, extended).
+ * - Chemistry: letters/brackets followed by digits become subscripts
+ *   (e.g. `C2H5` → `C<sub>2</sub>H<sub>5</sub>`).
+ * - Math: `^x` / `**x` / `^{...}` exponents become superscripts
+ *   (e.g. `2^k` → `2<sup>k</sup>`), so legacy plain-text formulas
+ *   render correctly project-wide (quiz, bank, result, theory).
  */
 export function chemFormat(s: unknown): string {
   const PLACEHOLDER = '\u0001';
@@ -35,6 +38,8 @@ export function chemFormat(s: unknown): string {
         .replace(/\bE5\b/g, `E${PLACEHOLDER}5${PLACEHOLDER}`)
         .replace(/\bB(\d+)\b/g, `B${PLACEHOLDER}$1${PLACEHOLDER}`),
     )
+      .replace(/\*\*\{([^}]+)\}|\^\{([^}]+)\}/g, '<sup>$1$2</sup>')
+      .replace(/(\*\*|\^)([A-Za-z0-9]+)/g, '<sup>$2</sup>')
       .replace(/([A-Za-z)\]])(\d+)/g, `$1<sub>$2</sub>`)
       .replace(/\u0001/g, '')
   );
