@@ -413,7 +413,7 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
   .vgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cfg-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .frow{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .header-in{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"menu logo actions";gap:8px 10px;padding:10px 0}
+  .header-in{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"menu logo actions";gap:8px 10px;padding:10px 14px}
   /* ponytail: filter/backdrop tạo containing block nhốt position:fixed của sidebar → tắt trên mobile */
   .header{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--card)}
   .menu-btn{display:inline-flex!important;grid-area:menu}
