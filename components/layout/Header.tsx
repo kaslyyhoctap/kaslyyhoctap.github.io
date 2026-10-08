@@ -15,6 +15,7 @@ import { META, SUBJECTS, subjectName } from '@/lib/meta';
 export function Header() {
   const [navOpen, setNavOpen] = useState(false);
   const [subjOpen, setSubjOpen] = useState(false);
+  const [explOpen, setExplOpen] = useState(false);
   const pathname = usePathname();
 
   // Close nav + dropdown on Escape.
@@ -23,6 +24,7 @@ export function Header() {
       if (e.key === 'Escape') {
         setNavOpen(false);
         setSubjOpen(false);
+        setExplOpen(false);
       }
     };
     document.addEventListener('keydown', onKey);
@@ -33,7 +35,10 @@ export function Header() {
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (!target.closest('.nav-group')) setSubjOpen(false);
+      if (!target.closest('.nav-group')) {
+        setSubjOpen(false);
+        setExplOpen(false);
+      }
     };
     document.addEventListener('click', onClick);
     return () => document.removeEventListener('click', onClick);
@@ -49,12 +54,15 @@ export function Header() {
     return () => document.body.classList.remove('nav-open');
   }, [navOpen]);
 
-  // Body class for subject dropdown state.
+  // Body class for dropdown state (desktop needs overflow:visible when open).
   useEffect(() => {
-    document.body.classList.toggle('subj-open', subjOpen);
-  }, [subjOpen]);
+    document.body.classList.toggle('subj-open', subjOpen || explOpen);
+  }, [subjOpen, explOpen]);
 
   const isSubjectRoute = SUBJECTS.includes(pathname.split('/')[1] || '');
+  const isExploreRoute = ['/bank', '/vocab', '/progress'].some((p) =>
+    pathname.startsWith(p),
+  );
   const closeNav = () => setNavOpen(false);
 
   return (
@@ -131,7 +139,10 @@ export function Header() {
                 aria-haspopup="true"
                 aria-expanded={subjOpen}
                 aria-controls="subjMenu"
-                onClick={() => setSubjOpen(!subjOpen)}
+                onClick={() => {
+                  setSubjOpen(!subjOpen);
+                  setExplOpen(false);
+                }}
               >
                 Môn học{' '}
                 <svg
@@ -167,16 +178,70 @@ export function Header() {
               </div>
             </div>
 
-            <Link href="/bank" className="nav-btn" onClick={closeNav}>
-              Ngân hàng câu hỏi
-            </Link>
-            <Link href="/vocab" className="nav-btn" onClick={closeNav}>
-              Từ vựng
-            </Link>
-            <Link href="/progress" className="nav-btn" onClick={closeNav}>
-              Tiến độ
-            </Link>
-            <Link href="/ai/generate" className="nav-btn" onClick={closeNav}>
+            <div className="nav-group">
+              <button
+                type="button"
+                className={`nav-btn${explOpen ? ' active' : ''}${isExploreRoute ? ' active' : ''}`}
+                id="explBtn"
+                aria-haspopup="true"
+                aria-expanded={explOpen}
+                aria-controls="explMenu"
+                onClick={() => {
+                  setExplOpen(!explOpen);
+                  setSubjOpen(false);
+                }}
+              >
+                Khám phá{' '}
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div
+                className="nav-menu"
+                id="explMenu"
+                role="menu"
+                hidden={!explOpen}
+              >
+                <Link
+                  href="/bank"
+                  className={`nav-btn${pathname.startsWith('/bank') ? ' active' : ''}`}
+                  role="menuitem"
+                  onClick={closeNav}
+                >
+                  Ngân hàng câu hỏi
+                </Link>
+                <Link
+                  href="/vocab"
+                  className={`nav-btn${pathname.startsWith('/vocab') ? ' active' : ''}`}
+                  role="menuitem"
+                  onClick={closeNav}
+                >
+                  Từ vựng
+                </Link>
+                <Link
+                  href="/progress"
+                  className={`nav-btn${pathname.startsWith('/progress') ? ' active' : ''}`}
+                  role="menuitem"
+                  onClick={closeNav}
+                >
+                  Tiến độ
+                </Link>
+              </div>
+            </div>
+            <Link
+              href="/ai/generate"
+              className={`nav-btn${pathname.startsWith('/ai') ? ' active' : ''}`}
+              onClick={closeNav}
+            >
               Tạo đề AI
             </Link>
           </nav>

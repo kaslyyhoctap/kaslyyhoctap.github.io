@@ -94,9 +94,11 @@ export default async function SubjectPage({
           {cfg.book} — chọn {cfg.units.toLowerCase()} để học lý thuyết, luyện trắc
           nghiệm hoặc tạo đề kiểm tra tính giờ.
         </p>
+        <div className="subj-quick">
+          <QuickQuiz />
+          <span className="muted small">Ngẫu nhiên 10 câu / 10 phút mọi môn.</span>
+        </div>
       </div>
-
-      <QuickQuiz />
 
       <TestConfig subject={subject} lessons={subj.lessons} />
 

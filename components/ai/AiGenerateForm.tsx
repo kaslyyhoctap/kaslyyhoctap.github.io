@@ -117,45 +117,65 @@ export default function AiGenerateForm({ subjects }: AiGenerateFormProps) {
   if (questions && questions.length > 0) {
     return (
       <div className="panel">
-        <h3>Đề đã tạo ({questions.length} câu)</h3>
+        <p className="eyebrow">Đề AI đã tạo</p>
+        <h3>
+          {questions.length} câu · {subjName}
+        </h3>
         <p className="muted small">
-          Môn: {subjName} · {lesson === 'all' ? 'Tổng hợp' : `${units} ${lesson}`}
+          {lesson === 'all' ? 'Tổng hợp' : `${units} ${lesson}`}
           {difficulty !== 'all' ? ` · ${difficulty}` : ''}
         </p>
 
-        <div className="rev">
-          {questions.map((q, i) => (
-            <div key={q.id} className="opt">
-              <span className="k">{i + 1}</span>
-              <span>
-                <b>{q.question}</b>
-                <br />
-                {q.options?.map((opt, j) => (
-                  <span key={j}>
-                    {String.fromCharCode(65 + j)}. {opt}
-                    {j === q.correctAnswer && ' ✓'}
-                  </span>
-                ))}
-                <br />
-                <span className="muted small">
-                  Đáp án: {q.correctAnswer != null && q.options
-                    ? String.fromCharCode(65 + q.correctAnswer)
-                    : '?'}
-                  {q.topic && ` · Chủ đề: ${q.topic}`}
-                  {q.difficulty && ` · ${q.difficulty}`}
-                </span>
-              </span>
-            </div>
-          ))}
+        <div>
+          {questions.map((q, i) => {
+            const letter =
+              q.correctAnswer != null && q.options
+                ? String.fromCharCode(65 + q.correctAnswer)
+                : '?';
+            return (
+              <article key={q.id} className="panel ai-card">
+                <div className="rev-head">
+                  <span className="badge">Câu {i + 1}</span>
+                  {q.difficulty && (
+                    <span className="badge">{q.difficulty}</span>
+                  )}
+                  {q.topic && <span className="badge">{q.topic}</span>}
+                  <span className="tag ok">Đáp án {letter}</span>
+                </div>
+                <p>
+                  <b>{q.question}</b>
+                </p>
+                {q.options && (
+                  <ol className="ai-opts">
+                    {q.options.map((opt, j) => (
+                      <li
+                        key={j}
+                        className={j === q.correctAnswer ? 'hit' : ''}
+                      >
+                        {String.fromCharCode(65 + j)}. {opt}
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                {q.statements && (
+                  <ol className="ai-opts">
+                    {q.statements.map((st, j) => (
+                      <li key={j}>{st.t}</li>
+                    ))}
+                  </ol>
+                )}
+              </article>
+            );
+          })}
         </div>
 
-        <div className="row wrap-btns">
+        <div className="ai-cta">
           <button
             type="button"
             className="btn btn-primary"
             onClick={handleStartQuiz}
           >
-            Bắt đầu làm bài
+            Bắt đầu làm bài ({questions.length} câu)
           </button>
           <button
             type="button"
@@ -171,7 +191,8 @@ export default function AiGenerateForm({ subjects }: AiGenerateFormProps) {
 
   // ── Form view ─────────────────────────────────────────────────
   return (
-    <div className="panel">
+    <div className="panel cfg">
+      <p className="eyebrow">Tạo đề bằng AI</p>
       <h3>Tạo đề kiểm tra AI</h3>
       <p className="muted small">
         Tạo đề trắc nghiệm tự động bằng AI (Gemini 2.0 Flash). Tối đa 5 đề/ngày.
@@ -272,15 +293,28 @@ export default function AiGenerateForm({ subjects }: AiGenerateFormProps) {
             type="submit"
             className="btn btn-primary"
             disabled={loading}
+            aria-busy={loading}
           >
-            {loading ? 'Đang tạo...' : 'Tạo đề'}
+            {loading ? (
+              <>
+                <span className="spin" aria-hidden="true" /> Đang tạo đề…
+              </>
+            ) : (
+              'Tạo đề'
+            )}
           </button>
         </div>
       </form>
 
+      {loading && (
+        <p role="status" className="muted small" style={{ marginTop: 12 }}>
+          AI đang soạn câu hỏi, vui lòng đợi trong giây lát…
+        </p>
+      )}
+
       {error && (
-        <div className="panel" style={{ marginTop: 12 }}>
-          <p className="muted">
+        <div className="panel ai-err" role="alert" style={{ marginTop: 12 }}>
+          <p>
             {error}
             {isFallback && ' Hãy thử lại hoặc chọn môn học khác.'}
           </p>

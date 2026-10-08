@@ -5,8 +5,7 @@
  * (already fetched server-side, mirroring app.js global `Q`), builds the
  * valid + de-duplicated set, applies the six client-side filters
  * (subject / lesson / difficulty / type / answer-state / search), and renders
- * the list with a 120-item cap (app.js used a 20/page pager — replaced here by
- * the simpler cap per the task spec).
+ * the list with 20-per-page pagination (numbered pages + prev/next).
  *
  * Answer-status (`S.answered`) and star state (`S.starred`) are read from the
  * legacy `ontap12-v1` localStorage via `useAppState`; star toggles persist back
@@ -14,7 +13,7 @@
  */
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BankFilters, { type FilterValues, EMPTY_FILTERS } from './BankFilters';
 import BankItem, { type PassageMap } from './BankItem';
 import { typeOf } from '@/lib/quiz/pool';
@@ -22,7 +21,7 @@ import { subjectUnits } from '@/lib/meta';
 import { readAppState, useAppState, STORAGE_KEY } from '@/lib/storage';
 import type { Question } from '@/lib/types';
 
-const BANK_LIMIT = 120;
+const PAGE_SIZE = 20;
 
 interface BankViewProps {
   /** All questions from the DB (raw; validity + dedup done here). */
@@ -72,6 +71,7 @@ export default function BankView({ questions, passages }: BankViewProps) {
   const onChange = (patch: Partial<FilterValues>) =>
     setFilters((f) => ({ ...f, ...patch }));
   const onReset = () => setFilters(EMPTY_FILTERS);
+  const [page, setPage] = useState(1);
 
   const toggleStar = (id: string) => {
     setStarred((prev) => {
@@ -123,8 +123,19 @@ export default function BankView({ questions, passages }: BankViewProps) {
   }, [bank, filters.sub]);
 
   const unitWord = filters.sub ? subjectUnits(filters.sub) : 'Bài';
-  const showList = list.slice(0, BANK_LIMIT);
-  const limited = list.length > BANK_LIMIT;
+
+  // Pagination: 20/page; reset to page 1 whenever the filter result changes.
+  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+  useEffect(() => {
+    setPage(1);
+  }, [filters, bank]);
+  const safePage = Math.min(page, totalPages);
+  const showList = list.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  // Windowed page numbers: first · last · current ± 2.
+  const pageNums = useMemo(() => {
+    const nums = new Set([1, totalPages, safePage - 2, safePage - 1, safePage, safePage + 1, safePage + 2]);
+    return [...nums].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b);
+  }, [safePage, totalPages]);
 
   return (
     <>
@@ -136,18 +147,13 @@ export default function BankView({ questions, passages }: BankViewProps) {
         onReset={onReset}
       />
 
-      {/* bankCount (app.js line 322): "· X/Y câu" */}
+      {/* bankCount (app.js line 322): "· X/Y câu" + pager position */}
       <h2>
         Ngân hàng câu hỏi{' '}
         <small className="muted">
           · {list.length}/{bank.length} câu
         </small>
       </h2>
-
-      {/* 120-item cap message (replaces app.js pager). */}
-      {limited && (
-        <p className="muted small">Chỉ hiện {BANK_LIMIT}/{list.length} câu</p>
-      )}
 
       {showList.length === 0 ? (
         <div className="panel">
@@ -172,6 +178,47 @@ export default function BankView({ questions, passages }: BankViewProps) {
             />
           ))}
         </div>
+      )}
+
+      {list.length > 0 && (
+        <nav className="pager" aria-label="Phân trang ngân hàng câu hỏi">
+          <button
+            type="button"
+            disabled={safePage <= 1}
+            onClick={() => setPage(safePage - 1)}
+            aria-label="Trang trước"
+          >
+            ← Trước
+          </button>
+          {pageNums.map((n, i) => (
+            <span key={n} style={{ display: 'contents' }}>
+              {i > 0 && n - pageNums[i - 1]! > 1 && (
+                <span className="muted" aria-hidden="true">
+                  …
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => setPage(n)}
+                aria-label={`Trang ${n}`}
+                aria-current={n === safePage ? 'page' : undefined}
+              >
+                {n}
+              </button>
+            </span>
+          ))}
+          <button
+            type="button"
+            disabled={safePage >= totalPages}
+            onClick={() => setPage(safePage + 1)}
+            aria-label="Trang sau"
+          >
+            Sau →
+          </button>
+          <span className="pg-info">
+            Trang {safePage}/{totalPages} · {list.length} câu
+          </span>
+        </nav>
       )}
     </>
   );
