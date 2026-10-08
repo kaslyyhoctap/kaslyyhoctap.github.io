@@ -67,7 +67,7 @@ export function Header() {
 
   return (
     <>
-      <a className="skip" href="#main">
+      <a className="skip-link" href="#main">
         Bỏ qua tới nội dung chính
       </a>
 
