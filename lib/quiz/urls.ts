@@ -22,6 +22,8 @@ export interface QuizParams {
   shQ?: boolean;
   shA?: boolean;
   quick?: boolean;
+  /** Optional question ids to drill a specific set (app.js `startExam` ids). */
+  ids?: string[];
 }
 
 export function buildQuizUrl(p: QuizParams): string {
@@ -36,5 +38,6 @@ export function buildQuizUrl(p: QuizParams): string {
   sp.set('shQ', p.shQ === false ? 'false' : 'true');
   sp.set('shA', p.shA === false ? 'false' : 'true');
   if (p.quick) sp.set('quick', 'true');
+  if (p.ids && p.ids.length) sp.set('ids', p.ids.join(','));
   return `/quiz?${sp.toString()}`;
 }
