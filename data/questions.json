@@ -12060,7 +12060,7 @@
       "C2H6O"
     ],
     "correctAnswer": 0,
-    "explanation": "Glucose là C6H12O6. C12H22O11 là saccarozơ; (C6H10O5)n là tinh bột/xenlulozơ; C2H6O là ethanol.",
+    "explanation": "Glucose là C6H12O6. C12H22O11 là sucrose; (C6H10O5)n là tinh bột/cellulose; C2H6O là ethanol.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12074,11 +12074,11 @@
     "options": [
       "Tinh bột",
       "Glucose",
-      "Saccarozơ",
-      "Mantozơ"
+      "Sucrose",
+      "Maltose"
     ],
     "correctAnswer": 1,
-    "explanation": "Fructose và glucose cùng công thức C6H12O6 nên là đồng phân của nhau. Saccarozơ, mantozơ, tinh bột có công thức khác.",
+    "explanation": "Fructose và glucose cùng công thức C6H12O6 nên là đồng phân của nhau. Sucrose, maltose, tinh bột có công thức khác.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12108,13 +12108,13 @@
     "topic": "Vận dụng",
     "question": "Chất nào sau đây cho được phản ứng tráng bạc?",
     "options": [
-      "Saccarozơ",
+      "Sucrose",
       "Tinh bột",
-      "Xenlulozơ",
+      "Cellulose",
       "Glucose"
     ],
     "correctAnswer": 3,
-    "explanation": "Glucose có nhóm aldehyde tự do nên khử Ag+ thành Ag. Saccarozơ, tinh bột, xenlulozơ không có nhóm khử tự do.",
+    "explanation": "Glucose có nhóm aldehyde tự do nên khử Ag+ thành Ag. Sucrose, tinh bột, cellulose không có nhóm khử tự do.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12124,7 +12124,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Saccarozơ không có phản ứng tráng bạc vì nguyên nhân nào?",
+    "question": "Sucrose không có phản ứng tráng bạc vì nguyên nhân nào?",
     "options": [
       "Không còn nhóm aldehyde tự do",
       "Phân tử quá lớn",
@@ -12132,7 +12132,7 @@
       "Không có nhóm -OH"
     ],
     "correctAnswer": 0,
-    "explanation": "Saccarozơ tạo liên kết glycoside qua cả hai gốc nên không còn nhóm -CHO tự do. Kích thước, độ tan và nhóm -OH không phải nguyên nhân.",
+    "explanation": "Sucrose tạo liên kết glycoside qua cả hai gốc nên không còn nhóm -CHO tự do. Kích thước, độ tan và nhóm -OH không phải nguyên nhân.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12142,7 +12142,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Vận dụng",
-    "question": "Thủy phân saccarozơ trong môi trường acid thu được các sản phẩm nào?",
+    "question": "Thủy phân sucrose trong môi trường acid thu được các sản phẩm nào?",
     "options": [
       "Glucose và galactose",
       "Glucose và fructose",
@@ -12150,7 +12150,7 @@
       "2 phân tử fructose"
     ],
     "correctAnswer": 1,
-    "explanation": "Saccarozơ → glucose + fructose. 2 glucose là thủy phân mantozơ; glucose + galactose là thủy phân lactose.",
+    "explanation": "Sucrose → glucose + fructose. 2 glucose là thủy phân maltose; glucose + galactose là thủy phân lactose.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12160,15 +12160,15 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Vận dụng",
-    "question": "Thủy phân hoàn toàn mantozơ thu được sản phẩm nào?",
+    "question": "Thủy phân hoàn toàn maltose thu được sản phẩm nào?",
     "options": [
       "2 phân tử fructose",
-      "Saccarozơ và nước",
+      "Sucrose và nước",
       "2 phân tử glucose",
       "Glucose và fructose"
     ],
     "correctAnswer": 2,
-    "explanation": "Mantozơ gồm 2 gốc glucose nên thủy phân cho 2 glucose. Glucose + fructose là sản phẩm của saccarozơ.",
+    "explanation": "Maltose gồm 2 gốc glucose nên thủy phân cho 2 glucose. Glucose + fructose là sản phẩm của sucrose.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12180,13 +12180,13 @@
     "topic": "Lý thuyết",
     "question": "Tinh bột gồm các thành phần nào?",
     "options": [
-      "Xenlulozơ và mantozơ",
+      "Cellulose và maltose",
       "Glucose và fructose",
-      "Saccarozơ và mantozơ",
-      "Amilozơ và amilopectin"
+      "Sucrose và maltose",
+      "Amylose và amilopectin"
     ],
     "correctAnswer": 3,
-    "explanation": "Tinh bột là hỗn hợp amilozơ (mạch thẳng) và amilopectin (phân nhánh). Các cặp còn lại thuộc loại carbohydrate khác.",
+    "explanation": "Tinh bột là hỗn hợp amylose (mạch thẳng) và amilopectin (phân nhánh). Các cặp còn lại thuộc loại carbohydrate khác.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12204,7 +12204,7 @@
       "Xuất hiện màu đỏ"
     ],
     "correctAnswer": 0,
-    "explanation": "Iodine hấp phụ vào xoắn amilozơ tạo màu xanh tím đặc trưng. Các màu còn lại không đúng với hồ tinh bột.",
+    "explanation": "Iodine hấp phụ vào xoắn amylose tạo màu xanh tím đặc trưng. Các màu còn lại không đúng với hồ tinh bột.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12214,7 +12214,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Nguyên liệu nào sau đây giàu xenlulozơ nhất?",
+    "question": "Nguyên liệu nào sau đây giàu cellulose nhất?",
     "options": [
       "Mía",
       "Bông",
@@ -12222,7 +12222,7 @@
       "Khoai"
     ],
     "correctAnswer": 1,
-    "explanation": "Bông chứa tới khoảng 95% xenlulozơ. Gạo, khoai giàu tinh bột; mía giàu saccarozơ.",
+    "explanation": "Bông chứa tới khoảng 95% cellulose. Gạo, khoai giàu tinh bột; mía giàu sucrose.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12232,15 +12232,15 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Vận dụng",
-    "question": "Thủy phân hoàn toàn xenlulozơ thu được sản phẩm nào?",
+    "question": "Thủy phân hoàn toàn cellulose thu được sản phẩm nào?",
     "options": [
-      "Saccarozơ",
-      "Mantozơ",
+      "Sucrose",
+      "Maltose",
       "Glucose",
       "Fructose"
     ],
     "correctAnswer": 2,
-    "explanation": "Xenlulozơ cấu tạo từ các mắt xích glucose nên thủy phân hoàn toàn cho glucose. Các chất còn lại không sinh ra ở đây.",
+    "explanation": "Cellulose cấu tạo từ các mắt xích glucose nên thủy phân hoàn toàn cho glucose. Các chất còn lại không sinh ra ở đây.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12276,7 +12276,7 @@
       "Giấy viết"
     ],
     "correctAnswer": 0,
-    "explanation": "Tinh bột lên men cho ethanol. Xà phòng từ chất béo; phân đạm từ ammonia; giấy từ xenlulozơ.",
+    "explanation": "Tinh bột lên men cho ethanol. Xà phòng từ chất béo; phân đạm từ ammonia; giấy từ cellulose.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12288,13 +12288,13 @@
     "topic": "Lý thuyết",
     "question": "Giấy chủ yếu được sản xuất từ nguyên liệu nào?",
     "options": [
-      "Saccarozơ",
-      "Xenlulozơ",
+      "Sucrose",
+      "Cellulose",
       "Tinh bột",
       "Glucose"
     ],
     "correctAnswer": 1,
-    "explanation": "Giấy làm từ sợi xenlulozơ (bột gỗ, tre). Tinh bột, glucose, saccarozơ là thực phẩm, không làm giấy.",
+    "explanation": "Giấy làm từ sợi cellulose (bột gỗ, tre). Tinh bột, glucose, sucrose là thực phẩm, không làm giấy.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12304,7 +12304,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Vận dụng",
-    "question": "Thuốc thử nào phân biệt được glucose và saccarozơ?",
+    "question": "Thuốc thử nào phân biệt được glucose và sucrose?",
     "options": [
       "Dung dịch NaOH",
       "Dung dịch HCl",
@@ -12312,7 +12312,7 @@
       "Quỳ tím"
     ],
     "correctAnswer": 2,
-    "explanation": "Glucose tráng bạc với AgNO3/NH3, saccarozơ thì không. Quỳ tím, NaOH, HCl không phân biệt được hai đường này.",
+    "explanation": "Glucose tráng bạc với AgNO3/NH3, sucrose thì không. Quỳ tím, NaOH, HCl không phân biệt được hai đường này.",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12325,12 +12325,12 @@
     "question": "Loại đường nào ngọt nhất trong các loại sau?",
     "options": [
       "Glucose",
-      "Saccarozơ",
-      "Mantozơ",
+      "Sucrose",
+      "Maltose",
       "Fructose"
     ],
     "correctAnswer": 3,
-    "explanation": "Độ ngọt: fructose > saccarozơ > glucose > mantozơ. Fructose là đường ngọt nhất trong tự nhiên.",
+    "explanation": "Độ ngọt: fructose > sucrose > glucose > maltose. Fructose là đường ngọt nhất trong tự nhiên.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12363,10 +12363,10 @@
       "Tinh bột",
       "Glucose",
       "Fructose",
-      "Saccarozơ"
+      "Sucrose"
     ],
     "correctAnswer": 1,
-    "explanation": "Tiểu đường là rối loạn chuyển hóa glucose máu. Fructose, saccarozơ, tinh bột không phải chỉ số chẩn đoán.",
+    "explanation": "Tiểu đường là rối loạn chuyển hóa glucose máu. Fructose, sucrose, tinh bột không phải chỉ số chẩn đoán.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12381,10 +12381,10 @@
       "Glucose tự do",
       "Fructose",
       "Tinh bột",
-      "Xenlulozơ"
+      "Cellulose"
     ],
     "correctAnswer": 2,
-    "explanation": "Tinh bột là dạng dự trữ năng lượng ở củ, hạt. Xenlulozơ làm khung cấu trúc; glucose, fructose là dạng vận chuyển, tồn tại ít.",
+    "explanation": "Tinh bột là dạng dự trữ năng lượng ở củ, hạt. Cellulose làm khung cấu trúc; glucose, fructose là dạng vận chuyển, tồn tại ít.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12394,7 +12394,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Các mắt xích glucose trong xenlulozơ liên kết với nhau tạo cấu trúc nào?",
+    "question": "Các mắt xích glucose trong cellulose liên kết với nhau tạo cấu trúc nào?",
     "options": [
       "Mạch nhánh",
       "Mạch vòng",
@@ -12402,7 +12402,7 @@
       "Mạch thẳng"
     ],
     "correctAnswer": 3,
-    "explanation": "Xenlulozơ là mạch thẳng (liên kết beta-1,4-glycoside). Mạch nhánh là amilopectin; mạch vòng là dạng tồn tại của monosaccharide.",
+    "explanation": "Cellulose là mạch thẳng (liên kết beta-1,4-glycoside). Mạch nhánh là amilopectin; mạch vòng là dạng tồn tại của monosaccharide.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12415,12 +12415,12 @@
     "question": "Thành phần phân nhánh của tinh bột là chất nào?",
     "options": [
       "Amilopectin",
-      "Amilozơ",
-      "Mantozơ",
-      "Saccarozơ"
+      "Amylose",
+      "Maltose",
+      "Sucrose"
     ],
     "correctAnswer": 0,
-    "explanation": "Amilopectin có cấu trúc phân nhánh; amilozơ mạch thẳng. Mantozơ, saccarozơ là disaccharide, không phải thành phần tinh bột.",
+    "explanation": "Amilopectin có cấu trúc phân nhánh; amylose mạch thẳng. Maltose, sucrose là disaccharide, không phải thành phần tinh bột.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12432,13 +12432,13 @@
     "topic": "Lý thuyết",
     "question": "Mật mía chứa chủ yếu chất nào?",
     "options": [
-      "Xenlulozơ",
-      "Saccarozơ",
+      "Cellulose",
+      "Sucrose",
       "Glucose",
       "Tinh bột"
     ],
     "correctAnswer": 1,
-    "explanation": "Mật mía giàu saccarozơ (đường mía). Glucose ít hơn; tinh bột, xenlulozơ không có trong mật mía.",
+    "explanation": "Mật mía giàu sucrose (đường mía). Glucose ít hơn; tinh bột, cellulose không có trong mật mía.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12451,12 +12451,12 @@
     "question": "Mật ong chứa chủ yếu các chất nào?",
     "options": [
       "Tinh bột",
-      "Xenlulozơ",
+      "Cellulose",
       "Glucose và fructose",
-      "Saccarozơ"
+      "Sucrose"
     ],
     "correctAnswer": 2,
-    "explanation": "Mật ong là hỗn hợp glucose và fructose tự do. Saccarozơ, tinh bột, xenlulozơ không phải thành phần chính.",
+    "explanation": "Mật ong là hỗn hợp glucose và fructose tự do. Sucrose, tinh bột, cellulose không phải thành phần chính.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12466,7 +12466,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Vận dụng",
-    "question": "Thủy phân 34,2 gam saccarozơ (hiệu suất 100%) thu được bao nhiêu gam glucose?",
+    "question": "Thủy phân 34,2 gam sucrose (hiệu suất 100%) thu được bao nhiêu gam glucose?",
     "options": [
       "36 gam",
       "27 gam",
@@ -12474,7 +12474,7 @@
       "18 gam"
     ],
     "correctAnswer": 3,
-    "explanation": "M saccarozơ = 342 nên 34,2 g = 0,1 mol → 0,1 mol glucose (M = 180) = 18 g. Các giá trị còn lại tính sai tỉ lệ mol.",
+    "explanation": "M sucrose = 342 nên 34,2 g = 0,1 mol → 0,1 mol glucose (M = 180) = 18 g. Các giá trị còn lại tính sai tỉ lệ mol.",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12540,13 +12540,13 @@
     "topic": "Lý thuyết",
     "question": "Vị ngọt của quả chín chủ yếu do các chất nào gây ra?",
     "options": [
-      "Saccarozơ",
+      "Sucrose",
       "Tinh bột",
-      "Xenlulozơ",
+      "Cellulose",
       "Glucose và fructose"
     ],
     "correctAnswer": 3,
-    "explanation": "Quả chín tích lũy glucose và fructose tự do tạo vị ngọt. Saccarozơ ít hơn; tinh bột, xenlulozơ không ngọt.",
+    "explanation": "Quả chín tích lũy glucose và fructose tự do tạo vị ngọt. Sucrose ít hơn; tinh bột, cellulose không ngọt.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -12556,7 +12556,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Vận dụng",
-    "question": "Nhỏ dung dịch iodine vào bông (xenlulozơ) thấy hiện tượng gì?",
+    "question": "Nhỏ dung dịch iodine vào bông (cellulose) thấy hiện tượng gì?",
     "options": [
       "Giữ màu nâu vàng của iodine",
       "Chuyển xanh tím",
@@ -12564,7 +12564,7 @@
       "Mất màu hoàn toàn"
     ],
     "correctAnswer": 0,
-    "explanation": "Xenlulozơ không tạo xoắn hấp phụ iodine như amilozơ nên giữ màu nâu vàng. Xanh tím là của hồ tinh bột; đỏ gạch là Cu2O.",
+    "explanation": "Cellulose không tạo xoắn hấp phụ iodine như amylose nên giữ màu nâu vàng. Xanh tím là của hồ tinh bột; đỏ gạch là Cu2O.",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14074,7 +14074,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Liên kết glycoside trong saccarozơ nối các nguyên tử carbon nào?",
+    "question": "Liên kết glycoside trong sucrose nối các nguyên tử carbon nào?",
     "options": [
       "C1-C4",
       "C1-C6",
@@ -14082,7 +14082,7 @@
       "C1-C2"
     ],
     "correctAnswer": 3,
-    "explanation": "Saccarozơ nối C1 của glucose với C2 của fructose. Các cặp còn lại thuộc mantozơ (1-4) hoặc không tồn tại.",
+    "explanation": "Sucrose nối C1 của glucose với C2 của fructose. Các cặp còn lại thuộc maltose (1-4) hoặc không tồn tại.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14092,7 +14092,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Liên kết glycoside trong mantozơ thuộc loại nào?",
+    "question": "Liên kết glycoside trong maltose thuộc loại nào?",
     "options": [
       "Alpha-1,4",
       "Beta-1,4",
@@ -14100,7 +14100,7 @@
       "Beta-1,6"
     ],
     "correctAnswer": 0,
-    "explanation": "Mantozơ nối alpha-1,4-glycoside giữa 2 gốc glucose. Beta-1,4 là của xenlulozơ; alpha-1,2 là của saccarozơ.",
+    "explanation": "Maltose nối alpha-1,4-glycoside giữa 2 gốc glucose. Beta-1,4 là của cellulose; alpha-1,2 là của sucrose.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14110,7 +14110,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Liên kết giữa các mắt xích trong amilozơ thuộc loại nào?",
+    "question": "Liên kết giữa các mắt xích trong amylose thuộc loại nào?",
     "options": [
       "Beta-1,6",
       "Alpha-1,4",
@@ -14118,7 +14118,7 @@
       "Alpha-1,6"
     ],
     "correctAnswer": 1,
-    "explanation": "Amilozơ nối alpha-1,4 tạo mạch thẳng. Beta-1,4 là của xenlulozơ; alpha-1,6 là điểm phân nhánh của amilopectin.",
+    "explanation": "Amylose nối alpha-1,4 tạo mạch thẳng. Beta-1,4 là của cellulose; alpha-1,6 là điểm phân nhánh của amilopectin.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14128,7 +14128,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Liên kết giữa các mắt xích trong xenlulozơ thuộc loại nào?",
+    "question": "Liên kết giữa các mắt xích trong cellulose thuộc loại nào?",
     "options": [
       "Alpha-1,6",
       "Beta-1,2",
@@ -14136,7 +14136,7 @@
       "Alpha-1,4"
     ],
     "correctAnswer": 2,
-    "explanation": "Xenlulozơ nối beta-1,4 tạo mạch thẳng bền. Alpha-1,4 là của tinh bột; các loại còn lại không đúng.",
+    "explanation": "Cellulose nối beta-1,4 tạo mạch thẳng bền. Alpha-1,4 là của tinh bột; các loại còn lại không đúng.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14146,7 +14146,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Con người không tiêu hóa được xenlulozơ vì thiếu enzyme nào?",
+    "question": "Con người không tiêu hóa được cellulose vì thiếu enzyme nào?",
     "options": [
       "Amylase",
       "Maltase",
@@ -14154,7 +14154,7 @@
       "Cellulase"
     ],
     "correctAnswer": 3,
-    "explanation": "Thiếu cellulase cắt liên kết beta-1,4 nên không tiêu hóa xenlulozơ. Amylase, maltase, sucrase tiêu hóa tinh bột và đường đôi.",
+    "explanation": "Thiếu cellulase cắt liên kết beta-1,4 nên không tiêu hóa cellulose. Amylase, maltase, sucrase tiêu hóa tinh bột và đường đôi.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14166,13 +14166,13 @@
     "topic": "Lý thuyết",
     "question": "Enzyme amylase trong nước bọt thủy phân tinh bột thành sản phẩm nào?",
     "options": [
-      "Mantozơ và dextrin",
+      "Maltose và dextrin",
       "Glucose ngay",
       "Fructose",
-      "Xenlulozơ"
+      "Cellulose"
     ],
     "correctAnswer": 0,
-    "explanation": "Amylase cắt tinh bột thành mantozơ và dextrin (thủy phân một phần). Glucose cần thêm maltase; fructose và xenlulozơ không sinh ra.",
+    "explanation": "Amylase cắt tinh bột thành maltose và dextrin (thủy phân một phần). Glucose cần thêm maltase; fructose và cellulose không sinh ra.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14182,15 +14182,15 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Enzyme sucrase thủy phân saccarozơ thành sản phẩm nào?",
+    "question": "Enzyme sucrase thủy phân sucrose thành sản phẩm nào?",
     "options": [
-      "Mantozơ",
+      "Maltose",
       "Glucose và fructose",
       "2 glucose",
       "2 fructose"
     ],
     "correctAnswer": 1,
-    "explanation": "Sucrase cắt saccarozơ thành glucose + fructose. 2 glucose là của maltase; mantozơ không phải sản phẩm.",
+    "explanation": "Sucrase cắt sucrose thành glucose + fructose. 2 glucose là của maltase; maltose không phải sản phẩm.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14200,15 +14200,15 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Enzyme maltase thủy phân mantozơ thành sản phẩm nào?",
+    "question": "Enzyme maltase thủy phân maltose thành sản phẩm nào?",
     "options": [
       "2 fructose",
-      "Saccarozơ",
+      "Sucrose",
       "2 glucose",
       "Glucose và fructose"
     ],
     "correctAnswer": 2,
-    "explanation": "Maltase cắt mantozơ thành 2 glucose. Glucose + fructose là của sucrase; saccarozơ không phải sản phẩm.",
+    "explanation": "Maltase cắt maltose thành 2 glucose. Glucose + fructose là của sucrase; sucrose không phải sản phẩm.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14226,7 +14226,7 @@
       "Glucose và galactose"
     ],
     "correctAnswer": 3,
-    "explanation": "Lactose (đường sữa) gồm glucose + galactose. Glucose + fructose là saccarozơ; 2 glucose là mantozơ.",
+    "explanation": "Lactose (đường sữa) gồm glucose + galactose. Glucose + fructose là sucrose; 2 glucose là maltose.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14401,12 +14401,12 @@
     "question": "Vải cotton chứa chủ yếu chất nào?",
     "options": [
       "Nilon",
-      "Xenlulozơ",
+      "Cellulose",
       "Tinh bột",
       "Protein"
     ],
     "correctAnswer": 1,
-    "explanation": "Cotton là sợi xenlulozơ tự nhiên. Tinh bột, protein không làm vải cotton; nilon là sợi tổng hợp.",
+    "explanation": "Cotton là sợi cellulose tự nhiên. Tinh bột, protein không làm vải cotton; nilon là sợi tổng hợp.",
     "difficulty": "Nhận biết",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14470,7 +14470,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Lý thuyết",
-    "question": "Thuốc thử nào phân biệt saccarozơ và hồ tinh bột?",
+    "question": "Thuốc thử nào phân biệt sucrose và hồ tinh bột?",
     "options": [
       "NaOH",
       "Iodine",
@@ -14506,7 +14506,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Vận dụng",
-    "question": "Khối lượng mol của saccarozơ là bao nhiêu?",
+    "question": "Khối lượng mol của sucrose là bao nhiêu?",
     "options": [
       "180",
       "162",
@@ -14650,7 +14650,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Vận dụng",
-    "question": "Từ 162 gam xenlulozơ (H = 100% cả hai bước thủy phân và lên men) thu được bao nhiêu gam ethanol?",
+    "question": "Từ 162 gam cellulose (H = 100% cả hai bước thủy phân và lên men) thu được bao nhiêu gam ethanol?",
     "options": [
       "46",
       "184",
@@ -14668,7 +14668,7 @@
     "subject": "chemistry",
     "lesson": 2,
     "topic": "Vận dụng",
-    "question": "Trình tự thuốc thử nào nhận biết 3 lọ glucose, saccarozơ, hồ tinh bột?",
+    "question": "Trình tự thuốc thử nào nhận biết 3 lọ glucose, sucrose, hồ tinh bột?",
     "options": [
       "Iodine rồi Tollens",
       "Tollens rồi iodine",
@@ -14730,7 +14730,7 @@
       "Invertase"
     ],
     "correctAnswer": 3,
-    "explanation": "Invertase thủy phân saccarozơ thành glucose + fructose. Amylase cắt tinh bột; cellulase cắt xenlulozơ; protease cắt protein.",
+    "explanation": "Invertase thủy phân sucrose thành glucose + fructose. Amylase cắt tinh bột; cellulase cắt cellulose; protease cắt protein.",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14870,11 +14870,11 @@
     "options": [
       "Tinh bột",
       "Glucose",
-      "Xenlulozơ",
+      "Cellulose",
       "Chất béo"
     ],
     "correctAnswer": 3,
-    "explanation": "Chất béo cho khoảng 9 kcal/g, cao nhất. Tinh bột và glucose cho 4 kcal/g; xenlulozơ không tiêu hóa được.",
+    "explanation": "Chất béo cho khoảng 9 kcal/g, cao nhất. Tinh bột và glucose cho 4 kcal/g; cellulose không tiêu hóa được.",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -14886,13 +14886,13 @@
     "topic": "Vận dụng",
     "question": "Chất xơ trong rau quả chủ yếu là chất nào?",
     "options": [
-      "Xenlulozơ",
+      "Cellulose",
       "Tinh bột",
       "Glucose",
       "Đường mía"
     ],
     "correctAnswer": 0,
-    "explanation": "Chất xơ là xenlulozơ không tiêu hóa nhưng tốt cho tiêu hóa. Tinh bột, glucose, đường mía đều tiêu hóa được.",
+    "explanation": "Chất xơ là cellulose không tiêu hóa nhưng tốt cho tiêu hóa. Tinh bột, glucose, đường mía đều tiêu hóa được.",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15054,7 +15054,7 @@
       "50%"
     ],
     "correctAnswer": 1,
-    "explanation": "Gạo khô chứa khoảng 80% tinh bột. 20% là khoai tươi; 95% là bông (xenlulozơ); 50% sai số liệu.",
+    "explanation": "Gạo khô chứa khoảng 80% tinh bột. 20% là khoai tươi; 95% là bông (cellulose); 50% sai số liệu.",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15076,7 +15076,7 @@
         "ok": true
       },
       {
-        "t": "Saccarozơ có công thức C6H12O6.",
+        "t": "Sucrose có công thức C6H12O6.",
         "ok": false
       },
       {
@@ -15084,7 +15084,7 @@
         "ok": true
       }
     ],
-    "explanation": "Glucose C6H12O6 (đúng); fructose đồng phân (đúng); saccarozơ là C12H22O11 (sai); cả hai là đường đơn (đúng).",
+    "explanation": "Glucose C6H12O6 (đúng); fructose đồng phân (đúng); sucrose là C12H22O11 (sai); cả hai là đường đơn (đúng).",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15102,7 +15102,7 @@
         "ok": true
       },
       {
-        "t": "Saccarozơ cho được phản ứng tráng bạc.",
+        "t": "Sucrose cho được phản ứng tráng bạc.",
         "ok": false
       },
       {
@@ -15110,11 +15110,11 @@
         "ok": false
       },
       {
-        "t": "Xenlulozơ cho được phản ứng tráng bạc.",
+        "t": "Cellulose cho được phản ứng tráng bạc.",
         "ok": false
       }
     ],
-    "explanation": "Chỉ glucose có nhóm -CHO tự do nên tráng bạc (đúng); saccarozơ, tinh bột, xenlulozơ không có nhóm khử tự do (sai).",
+    "explanation": "Chỉ glucose có nhóm -CHO tự do nên tráng bạc (đúng); sucrose, tinh bột, cellulose không có nhóm khử tự do (sai).",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15128,11 +15128,11 @@
     "question": "Cho các phát biểu về thủy phân carbohydrate:",
     "statements": [
       {
-        "t": "Thủy phân saccarozơ cho glucose và fructose.",
+        "t": "Thủy phân sucrose cho glucose và fructose.",
         "ok": true
       },
       {
-        "t": "Thủy phân mantozơ cho 2 glucose.",
+        "t": "Thủy phân maltose cho 2 glucose.",
         "ok": true
       },
       {
@@ -15140,11 +15140,11 @@
         "ok": false
       },
       {
-        "t": "Thủy phân xenlulozơ cho glucose.",
+        "t": "Thủy phân cellulose cho glucose.",
         "ok": true
       }
     ],
-    "explanation": "Saccarozơ → glucose + fructose (đúng); mantozơ → 2 glucose (đúng); tinh bột cho glucose chứ không cho fructose (sai); xenlulozơ cho glucose (đúng).",
+    "explanation": "Sucrose → glucose + fructose (đúng); maltose → 2 glucose (đúng); tinh bột cho glucose chứ không cho fructose (sai); cellulose cho glucose (đúng).",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15155,10 +15155,10 @@
     "lesson": 2,
     "topic": "Lý thuyết",
     "type": "true_false",
-    "question": "Cho các phát biểu về tinh bột và xenlulozơ:",
+    "question": "Cho các phát biểu về tinh bột và cellulose:",
     "statements": [
       {
-        "t": "Tinh bột gồm amilozơ và amilopectin.",
+        "t": "Tinh bột gồm amylose và amilopectin.",
         "ok": true
       },
       {
@@ -15166,7 +15166,7 @@
         "ok": true
       },
       {
-        "t": "Xenlulozơ có cấu trúc mạch nhánh.",
+        "t": "Cellulose có cấu trúc mạch nhánh.",
         "ok": false
       },
       {
@@ -15174,7 +15174,7 @@
         "ok": true
       }
     ],
-    "explanation": "Thành phần tinh bột đúng; amilopectin phân nhánh đúng; xenlulozơ mạch thẳng nên sai; iodine xanh tím đúng.",
+    "explanation": "Thành phần tinh bột đúng; amilopectin phân nhánh đúng; cellulose mạch thẳng nên sai; iodine xanh tím đúng.",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15192,7 +15192,7 @@
         "ok": true
       },
       {
-        "t": "Mật mía giàu saccarozơ.",
+        "t": "Mật mía giàu sucrose.",
         "ok": true
       },
       {
@@ -15200,11 +15200,11 @@
         "ok": true
       },
       {
-        "t": "Saccarozơ ngọt hơn fructose.",
+        "t": "Sucrose ngọt hơn fructose.",
         "ok": false
       }
     ],
-    "explanation": "Mật ong là glucose + fructose (đúng); mật mía giàu saccarozơ (đúng); fructose ngọt nhất (đúng); saccarozơ kém ngọt hơn fructose (sai).",
+    "explanation": "Mật ong là glucose + fructose (đúng); mật mía giàu sucrose (đúng); fructose ngọt nhất (đúng); sucrose kém ngọt hơn fructose (sai).",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15218,15 +15218,15 @@
     "question": "Cho các phát biểu về ứng dụng carbohydrate:",
     "statements": [
       {
-        "t": "Bông giàu xenlulozơ.",
+        "t": "Bông giàu cellulose.",
         "ok": true
       },
       {
-        "t": "Giấy làm từ xenlulozơ.",
+        "t": "Giấy làm từ cellulose.",
         "ok": true
       },
       {
-        "t": "Gạo giàu xenlulozơ.",
+        "t": "Gạo giàu cellulose.",
         "ok": false
       },
       {
@@ -15234,7 +15234,7 @@
         "ok": true
       }
     ],
-    "explanation": "Bông ~95% xenlulozơ (đúng); giấy từ sợi xenlulozơ (đúng); gạo giàu tinh bột chứ không phải xenlulozơ (sai); dự trữ dạng tinh bột (đúng).",
+    "explanation": "Bông ~95% cellulose (đúng); giấy từ sợi cellulose (đúng); gạo giàu tinh bột chứ không phải cellulose (sai); dự trữ dạng tinh bột (đúng).",
     "difficulty": "Thông hiểu",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15245,10 +15245,10 @@
     "lesson": 2,
     "topic": "Vận dụng",
     "type": "true_false",
-    "question": "Thủy phân 34,2 gam saccarozơ (H = 100%). Xét các phát biểu:",
+    "question": "Thủy phân 34,2 gam sucrose (H = 100%). Xét các phát biểu:",
     "statements": [
       {
-        "t": "Số mol saccarozơ là 0,1 mol.",
+        "t": "Số mol sucrose là 0,1 mol.",
         "ok": true
       },
       {
@@ -15286,7 +15286,7 @@
         "ok": true
       },
       {
-        "t": "Saccarozơ cũng cho 2 mol Ag.",
+        "t": "Sucrose cũng cho 2 mol Ag.",
         "ok": false
       },
       {
@@ -15294,7 +15294,7 @@
         "ok": true
       }
     ],
-    "explanation": "Tỉ lệ 1:2 đúng; 0,1 mol cần 0,2 mol đúng; saccarozơ không tráng bạc nên sai; thuốc thử Tollens cần NH3 đúng.",
+    "explanation": "Tỉ lệ 1:2 đúng; 0,1 mol cần 0,2 mol đúng; sucrose không tráng bạc nên sai; thuốc thử Tollens cần NH3 đúng.",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15305,7 +15305,7 @@
     "lesson": 2,
     "topic": "Vận dụng",
     "type": "true_false",
-    "question": "Có 3 lọ mất nhãn: glucose, saccarozơ, hồ tinh bột. Xét các phát biểu:",
+    "question": "Có 3 lọ mất nhãn: glucose, sucrose, hồ tinh bột. Xét các phát biểu:",
     "statements": [
       {
         "t": "Iodine nhận ra được hồ tinh bột.",
@@ -15316,7 +15316,7 @@
         "ok": true
       },
       {
-        "t": "Saccarozơ cho phản ứng tráng bạc.",
+        "t": "Sucrose cho phản ứng tráng bạc.",
         "ok": false
       },
       {
@@ -15324,7 +15324,7 @@
         "ok": false
       }
     ],
-    "explanation": "Iodine xanh tím với tinh bột (đúng); Tollens chỉ glucose tráng bạc (đúng); saccarozơ không tráng bạc (sai); tinh bột không tan trong nước lạnh (sai).",
+    "explanation": "Iodine xanh tím với tinh bột (đúng); Tollens chỉ glucose tráng bạc (đúng); sucrose không tráng bạc (sai); tinh bột không tan trong nước lạnh (sai).",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
@@ -15346,7 +15346,7 @@
         "ok": true
       },
       {
-        "t": "Saccarozơ đun nóng cũng cho kết tủa đỏ.",
+        "t": "Sucrose đun nóng cũng cho kết tủa đỏ.",
         "ok": false
       },
       {
@@ -15354,7 +15354,7 @@
         "ok": false
       }
     ],
-    "explanation": "Nhiều -OH kề nhau tạo phức xanh (đúng); đun cho Cu2O đỏ (đúng); saccarozơ không khử nên sai; fructose cũng tạo phức xanh nên sai.",
+    "explanation": "Nhiều -OH kề nhau tạo phức xanh (đúng); đun cho Cu2O đỏ (đúng); sucrose không khử nên sai; fructose cũng tạo phức xanh nên sai.",
     "difficulty": "Vận dụng",
     "source": "SGK Hóa học 12 – Kết nối tri thức, Chương 2",
     "sourceUrl": ""
