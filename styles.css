@@ -179,17 +179,17 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 /* ponytail: chip câu topic/review dài (topic · type · level · Band) phải wrap, không nowrap tràn 320px */
 #qTopic,.rev-head .chip{white-space:normal;overflow-wrap:break-word}
 #qText{font-size:1.1rem;line-height:1.6;margin:.4em 0 .9em;overflow-wrap:break-word}
-#qOpts{display:grid;gap:10px}
+#qOpts{display:grid;gap:12px}
 .opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;border:1.5px solid var(--border);background:var(--bg);color:var(--fg);border-radius:12px;padding:13px 14px;cursor:pointer;font:inherit;transition:border-color .18s,background .18s;min-height:52px}
 .opt:hover{border-color:var(--primary);background:var(--card)}
 .opt.sel{border-color:var(--primary);background:var(--card);box-shadow:0 0 0 1px var(--primary)}
 .opt .k{flex:none;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:var(--muted);font-weight:800;font-size:.85rem}
 .opt.sel .k{background:var(--primary);color:var(--on-primary)}
-.tf-row{display:flex;gap:10px;align-items:center;text-align:left;width:100%;border:1.5px solid var(--border);background:var(--bg);color:var(--fg);border-radius:12px;padding:11px 14px;min-height:52px;margin-bottom:10px;flex-wrap:wrap}
+.tf-row{display:flex;gap:10px;align-items:center;text-align:left;width:100%;border:1.5px solid var(--border);background:var(--bg);color:var(--fg);border-radius:12px;padding:11px 14px;min-height:52px;flex-wrap:wrap}
 .tf-t{flex:1;min-width:0;overflow-wrap:break-word}
 .tf-row .btn{flex:none}
 .tf-ok{border-color:var(--ok);background:var(--ok-bg)} .tf-bad{border-color:var(--bad);background:var(--bad-bg)}
-.tf-list{display:grid;gap:8px;margin:8px 0}
+.tf-list{display:grid;gap:12px;margin:8px 0}
 .opt>span:last-child{overflow-wrap:break-word}
 .opt.practice-ok{border-color:var(--ok);background:var(--ok-bg)} .opt.practice-bad{border-color:var(--bad);background:var(--bad-bg)}
 .q-nav{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap} .q-nav .btn-primary,.q-nav #qSubmit{margin-left:auto}
@@ -227,6 +227,10 @@ kbd{background:var(--muted);border:1px solid var(--border);border-radius:6px;pad
 .q-card #qText{margin:.4em 0 12px}
 .q-card .passage-wrap{margin-bottom:4px}
 .bank-item>p,.bank-item>ol{margin:10px 0}
+/* Bank option list: restore A/B/C/D markers (Tailwind preflight strips them)
+   and space rows like the quiz option grid. */
+.bank-item>ol{display:grid;gap:8px;padding-left:1.7em;list-style:upper-alpha outside}
+.bank-item>ol>li{overflow-wrap:break-word;padding-left:4px}
 .theory p{margin:.6em 0}
 .panel>p:first-child{margin-top:0}
 /* Sổ tay (trái) + AI giải thích (phải) share one tools row per question.
@@ -317,7 +321,7 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
 .subj-quick{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
 /* AI result cards: hierarchy via badge head + option list + meta */
 .ai-card{margin-bottom:12px}
-.ai-opts{display:grid;gap:6px;margin:10px 0 4px;padding:0;list-style:none}
+.ai-opts{display:grid;gap:10px;margin:10px 0 4px;padding:0;list-style:none}
 .ai-opts li{border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:.93rem;overflow-wrap:break-word}
 .ai-opts li.hit{border-color:var(--ok);background:var(--ok-bg);font-weight:600}
 .ai-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}
