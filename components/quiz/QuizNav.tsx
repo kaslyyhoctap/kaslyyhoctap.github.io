@@ -129,7 +129,7 @@ export function QuizTop({
           aria-pressed={flagged}
         >
           <FlagIcon active={flagged} />
-          Đánh dấu xem lại
+          Đánh dấu
         </button>
         <button
           type="button"
@@ -158,7 +158,7 @@ export function QuizTop({
   );
 }
 
-/** Flag (Đánh dấu xem lại) — outline when off, filled when on. */
+/** Flag (Đánh dấu) — outline when off, filled when on. */
 function FlagIcon({ active }: { active: boolean }) {
   return (
     <svg
