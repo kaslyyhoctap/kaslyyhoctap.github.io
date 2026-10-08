@@ -159,7 +159,7 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
           passages={passages}
         />
 
-        <div className="palette">
+        <aside className="panel palette" aria-label="Bảng câu hỏi">
           <h3>Danh sách câu hỏi</h3>
           <div className="legend">
             <span><span className="dot d-todo" /> Chưa làm</span>
@@ -174,7 +174,7 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
             i={quiz.i}
             onGoto={quiz.goTo}
           />
-        </div>
+        </aside>
       </div>
 
       <QuizNav

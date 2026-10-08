@@ -48,7 +48,7 @@ export default function QuestionCard({
   const headHtml = q.passageId ? passageHtml(passage, blankNo) : '';
 
   return (
-    <div className="question-card">
+    <div className="panel q-card question-card">
       {headHtml && (
         <div
           className="passage-wrap"

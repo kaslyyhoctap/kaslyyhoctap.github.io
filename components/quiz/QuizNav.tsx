@@ -122,7 +122,7 @@ export function QuizTop({
   const topicLabel = topicParts.filter(Boolean).join(' · ');
 
   return (
-    <div className="quiz-top">
+    <div className="quiz-top panel">
       <div className="quiz-meta">
         <span id="qTitle">{title}</span>
         <Timer seconds={timeLeft} />
@@ -132,7 +132,7 @@ export function QuizTop({
         <span id="qCount">Câu {i + 1}/{total}</span>
         <button
           type="button"
-          className="link"
+          className={`btn btn-sm${flagged ? ' btn-primary' : ' btn-ghost'}`}
           id="qFlag"
           onClick={onToggleFlag}
           aria-pressed={flagged}
@@ -141,7 +141,7 @@ export function QuizTop({
         </button>
         <button
           type="button"
-          className="link"
+          className={`btn btn-sm${starred ? ' btn-primary' : ' btn-ghost'}`}
           id="qStar"
           onClick={onToggleStar}
           aria-pressed={starred}
