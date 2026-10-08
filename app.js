@@ -8,7 +8,7 @@ var S=Object.assign({theme:"light",best:0,exams:0,correct:0,answered:{},marked:[
 function save(){store.set(S)}
 var META={
  history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh"}},
- biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene"}},
+ biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene",4:"Bài 4: Đột biến gene"}},
  chemistry:{name:"Hóa học 12",short:"Hóa",units:"Chương",book:"Kết nối tri thức",lessons:{1:"Chương 1: Ester – Lipid",2:"Chương 2: Carbohydrate"}},
  english:{name:"Tiếng Anh 12",short:"Anh",units:"Unit",book:"Global Success",lessons:{1:"Unit 1: Life stories we admire",2:"Unit 2: A multicultural world"}}
 };
