@@ -10,7 +10,7 @@ config({ path: '.env.local' });
 // Dynamic imports after env is loaded (db/index.ts calls neon() at module eval time)
 const { db } = await import('@/db/index');
 const { questions, passages, theory, vocabulary } = await import('@/db/schema');
-const { sql } = await import('drizzle-orm');
+const { sql, notInArray } = await import('drizzle-orm');
 
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -179,6 +179,15 @@ async function main() {
     readJson('english-theory.json'),
     readJson('vocab.json'),
   ]);
+
+  // Prune rows removed from the data (e.g. "loại câu cần hình") — upserts
+  // never delete, so stale ids would linger forever.
+  const keepIds = qData.map((q: any) => q.id);
+  const pruned = await db
+    .delete(questions)
+    .where(notInArray(questions.id, keepIds))
+    .returning({ id: questions.id });
+  console.log(`\u{1F9F9} pruned ${pruned.length} questions no longer in data`);
 
   console.log('\nSeeding...');
   await seedQuestions(qData);
