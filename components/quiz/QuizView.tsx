@@ -11,12 +11,13 @@
  */
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { META, subjectUnits } from '@/lib/meta';
 import { useQuiz } from '@/lib/hooks/useQuiz';
 import { buildRecentMap } from '@/lib/quiz/pool';
 import { readAppState } from '@/lib/storage';
+import { readBankCache, queryBankCache, refreshBankCache } from '@/lib/offline';
 import type { Question } from '@/lib/types';
 import type { ExamConfig } from '@/lib/quiz/pool';
 export type { PassageMap } from './QuestionCard';
@@ -33,6 +34,8 @@ interface QuizViewProps {
 export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
   const quiz = useQuiz(cfg);
   const router = useRouter();
+  // True khi đề đang chạy từ bank cache offline (không có mạng / DB fail).
+  const [offlineMode, setOfflineMode] = useState(false);
 
   // Boot the exam once on mount: build the recent-answered map from localStorage
   // history (app.js `recentMap`), then start. Mirrors app.js `startExam`.
@@ -54,11 +57,31 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
     }
 
     const toStart = qsFromSession ?? questions;
+    // Offline fallback: server props rỗng (DB fail / mất mạng) → dùng bank
+    // đã cache từ lần online trước. Không có cache thì giữ rỗng → panel báo.
+    let bank = toStart;
+    let offline = false;
+    if (!bank.length) {
+      const cached = readBankCache();
+      if (cached) {
+        const lessonNum =
+          cfg.lesson === 'all' ? 'all' : Number(cfg.lesson);
+        bank = queryBankCache(cached, {
+          subject: cfg.subject,
+          lesson: Number.isNaN(lessonNum) ? 'all' : lessonNum,
+        });
+        offline = bank.length > 0;
+      }
+    } else {
+      // Có mạng: refresh cache nền để lần sau offline dùng (fire-and-forget).
+      refreshBankCache().catch(() => {});
+    }
     const hist = readAppState().hist || [];
     const answeredMap = buildRecentMap(
       (hist || []).map((h: any) => h?.ids || []),
     );
-    quiz.start(toStart, answeredMap);
+    quiz.start(bank, answeredMap);
+    if (offline) setOfflineMode(true);
     // We intentionally depend only on mount (questions/cfg are stable props).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -126,6 +149,11 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
       onKeyDown={onKeyDown}
       aria-label="Bài kiểm tra"
     >
+      {offlineMode && (
+        <p className="muted small" role="status" style={{ margin: '0 0 8px' }}>
+          Đang dùng đề đã lưu offline — kết quả vẫn lưu trên máy này.
+        </p>
+      )}
       <QuizTop
         subject={cfg.subject}
         subjectName={subjectName}

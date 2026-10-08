@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/lib/theme';
 import { SessionProvider } from 'next-auth/react';
 import { Header } from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import SwRegister from '@/components/layout/SwRegister';
 
 export const metadata: Metadata = {
   title: {
@@ -50,6 +51,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
+        <SwRegister />
         <ThemeProvider>
           <SessionProvider>
             <Header />

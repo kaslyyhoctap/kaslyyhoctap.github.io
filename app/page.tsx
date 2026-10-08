@@ -11,6 +11,7 @@ import Hero, { type HeroSubject } from '@/components/home/Hero';
 import SubjectCard from '@/components/home/SubjectCard';
 import LessonCard from '@/components/home/LessonCard';
 import StudyGuide from '@/components/home/StudyGuide';
+import BankPrefetch from '@/components/home/BankPrefetch';
 
 interface LessonInfo {
   lesson: number;
@@ -151,6 +152,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <BankPrefetch />
       <Hero totalQuestions={totalQuestions} subjects={heroSubjects} />
 
       <h2 className="sec-t">Chọn môn học</h2>
