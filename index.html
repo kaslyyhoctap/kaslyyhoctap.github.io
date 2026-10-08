@@ -93,12 +93,13 @@
       <div class="cfg-grid">
         <label>Số câu<select id="cfgCount"><option>10</option><option selected>20</option><option>30</option><option>40</option><option>50</option></select></label>
         <label>Thời gian (phút)<select id="cfgTime"><option>10</option><option selected>20</option><option>30</option><option>45</option><option>60</option></select></label>
-        <div class="cfg-group"><span class="cfg-t">Bài (chọn nhiều)</span><div class="chk-grid" id="cfgLesson"></div></div>
         <label>Mức độ<select id="cfgLevel"><option value="all">Mọi mức độ</option><option>Nhận biết</option><option>Thông hiểu</option><option>Vận dụng</option><option>Vận dụng cao</option></select></label>
-        <div class="cfg-group" id="cfgTypeWrap"><span class="cfg-t">Dạng bài (chọn nhiều)</span><div class="chk-grid" id="cfgType"></div></div>
         <label class="chk"><input type="checkbox" id="cfgShuffleQ" checked> Trộn câu hỏi</label>
         <label class="chk"><input type="checkbox" id="cfgShuffleA" checked> Trộn đáp án</label>
       </div>
+      <div class="cfg-group"><span class="cfg-t">Bài (chọn nhiều)</span><div class="chk-grid" id="cfgLesson"></div></div>
+      <div class="cfg-group" id="cfgTypeWrap"><span class="cfg-t">Dạng bài (chọn nhiều)</span><div class="chk-grid" id="cfgType"></div></div>
+      <p class="muted small" id="cfgAvail"></p>
       <div class="row">
         <button class="btn btn-primary" id="cfgStart">Bắt đầu làm bài</button>
         <button class="btn btn-ghost" id="cfgPractice">Luyện tập (xem đáp án ngay)</button>

@@ -94,8 +94,11 @@ function typeCounts(sub,l){var tc={};Q.filter(function(q){return q.subject===sub
 function renderSubject(sub){curSub=sub;var m=META[sub];var th=window.THEORY[sub]||{};var ls=lessonsOf(sub);
  $("subjectHead").innerHTML='<h2>'+m.name+' <small class="muted">· '+counts(sub)+' câu · '+m.units+' 1–'+ls.length+'</small></h2><p class="muted">'+m.book+' — chọn '+m.units.toLowerCase()+' để học lý thuyết, luyện trắc nghiệm hoặc tạo đề kiểm tra tính giờ.</p>';
  $("cfgLesson").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+ls.map(function(l){return '<label class="chk"><input type="checkbox" value="'+l+'" checked> '+m.units+' '+l+'</label>'}).join("");
- $("cfgType").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+Object.keys(TYPES).map(function(t){var n=Q.filter(function(q){return q.subject===sub&&typeOf(q)===t}).length;return '<label class="chk'+(n?"":" dis")+'"><input type="checkbox" value="'+t+'"'+(n?" checked":" disabled")+'> '+TYPES[t]+' ('+n+')</label>'}).join("");
+ var tys=Object.keys(TYPES).filter(function(t){return Q.some(function(q){return q.subject===sub&&typeOf(q)===t})});
+ $("cfgType").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+tys.map(function(t){var n=Q.filter(function(q){return q.subject===sub&&typeOf(q)===t}).length;return '<label class="chk'+(n?"":" dis")+'"><input type="checkbox" value="'+t+'" checked> '+TYPES[t]+' ('+n+')</label>'}).join("");
  bindCheckAll("cfgLesson");bindCheckAll("cfgType");
+ var tw=$("cfgTypeWrap");if(tw)tw.style.display=tys.length>1?"":"none";
+ cfgAvail();
  $("subjectLessons").innerHTML=ls.map(function(l){var n=Q.filter(function(q){return q.subject===sub&&q.lesson===l}).length;var p=(S.prog[sub]||{})[l]||0;
   var meta=sub==="english"?Object.keys(TYPES).map(function(t){return (typeCounts(sub,l)[t]||0)+" "+TYPES[t].split(" ")[0]}).join(" · "):"Nhận biết → Vận dụng cao";
   var title=(th[l]&&th[l].title)||(m.units+" "+l);
@@ -105,8 +108,13 @@ function renderSubject(sub){curSub=sub;var m=META[sub];var th=window.THEORY[sub]
  go("subject");
 }
 document.addEventListener("click",function(e){var t=e.target.closest("[data-test]");if(!t)return;var a=t.dataset.test.split(":");cfgSetLesson(a[1]);collectCfg(a[0],false)});
+function cfgAvail(){var box=$("cfgAvail");if(!box)return;var s=curSub,ls=cfgChecked("cfgLesson"),ts=cfgChecked("cfgType"),lv=$("cfgLevel").value;
+ if(!ls.length||!ts.length){box.textContent="Hãy chọn ít nhất 1 bài và 1 dạng bài";return}
+ var n=Q.filter(function(q){return q.subject===s&&ls.indexOf(String(q.lesson))>=0&&ts.indexOf(typeOf(q))>=0&&(lv==="all"||q.difficulty===lv)}).length;
+ box.textContent=n?("Có "+n+" câu phù hợp — đề sẽ lấy "+Math.min(+$("cfgCount").value,n)+" câu"):"Không có câu nào phù hợp — hãy nới lỏng bộ lọc"}
 function collectCfg(sub,practice){var s=sub||curSub;var ls=cfgChecked("cfgLesson");if(!ls.length){toast("Hãy chọn ít nhất 1 bài");return}var ts=cfgChecked("cfgType");if(!ts.length){toast("Hãy chọn ít nhất 1 dạng bài");return}startExam({subject:s,lesson:ls.length>=lessonsOf(s).length?"all":ls,count:+$("cfgCount").value,time:+$("cfgTime").value,level:$("cfgLevel").value,qtype:ts.length>=Object.keys(TYPES).length?"all":ts,shQ:$("cfgShuffleQ").checked,shA:$("cfgShuffleA").checked,practice:practice})}
 $("cfgStart").onclick=function(){collectCfg(null,false)};$("cfgPractice").onclick=function(){collectCfg(null,true)};
+document.addEventListener("change",function(e){if(e.target&&e.target.closest&&e.target.closest(".cfg"))cfgAvail()});
 $("quickBtn").onclick=function(){startExam({subject:SUBJS[Math.floor(Math.random()*SUBJS.length)],lesson:"all",count:10,time:10,practice:false,quick:true})};
 $("theoryBack").onclick=function(){renderSubject(curSub)};
 
