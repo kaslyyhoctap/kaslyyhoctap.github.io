@@ -13,7 +13,7 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: ['vitest.setup.ts'],
     include: ['**/*.{test,spec}.{js,ts,tsx}', 'tests/**/*.{test,spec}.{js,ts,tsx}'],
-    exclude: ['node_modules', '.next', 'backup'],
+    exclude: ['node_modules', '.next', 'backup', 'tests/e2e'],
     globals: true,
     coverage: {
       provider: 'v8',

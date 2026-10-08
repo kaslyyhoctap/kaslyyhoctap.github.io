@@ -9,6 +9,7 @@ export default async function AdminQuestions() {
       <Link href="/admin/questions/new" className="btn btn-primary btn-sm">
         + New
       </Link>
+      <div style={{ overflowX: 'auto' }}>
       <table>
         <tbody>
           {qs.map((q) => (
@@ -23,6 +24,7 @@ export default async function AdminQuestions() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
