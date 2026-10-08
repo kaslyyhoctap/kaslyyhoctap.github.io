@@ -63,7 +63,7 @@ export function Header() {
   }, [subjOpen, explOpen]);
 
   const isSubjectRoute = SUBJECTS.includes(pathname.split('/')[1] || '');
-  const isExploreRoute = ['/bank', '/vocab', '/progress'].some((p) =>
+  const isExploreRoute = ['/bank', '/vocab', '/progress', '/notebook'].some((p) =>
     pathname.startsWith(p),
   );
   const closeNav = () => setNavOpen(false);
@@ -221,6 +221,14 @@ export function Header() {
                   onClick={closeNav}
                 >
                   Ngân hàng câu hỏi
+                </Link>
+                <Link
+                  href="/notebook"
+                  className={`nav-btn${pathname.startsWith('/notebook') ? ' active' : ''}`}
+                  role="menuitem"
+                  onClick={closeNav}
+                >
+                  Sổ tay
                 </Link>
                 <Link
                   href="/vocab"

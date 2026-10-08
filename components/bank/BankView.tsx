@@ -28,6 +28,12 @@ interface BankViewProps {
   questions: Question[];
   /** Reading passages keyed by passageId (app.js `window.PASSAGES`). */
   passages: PassageMap;
+  /** Filters applied on mount + after "Xóa bộ lọc" — e.g. the notebook pins st:'star'. */
+  initialFilters?: Partial<FilterValues>;
+  /** Heading above the list (default: "Ngân hàng câu hỏi"). */
+  heading?: string;
+  /** Empty-state message (default: the bank's "nới lỏng bộ lọc" hint). */
+  emptyText?: string;
 }
 
 /**
@@ -52,7 +58,13 @@ function isValidBankQuestion(q: Question): boolean {
   );
 }
 
-export default function BankView({ questions, passages }: BankViewProps) {
+export default function BankView({
+  questions,
+  passages,
+  initialFilters,
+  heading,
+  emptyText,
+}: BankViewProps) {
   // Build the valid, de-duplicated bank once (app.js global `Q`, lines 24–26).
   const bank = useMemo(() => {
     const seen = new Set<string>();
@@ -71,10 +83,14 @@ export default function BankView({ questions, passages }: BankViewProps) {
   const answered = appState.answered;
   const [starred, setStarred] = useState<Record<string, boolean>>(appState.starred || {});
 
-  const [filters, setFilters] = useState<FilterValues>(EMPTY_FILTERS);
+  const [filters, setFilters] = useState<FilterValues>({
+    ...EMPTY_FILTERS,
+    ...initialFilters,
+  });
   const onChange = (patch: Partial<FilterValues>) =>
     setFilters((f) => ({ ...f, ...patch }));
-  const onReset = () => setFilters(EMPTY_FILTERS);
+  // Reset returns to the page's pinned defaults (notebook keeps st:'star').
+  const onReset = () => setFilters({ ...EMPTY_FILTERS, ...initialFilters });
   const [page, setPage] = useState(1);
 
   const toggleStar = (id: string) => {
@@ -153,7 +169,7 @@ export default function BankView({ questions, passages }: BankViewProps) {
 
       {/* bankCount (app.js line 322): "· X/Y câu" + pager position */}
       <h2>
-        Ngân hàng câu hỏi{' '}
+        {heading ?? 'Ngân hàng câu hỏi'}{' '}
         <small className="muted">
           · {list.length}/{bank.length} câu
         </small>
@@ -161,7 +177,7 @@ export default function BankView({ questions, passages }: BankViewProps) {
 
       {showList.length === 0 ? (
         <div className="panel">
-          Không tìm thấy câu hỏi nào. Hãy thử nới lỏng bộ lọc.
+          {emptyText ?? 'Không tìm thấy câu hỏi nào. Hãy thử nới lỏng bộ lọc.'}
         </div>
       ) : (
         <div id="bankList">
