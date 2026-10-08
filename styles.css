@@ -198,6 +198,16 @@ kbd{background:var(--muted);border:1px solid var(--border);border-radius:6px;pad
 .trow{display:grid;grid-template-columns:minmax(0,1fr) 140px 48px;gap:10px;align-items:center;font-size:.88rem}
 .trow .pbar{height:7px}
 .rev{margin-top:14px} .rev-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+/* Vertical rhythm inside review/question cards (Tailwind preflight resets
+   p margins to 0, so content blocks would touch each other). */
+.rev>p{margin:12px 0}
+.rev .passage{margin:12px 0 0}
+.rev .passage+.rev-tools,.rev p+.rev-tools{margin-top:12px}
+.q-card #qText{margin:.4em 0 12px}
+.q-card .passage-wrap{margin-bottom:4px}
+.bank-item>p,.bank-item>ol{margin:10px 0}
+.theory p{margin:.6em 0}
+.panel>p:first-child{margin-top:0}
 /* Sổ tay (trái) + AI giải thích (phải) share one tools row per question.
    ExplainButton renders .rev-tools-ai after the star; push it right
    with margin-left:auto. */
