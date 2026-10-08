@@ -5,7 +5,7 @@
 'use client';
 
 import { typeOf } from '@/lib/quiz/pool';
-import { passageHtml, chemFormat, escapeHtml } from '@/lib/quiz/render';
+import { passageHtml, chemFormat } from '@/lib/quiz/render';
 import type { RuntimeQuestion } from '@/lib/quiz/scoring';
 import Options from './Options';
 import TrueFalseGrid from './TrueFalseGrid';
@@ -57,7 +57,11 @@ export default function QuestionCard({
       )}
       <div id="qText">
         Câu {index + 1}:{' '}
-        {isChem ? chemFormat(q.question) : escapeHtml(q.question || '')}
+        {isChem ? (
+          <span dangerouslySetInnerHTML={{ __html: chemFormat(q.question) }} />
+        ) : (
+          q.question
+        )}
       </div>
 
       {isTF ? (

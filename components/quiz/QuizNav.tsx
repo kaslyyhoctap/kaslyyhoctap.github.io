@@ -9,7 +9,7 @@
 'use client';
 
 import { TYPES } from '@/lib/meta';
-import { chemFormat, escapeHtml } from '@/lib/quiz/render';
+import { chemFormat } from '@/lib/quiz/render';
 import type { RuntimeQuestion } from '@/lib/quiz/scoring';
 import Timer from './Timer';
 
@@ -52,7 +52,7 @@ export default function QuizNav({
         disabled={!canNext}
         onClick={onNext}
       >
-        Câu tiếp →
+        Tiếp →
       </button>
       <button
         type="button"
@@ -151,7 +151,11 @@ export function QuizTop({
       </div>
 
       <div id="qTopic" className="chip">
-        {subject === 'chemistry' ? chemFormat(topicLabel) : escapeHtml(topicLabel)}
+        {subject === 'chemistry' ? (
+          <span dangerouslySetInnerHTML={{ __html: chemFormat(topicLabel) }} />
+        ) : (
+          topicLabel
+        )}
       </div>
 
       <div className="progress">

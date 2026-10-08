@@ -4,7 +4,7 @@
  */
 'use client';
 
-import { chemFormat, escapeHtml, LETTERS } from '@/lib/quiz/render';
+import { chemFormat, LETTERS } from '@/lib/quiz/render';
 import type { RuntimeQuestion } from '@/lib/quiz/scoring';
 
 interface OptionsProps {
@@ -38,7 +38,11 @@ export default function Options({ q, selected, onSelect, practice }: OptionsProp
             onClick={() => onSelect(idx)}
           >
             <span className="k">{LETTERS[idx]}</span>
-            <span>{isChem ? chemFormat(op.t) : escapeHtml(op.t)}</span>
+            {isChem ? (
+              <span dangerouslySetInnerHTML={{ __html: chemFormat(op.t) }} />
+            ) : (
+              <span>{op.t}</span>
+            )}
             {practice && answered && op.ok && ' \u2713'}
             {practice && answered && !op.ok && idx === selected && ' \u2717'}
           </button>
@@ -48,12 +52,15 @@ export default function Options({ q, selected, onSelect, practice }: OptionsProp
       {practice && answered && (
         <div className="rev exp">
           <b>Giải thích:</b>{' '}
-          {isChem ? chemFormat(q.explanation) : escapeHtml(q.explanation || '')}
+          {isChem ? (
+            <span dangerouslySetInnerHTML={{ __html: chemFormat(q.explanation) }} />
+          ) : (
+            q.explanation
+          )}
           {q.wrongWord && (
             <>
               <br />
-              <b>Từ sai:</b> {escapeHtml(q.wrongWord)} →{' '}
-              <b>nên dùng:</b> {escapeHtml(q.correctWord || '')}
+              <b>Từ sai:</b> {q.wrongWord} → <b>nên dùng:</b> {q.correctWord || ''}
             </>
           )}
         </div>

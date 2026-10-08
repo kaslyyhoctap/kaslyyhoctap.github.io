@@ -4,7 +4,7 @@
  */
 'use client';
 
-import { chemFormat, escapeHtml, LETTERS } from '@/lib/quiz/render';
+import { chemFormat, LETTERS } from '@/lib/quiz/render';
 import type { RuntimeQuestion } from '@/lib/quiz/scoring';
 
 interface TrueFalseGridProps {
@@ -29,7 +29,12 @@ export default function TrueFalseGrid({ q, tf, onTF, practice }: TrueFalseGridPr
         return (
           <div key={i} className={cls.join(' ')}>
             <span className="tf-t">
-              <b>{LETTERS[i]})</b> {isChem ? chemFormat(t.t) : escapeHtml(t.t)}
+              <b>{LETTERS[i]})</b>{' '}
+              {isChem ? (
+                <span dangerouslySetInnerHTML={{ __html: chemFormat(t.t) }} />
+              ) : (
+                t.t
+              )}
             </span>
             <button
               type="button"
@@ -53,7 +58,12 @@ export default function TrueFalseGrid({ q, tf, onTF, practice }: TrueFalseGridPr
 
       {practice && tf.some((v) => v >= 0) && (
         <div className="rev exp">
-          <b>Giải thích:</b> {isChem ? chemFormat(q.explanation) : escapeHtml(q.explanation || '')}
+          <b>Giải thích:</b>{' '}
+          {isChem ? (
+            <span dangerouslySetInnerHTML={{ __html: chemFormat(q.explanation) }} />
+          ) : (
+            q.explanation
+          )}
         </div>
       )}
     </div>
