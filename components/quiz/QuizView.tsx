@@ -12,6 +12,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { META, subjectUnits } from '@/lib/meta';
 import { useQuiz } from '@/lib/hooks/useQuiz';
 import { buildRecentMap } from '@/lib/quiz/pool';
@@ -31,6 +32,7 @@ interface QuizViewProps {
 
 export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
   const quiz = useQuiz(cfg);
+  const router = useRouter();
 
   // Boot the exam once on mount: build the recent-answered map from localStorage
   // history (app.js `recentMap`), then start. Mirrors app.js `startExam`.
@@ -58,6 +60,27 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
 
   // Container keydown dispatcher (app.js keyboard handler, lines 231–235).
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => quiz.onKeyDown(e);
+
+  // Submit handler: score, store result in sessionStorage, navigate to /result
+  // (app.js `submit()` → `go("result")`, lines 239–302).
+  const handleResult = () => {
+    const score = quiz.submit();
+    const elapsedSecs = cfg.time * 60 - quiz.timeLeft;
+    const timeout = quiz.timeLeft <= 0;
+    sessionStorage.setItem(
+      'ontap12-result',
+      JSON.stringify({
+        score,
+        qs: quiz.qs,
+        ans: quiz.ans,
+        cfg,
+        passages,
+        elapsedSecs,
+        timeout,
+      }),
+    );
+    router.push('/result');
+  };
 
   return (
     <div
@@ -123,7 +146,7 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
         total={quiz.qs.length}
         onPrev={quiz.prev}
         onNext={quiz.next}
-        onSubmit={quiz.submit}
+        onSubmit={handleResult}
         canNext={quiz.i < quiz.qs.length - 1}
         canPrev={quiz.i > 0}
         timeLeft={quiz.timeLeft}

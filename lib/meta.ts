@@ -78,6 +78,16 @@ export const TYPES: Record<string, string> = {
   true_false: 'True/False',
 };
 
+/** English skill categories for the result type breakdown (app.js line 16). */
+export const SKILLS: Record<string, string> = {
+  Vocabulary: 'Vocabulary',
+  Grammar: 'Grammar',
+  'Cloze test': 'Cloze Test',
+  'Word usage': 'Word Usage',
+  'Closest meaning': 'Paraphrase',
+  Reading: 'Reading',
+};
+
 /** Difficulty levels for the filter dropdown. */
 export const LEVELS: string[] = ['all', 'Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao'];
 
