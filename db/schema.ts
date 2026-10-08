@@ -117,7 +117,16 @@ export const ai_generated_tests = pgTable('ai_generated_tests', {
   expiresAt: timestamp('expires_at'),
 });
 
-// ── 8-11. Auth.js (NextAuth) tables ─────────────────────────────────────
+// ── 8. ai_explain_logs ─────────────────────────────────────────────────
+// Tracks explain-button usage for the 50-explanations-per-user-per-day quota.
+export const ai_explain_logs = pgTable('ai_explain_logs', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: text('user_id').notNull(),
+  questionId: text('question_id'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// ── 9-12. Auth.js (NextAuth) tables ─────────────────────────────────────
 // These mirror @auth/drizzle-adapter's defineTables() defaults EXACTLY
 // (table + column names incl. snake_case OAuth keys). Keep in sync: they
 // are passed to DrizzleAdapter and generate the DB columns via DrizzleKit.

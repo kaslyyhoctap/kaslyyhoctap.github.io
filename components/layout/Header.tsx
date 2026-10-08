@@ -176,6 +176,9 @@ export function Header() {
             <Link href="/progress" className="nav-btn" onClick={closeNav}>
               Tiến độ
             </Link>
+            <Link href="/ai/generate" className="nav-btn" onClick={closeNav}>
+              Tạo đề AI
+            </Link>
           </nav>
 
           {/* Mobile scrim */}

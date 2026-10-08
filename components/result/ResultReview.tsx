@@ -8,7 +8,7 @@
  * Features:
  * - "Xem lại câu sai" toggle → onlyWrong mode (app.js `rWrong` / `_wrongOnly`)
  * - Star button per question → persists to `ontap12-v1` localStorage (app.js `qStar`)
- * - AI Explain button per question → disabled placeholder (Task 5.3 will wire it)
+ * - AI Explain button per question → wired to <ExplainButton> (calls /api/ai/explain)
  */
 'use client';
 
@@ -23,6 +23,7 @@ import { TYPES } from '@/lib/meta';
 import { readAppState, STORAGE_KEY } from '@/lib/storage';
 import type { ExamConfig } from '@/lib/quiz/pool';
 import type { PassageMap } from '@/components/quiz/QuestionCard';
+import ExplainButton from '@/components/ai/ExplainButton';
 
 interface ResultReviewProps {
   qs: RuntimeQuestion[];
@@ -205,15 +206,7 @@ export default function ResultReview({ qs, ans, cfg, passages }: ResultReviewPro
                   {stLabel(st)}
                 </span>
                 <span className="chip">{chipText(s)}</span>
-                {/* AI Explain — disabled placeholder (Task 5.3) */}
-                <button
-                  type="button"
-                  className="btn btn-sm btn-ghost"
-                  disabled
-                  aria-label="Giải thích AI (chưa có sẵn)"
-                >
-                  AI giải thích
-                </button>
+                <ExplainButton q={s} userAnswer={ans[n]} />
               </div>
 
               {/* Passage (app.js line 290) */}

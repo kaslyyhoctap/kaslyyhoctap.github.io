@@ -17,8 +17,10 @@ import {
   vocabulary,
   user_progress,
   exam_results,
+  ai_generated_tests,
+  ai_explain_logs,
 } from '@/db/schema';
-import { and, desc, eq, inArray, sql, type SQLWrapper } from 'drizzle-orm';
+import { and, desc, eq, gte, inArray, sql, type SQLWrapper } from 'drizzle-orm';
 import type {
   Question,
   Passage,
@@ -272,4 +274,100 @@ export async function getWeakAreas(userId: string): Promise<WeakArea[]> {
     .where(inArray(questions.id, answeredIds));
 
   return computeWeakAreas(qs, answered);
+}
+
+// ── AI features ────────────────────────────────────────────────────
+
+/** Begin of "today" (midnight) for per-day rate limiting. */
+export function todayStart(): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+/** Criteria object stored alongside generated tests for cache lookup. */
+export interface GenerateCriteria {
+  subject: string;
+  lesson: number | string;
+  count: number;
+  difficulty?: string | null;
+}
+
+/**
+ * Count how many AI-generated tests the user has created since `since`
+ * (used for the 5-generations-per-day quota).
+ */
+export async function countAiGenerateRequests(userId: string, since: Date): Promise<number> {
+  const rows = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(ai_generated_tests)
+    .where(
+      and(
+        eq(ai_generated_tests.userId, userId),
+        gte(ai_generated_tests.createdAt, since),
+      ),
+    );
+  return Number(rows[0]?.count ?? 0);
+}
+
+/**
+ * Return cached questions for identical criteria that haven't expired yet
+ * (24 h TTL). Most-recent first.
+ */
+export async function getCachedAiTest(
+  userId: string,
+  criteria: GenerateCriteria,
+): Promise<Question[] | null> {
+  const rows = await db
+    .select({ questions: ai_generated_tests.questions })
+    .from(ai_generated_tests)
+    .where(
+      and(
+        eq(ai_generated_tests.userId, userId),
+        eq(ai_generated_tests.criteria, criteria),
+        gte(ai_generated_tests.expiresAt, new Date()),
+      ),
+    )
+    .orderBy(desc(ai_generated_tests.createdAt))
+    .limit(1);
+
+  const raw = rows[0]?.questions;
+  if (!raw) return null;
+  return Array.isArray(raw) ? (raw as Question[]) : null;
+}
+
+/** Persist a generated test (questions + criteria) with a 24 h TTL. */
+export async function saveAiTest(
+  userId: string,
+  criteria: GenerateCriteria,
+  questions: Question[],
+): Promise<void> {
+  await db.insert(ai_generated_tests).values({
+    userId,
+    criteria,
+    questions,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  });
+}
+
+/**
+ * Count AI explain requests for the user since `since`
+ * (used for the 50-explanations-per-day quota).
+ */
+export async function countAiExplainRequests(userId: string, since: Date): Promise<number> {
+  const rows = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(ai_explain_logs)
+    .where(
+      and(
+        eq(ai_explain_logs.userId, userId),
+        gte(ai_explain_logs.createdAt, since),
+      ),
+    );
+  return Number(rows[0]?.count ?? 0);
+}
+
+/** Record a single explain request for rate-limit accounting. */
+export async function logAiExplain(userId: string, questionId?: string): Promise<void> {
+  await db.insert(ai_explain_logs).values({ userId, questionId });
 }

@@ -37,11 +37,28 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
   // Boot the exam once on mount: build the recent-answered map from localStorage
   // history (app.js `recentMap`), then start. Mirrors app.js `startExam`.
   useEffect(() => {
+    // If coming from /ai/generate, prefer the AI-generated questions stored
+    // in sessionStorage (they live outside the DB bank).
+    let qsFromSession: Question[] | null = null;
+    const aiRaw = sessionStorage.getItem('ontap12-ai-quiz');
+    if (aiRaw) {
+      sessionStorage.removeItem('ontap12-ai-quiz');
+      try {
+        const parsed = JSON.parse(aiRaw);
+        if (Array.isArray(parsed?.questions) && parsed.questions.length > 0) {
+          qsFromSession = parsed.questions as Question[];
+        }
+      } catch {
+        /* invalid JSON — fall through to DB questions */
+      }
+    }
+
+    const toStart = qsFromSession ?? questions;
     const hist = readAppState().hist || [];
     const answeredMap = buildRecentMap(
       (hist || []).map((h: any) => h?.ids || []),
     );
-    quiz.start(questions, answeredMap);
+    quiz.start(toStart, answeredMap);
     // We intentionally depend only on mount (questions/cfg are stable props).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
