@@ -27,6 +27,8 @@ img{max-width:100%;height:auto}
 :focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:6px}
 h1{font-size:clamp(1.9rem,4.5vw,3rem);line-height:1.15;margin:.2em 0;letter-spacing:-.02em;overflow-wrap:break-word}
 h2{font-size:1.3rem;margin:1.5em 0 .7em;line-height:1.4;overflow-wrap:break-word}
+/* First heading inside a panel/card starts flush — no gap above. */
+.panel>h2:first-child,.panel>h3:first-child{margin-top:0}
 h3{margin:.4em 0 .6em;font-size:1.02rem;line-height:1.45}
 .muted{color:var(--muted-fg)} .small{font-size:.85rem} .eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);margin:0}
 /* ===== header: PC 1 dòng, mobile 2 dòng gọn ===== */
