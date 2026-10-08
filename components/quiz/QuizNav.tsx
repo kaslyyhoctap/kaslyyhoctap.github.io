@@ -52,7 +52,7 @@ export default function QuizNav({
         disabled={!canNext}
         onClick={onNext}
       >
-        Sau ở\u00A0→
+        Câu tiếp\u00A0→
       </button>
       <button
         type="button"

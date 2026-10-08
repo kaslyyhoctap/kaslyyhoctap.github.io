@@ -78,6 +78,12 @@ export function useQuiz(cfg: ExamConfig): UseQuizReturn {
 
   const timerRef = useRef<number | null>(null);
   const limitRef = useRef<number>(0);
+  // Full subject bank passed to start() — used to recompute per-lesson
+  // progress on submit (app.js submit recomputed S.prog from Q).
+  const bankRef = useRef<Question[]>([]);
+  // submit() must persist exactly once (manual submit + timeout auto-submit
+  // can both fire; QuizView may also call it when navigating to /result).
+  const submittedRef = useRef(false);
 
   const practice = !!cfg.practice;
 
@@ -117,6 +123,8 @@ export function useQuiz(cfg: ExamConfig): UseQuizReturn {
       }
       const runtime = mapToRuntime(selected, cfg.shA !== false);
       // pool already shuffles question order when shQ !== false.
+      bankRef.current = questions;
+      submittedRef.current = false;
       setQs(runtime);
       setAns(new Array(runtime.length).fill(-1));
       setFlag(new Array(runtime.length).fill(false));
@@ -186,7 +194,13 @@ export function useQuiz(cfg: ExamConfig): UseQuizReturn {
     const sc = scoreExam(qs, ans, cfg);
     setScore(sc);
     setDone(true);
-    // Persist answer status to the legacy `answered` map (app.js submit lines 246).
+    // Persist exactly once — manual submit and timeout auto-submit share
+    // this path, and callers may invoke it again when navigating to /result.
+    if (submittedRef.current) return sc;
+    submittedRef.current = true;
+    // Elapsed seconds, clamped to the configured limit (app.js submit line 250).
+    const elapsed = Math.max(0, Math.min(limitRef.current, limitRef.current - timeLeft));
+    // Per-question status for the legacy `answered` map (app.js submit line 246).
     const status: Record<string, string> = {};
     qs.forEach((s, n) => {
       if (typeOf(s) === 'true_false') {
@@ -198,10 +212,38 @@ export function useQuiz(cfg: ExamConfig): UseQuizReturn {
       }
     });
     saveState((s) => {
-      s.answered = { ...(s.answered || {}), ...status };
+      const merged = { ...(s.answered || {}), ...status };
+      s.answered = merged;
+      // Exam history record (app.js submit lines 257-258).
+      const rec = {
+        when: Date.now(),
+        sub: cfg.subject,
+        lesson: cfg.lesson,
+        point: sc.point,
+        ok: sc.ok,
+        tot: qs.length,
+        time: elapsed,
+        ids: qs.map((q) => q.id),
+      };
+      s.hist = [rec, ...((s.hist || []) as any[])].slice(0, 20);
+      s.exams = (s.exams || 0) + 1;
+      s.best = Math.max(s.best || 0, sc.point);
+      s.correct = (s.correct || 0) + sc.ok;
+      // Per-lesson progress recompute for this subject (app.js submit lines 253-256).
+      const bank = bankRef.current.filter((q) => q.subject === cfg.subject);
+      if (bank.length) {
+        s.prog = s.prog || {};
+        s.prog[cfg.subject] = s.prog[cfg.subject] || {};
+        const lessons = [...new Set(bank.map((q) => q.lesson))];
+        lessons.forEach((l) => {
+          const all = bank.filter((q) => q.lesson === l);
+          const good = all.filter((q) => merged[q.id] === 'ok').length;
+          s.prog[cfg.subject][l] = all.length ? Math.round((good / all.length) * 100) : 0;
+        });
+      }
     });
     return sc;
-  }, [qs, ans, cfg, saveState]);
+  }, [qs, ans, cfg, timeLeft, saveState]);
 
   // ── timer ───────────────────────────────────────────────────────
   useEffect(() => {

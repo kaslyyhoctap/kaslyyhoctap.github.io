@@ -11,7 +11,7 @@
  */
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { META, subjectUnits } from '@/lib/meta';
 import { useQuiz } from '@/lib/hooks/useQuiz';
@@ -63,14 +63,6 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!quiz.started || quiz.qs.length === 0) {
-    return (
-      <div className="panel">
-        <p className="muted">Không có câu hỏi nào phù hợp với bộ lọc.</p>
-      </div>
-    );
-  }
-
   const q = quiz.current!;
   const subjectName = META[cfg.subject]?.name ?? cfg.subject;
   const units = subjectUnits(cfg.subject);
@@ -80,10 +72,13 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
 
   // Submit handler: score, store result in sessionStorage, navigate to /result
   // (app.js `submit()` → `go("result")`, lines 239–302).
-  const handleResult = () => {
-    const score = quiz.submit();
+  // Guarded: timeout auto-submit also lands here exactly once via the effect below.
+  const navRef = useRef(false);
+  const goResult = (timeout: boolean) => {
+    if (navRef.current) return;
+    navRef.current = true;
+    const score = quiz.score ?? quiz.submit();
     const elapsedSecs = cfg.time * 60 - quiz.timeLeft;
-    const timeout = quiz.timeLeft <= 0;
     sessionStorage.setItem(
       'ontap12-result',
       JSON.stringify({
@@ -98,6 +93,24 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
     );
     router.push('/result');
   };
+  const handleResult = () => goResult(quiz.timeLeft <= 0);
+
+  // Timeout path: the hook auto-submits when the clock hits 0 — navigate to
+  // /result exactly like a manual submit (legacy: hết giờ → tự nộp → xem KQ).
+  useEffect(() => {
+    if (quiz.done) goResult(true);
+    // goResult is stable via navRef guard; depend only on done.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quiz.done]);
+
+  // NOTE: all hooks above must run before this early return (Rules of Hooks).
+  if (!quiz.started || quiz.qs.length === 0) {
+    return (
+      <div className="panel">
+        <p className="muted">Không có câu hỏi nào phù hợp với bộ lọc.</p>
+      </div>
+    );
+  }
 
   return (
     <div

@@ -50,7 +50,8 @@ body.nav-open .header{z-index:200}
 .nav-btn:hover{background:var(--muted)} .nav-btn.active{background:var(--primary);color:var(--on-primary)}
 /* grouped subjects dropdown: ponytail — 1 tab thay 3 nút, tái dùng .nav-btn */
 .nav-group{position:relative;flex:none}
-#subjBtn svg,#explBtn svg{transition:transform .2s}
+#subjBtn,#explBtn{display:inline-flex;align-items:center;gap:6px}
+#subjBtn svg,#explBtn svg{transition:transform .2s;flex:none}
 #subjBtn[aria-expanded="true"] svg,#explBtn[aria-expanded="true"] svg{transform:rotate(180deg)}
 .nav-menu{position:absolute;top:calc(100% + 8px);left:50%;translate:-50% 0;min-width:170px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:6px;display:grid;gap:2px;z-index:90}
 .nav-menu[hidden]{display:none}
