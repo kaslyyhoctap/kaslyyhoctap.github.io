@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SUBJECTS, TYPES, LEVELS } from '@/lib/meta';
 import type { Question } from '@/lib/types';
 import type { FormEvent } from 'react';
@@ -27,6 +28,11 @@ interface QuestionFormProps {
 const DIFFICULTY = LEVELS.filter((l) => l !== 'all');
 const INPUT_CLS =
   "w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50";
+// Option lists for shadcn Select: `items` feeds SelectValue's label.
+const SUBJECT_ITEMS = SUBJECTS.map((s) => ({ value: s, label: s }));
+const TYPE_ITEMS = Object.entries(TYPES).map(([value, label]) => ({ value, label }));
+const DIFFICULTY_ITEMS = DIFFICULTY.map((d) => ({ value: d, label: d }));
+const ANSWER_ITEMS = ['A', 'B', 'C', 'D'].map((label, i) => ({ value: String(i), label }));
 
 export default function QuestionForm({ initial, onSubmit }: QuestionFormProps) {
   const router = useRouter();
@@ -103,17 +109,22 @@ export default function QuestionForm({ initial, onSubmit }: QuestionFormProps) {
 
         <label>
           Môn học
-          <select
+          <Select
             value={form.subject}
-            onChange={(e) => update('subject', e.target.value)}
-            className={INPUT_CLS}
+            onValueChange={(v) => v !== null && update('subject', v)}
+            items={SUBJECT_ITEMS}
           >
-            {SUBJECTS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className={INPUT_CLS}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SUBJECT_ITEMS.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
 
         <label>
@@ -129,17 +140,22 @@ export default function QuestionForm({ initial, onSubmit }: QuestionFormProps) {
 
         <label>
           Loại câu hỏi
-          <select
+          <Select
             value={form.type}
-            onChange={(e) => update('type', e.target.value)}
-            className={INPUT_CLS}
+            onValueChange={(v) => v !== null && update('type', v)}
+            items={TYPE_ITEMS}
           >
-            {Object.entries(TYPES).map(([v, l]) => (
-              <option key={v} value={v}>
-                {l}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className={INPUT_CLS}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {TYPE_ITEMS.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
 
         <label>
@@ -154,17 +170,22 @@ export default function QuestionForm({ initial, onSubmit }: QuestionFormProps) {
 
         <label>
           Độ khó
-          <select
+          <Select
             value={form.difficulty}
-            onChange={(e) => update('difficulty', e.target.value)}
-            className={INPUT_CLS}
+            onValueChange={(v) => v !== null && update('difficulty', v)}
+            items={DIFFICULTY_ITEMS}
           >
-            {DIFFICULTY.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className={INPUT_CLS}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {DIFFICULTY.map((d) => (
+                <SelectItem key={d} value={d}>
+                  {d}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
       </div>
 
@@ -194,16 +215,22 @@ export default function QuestionForm({ initial, onSubmit }: QuestionFormProps) {
 
         <label className="block mt-4">
           Đáp án đúng
-          <select
-            value={form.correctAnswer}
-            onChange={(e) => update('correctAnswer', Number(e.target.value))}
-            className={INPUT_CLS}
+          <Select
+            value={String(form.correctAnswer)}
+            onValueChange={(v) => v !== null && update('correctAnswer', Number(v))}
+            items={ANSWER_ITEMS}
           >
-            <option value={0}>A</option>
-            <option value={1}>B</option>
-            <option value={2}>C</option>
-            <option value={3}>D</option>
-          </select>
+            <SelectTrigger className={INPUT_CLS}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {ANSWER_ITEMS.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
       </fieldset>
 

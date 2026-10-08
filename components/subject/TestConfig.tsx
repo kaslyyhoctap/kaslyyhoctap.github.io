@@ -9,6 +9,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TYPES, subjectUnits, COUNT_OPTIONS, TIME_OPTIONS, LEVELS } from '@/lib/meta';
 import { buildQuizUrl } from '@/lib/quiz/urls';
 
@@ -34,6 +35,18 @@ export default function TestConfig({ subject, lessons }: TestConfigProps) {
   const [type, setType] = useState('all');
   const [shuffleQ, setShuffleQ] = useState(true);
   const [shuffleA, setShuffleA] = useState(true);
+
+  // Option lists for shadcn Select: `items` feeds SelectValue's label.
+  const countItems = COUNT_OPTIONS.map((n) => ({ value: String(n), label: String(n) }));
+  const timeItems = TIME_OPTIONS.map((n) => ({ value: String(n), label: String(n) }));
+  const lessonItems = [
+    { value: 'all', label: `Tổng hợp ${lessons.length} ${units.toLowerCase()}` },
+    ...lessons.map((l) => ({ value: String(l), label: `${units} ${l}` })),
+  ];
+  const typeItems = [
+    { value: 'all', label: 'Tất cả dạng' },
+    ...Object.entries(TYPES).map(([value, label]) => ({ value, label })),
+  ];
 
   // Ports collectCfg() — builds the exam config object (app.js line 106).
   const buildConfig = (practice: boolean) => ({
@@ -65,63 +78,104 @@ export default function TestConfig({ subject, lessons }: TestConfigProps) {
         <div className="cfg-grid">
           <label>
             Số câu
-            <select value={count} onChange={(e) => setCount(Number(e.target.value))}>
-              {COUNT_OPTIONS.map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
+            <Select
+              value={String(count)}
+              onValueChange={(v) => v !== null && setCount(Number(v))}
+              items={countItems}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {countItems.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label>
             Thời gian (phút)
-            <select value={time} onChange={(e) => setTime(Number(e.target.value))}>
-              {TIME_OPTIONS.map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
+            <Select
+              value={String(time)}
+              onValueChange={(v) => v !== null && setTime(Number(v))}
+              items={timeItems}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {timeItems.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label>
             Bài
-            <select value={lesson} onChange={(e) => setLesson(e.target.value)}>
-              <option value="all">
-                Tổng hợp {lessons.length} {units.toLowerCase()}
-              </option>
-              {lessons.map((l) => (
-                <option key={l} value={l}>
-                  {units} {l}
-                </option>
-              ))}
-            </select>
+            <Select
+              value={lesson}
+              onValueChange={(v) => v !== null && setLesson(v)}
+              items={lessonItems}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {lessonItems.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label>
             Mức độ
-            <select value={level} onChange={(e) => setLevel(e.target.value)}>
-              {LEVEL_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            <Select
+              value={level}
+              onValueChange={(v) => v !== null && setLevel(v)}
+              items={LEVEL_OPTIONS}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {LEVEL_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           {/* Only shown for English (app.js line 96: cfgTypeWrap display toggle) */}
           {isEnglish && (
             <label>
               Dạng bài (Tiếng Anh)
-              <select value={type} onChange={(e) => setType(e.target.value)}>
-                <option value="all">Tất cả dạng</option>
-                {Object.entries(TYPES).map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+              <Select
+                value={type}
+                onValueChange={(v) => v !== null && setType(v)}
+                items={typeItems}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {typeItems.map((o) => (
+                    <SelectItem key={o.value} value={o.value}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </label>
           )}
 

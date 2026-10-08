@@ -14,6 +14,7 @@
  */
 'use client';
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SUBJECTS, subjectName, TYPES, LEVELS } from '@/lib/meta';
 
 /** Filter state mirrors the six app.js controls (fSub..fQ). */
@@ -64,6 +65,24 @@ export default function BankFilters({
 }: BankFiltersProps) {
   const anyActive = Object.values(filters).some((v) => v !== '');
 
+  // Option lists for shadcn Select: `items` feeds SelectValue's label.
+  const subItems = [
+    { value: '', label: 'Mọi môn' },
+    ...SUBJECTS.map((s) => ({ value: s, label: subjectName(s) })),
+  ];
+  const lesItems = [
+    { value: '', label: `Mọi ${unitWord.toLowerCase()}` },
+    ...lessons.map((n) => ({ value: String(n), label: `${unitWord} ${n}` })),
+  ];
+  const difItems = LEVELS.map((d) => ({
+    value: d === 'all' ? '' : d,
+    label: d === 'all' ? 'Mọi mức độ' : d,
+  }));
+  const ftItems = [
+    { value: '', label: 'Mọi dạng' },
+    ...Object.entries(TYPES).map(([value, label]) => ({ value, label })),
+  ];
+
   return (
     <div className="panel filters">
       {/* search box (app.js fQ) */}
@@ -91,71 +110,91 @@ export default function BankFilters({
 
       {/* 5-select grid (app.js frow) */}
       <div className="frow">
-        <select
-          aria-label="Môn"
+        <Select
           value={filters.sub}
-          onChange={(e) => {
-            // Switching subject invalidates the lesson filter.
-            onChange({ sub: e.target.value, les: '' });
-          }}
+          // Switching subject invalidates the lesson filter.
+          onValueChange={(v) => v !== null && onChange({ sub: v, les: '' })}
+          items={subItems}
         >
-          <option value="">Mọi môn</option>
-          {SUBJECTS.map((s) => (
-            <option key={s} value={s}>
-              {subjectName(s)}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger aria-label="Môn">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {subItems.map((o) => (
+              <SelectItem key={o.value} value={o.value}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <select
-          aria-label="Bài/Unit"
+        <Select
           value={filters.les}
-          onChange={(e) => onChange({ les: e.target.value })}
+          onValueChange={(v) => v !== null && onChange({ les: v })}
+          items={lesItems}
         >
-          <option value="">Mọi {unitWord.toLowerCase()}</option>
-          {lessons.map((n) => (
-            <option key={n} value={String(n)}>
-              {unitWord} {n}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger aria-label="Bài/Unit">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {lesItems.map((o) => (
+              <SelectItem key={o.value} value={o.value}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <select
-          aria-label="Mức độ"
+        <Select
           value={filters.dif}
-          onChange={(e) => onChange({ dif: e.target.value })}
+          onValueChange={(v) => v !== null && onChange({ dif: v })}
+          items={difItems}
         >
-          {LEVELS.map((d) => (
-            <option key={d} value={d === 'all' ? '' : d}>
-              {d === 'all' ? 'Mọi mức độ' : d}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger aria-label="Mức độ">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {difItems.map((o) => (
+              <SelectItem key={o.value} value={o.value}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <select
-          aria-label="Dạng câu hỏi"
+        <Select
           value={filters.ft}
-          onChange={(e) => onChange({ ft: e.target.value })}
+          onValueChange={(v) => v !== null && onChange({ ft: v })}
+          items={ftItems}
         >
-          <option value="">Mọi dạng</option>
-          {Object.entries(TYPES).map(([k, lbl]) => (
-            <option key={k} value={k}>
-              {lbl}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger aria-label="Dạng câu hỏi">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {ftItems.map((o) => (
+              <SelectItem key={o.value} value={o.value}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <select
-          aria-label="Trạng thái"
+        <Select
           value={filters.st}
-          onChange={(e) => onChange({ st: e.target.value })}
+          onValueChange={(v) => v !== null && onChange({ st: v })}
+          items={STATE_OPTIONS}
         >
-          {STATE_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger aria-label="Trạng thái">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATE_OPTIONS.map((o) => (
+              <SelectItem key={o.value} value={o.value}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {anyActive && (

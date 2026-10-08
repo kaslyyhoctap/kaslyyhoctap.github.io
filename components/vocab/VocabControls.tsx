@@ -10,6 +10,7 @@
  */
 'use client';
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { VocabMode, VocabKind } from '@/lib/vocab';
 
 /** Kind select options (app.js index.html line 194). */
@@ -64,6 +65,11 @@ export default function VocabControls({
   onStarOnlyToggle,
   onHideAllToggle,
 }: VocabControlsProps) {
+  // Option lists for shadcn Select: `items` feeds SelectValue's label.
+  const unitItems = units.length
+    ? units.map((u) => ({ value: u, label: `Unit ${u}` }))
+    : [{ value: unit, label: `Unit ${unit}` }];
+
   return (
     <>
       {/* Heading with count — app.js vocabCount (line 346) */}
@@ -100,48 +106,56 @@ export default function VocabControls({
 
         {/* Control row — app.js vfrow (index.html line 192) */}
         <div className="frow vfrow">
-          <select
-            id="vUnit"
-            aria-label="Unit"
+          <Select
             value={unit}
-            onChange={(e) => onUnitChange(e.target.value)}
+            onValueChange={(v) => v !== null && onUnitChange(v)}
+            items={unitItems}
           >
-            {units.length ? (
-              units.map((u) => (
-                <option key={u} value={u}>
-                  Unit {u}
-                </option>
-              ))
-            ) : (
-              <option value={unit}>Unit {unit}</option>
-            )}
-          </select>
+            <SelectTrigger id="vUnit" aria-label="Unit">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {unitItems.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-          <select
-            id="vKind"
-            aria-label="Loại"
+          <Select
             value={kind}
-            onChange={(e) => onKindChange(e.target.value as VocabKind)}
+            onValueChange={(v) => v !== null && onKindChange(v as VocabKind)}
+            items={KIND_OPTIONS}
           >
-            {KIND_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="vKind" aria-label="Loại">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {KIND_OPTIONS.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-          <select
-            id="vMode"
-            aria-label="Chế độ"
+          <Select
             value={mode}
-            onChange={(e) => onModeChange(e.target.value as VocabMode)}
+            onValueChange={(v) => v !== null && onModeChange(v as VocabMode)}
+            items={MODE_OPTIONS}
           >
-            {MODE_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="vMode" aria-label="Chế độ">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {MODE_OPTIONS.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           <button
             type="button"

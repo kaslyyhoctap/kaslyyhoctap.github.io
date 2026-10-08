@@ -12,6 +12,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SUBJECTS, COUNT_OPTIONS, LEVELS, META, subjectName, subjectUnits } from '@/lib/meta';
 import { buildQuizUrl } from '@/lib/quiz/urls';
 import type { SubjectMeta, Question } from '@/lib/types';
@@ -43,6 +44,14 @@ export default function AiGenerateForm({ subjects }: AiGenerateFormProps) {
   const lessons = subjects.find((s) => s.subject === subject)?.lessons ?? [];
   const units = subjectUnits(subject);
   const subjName = subjectName(subject);
+
+  // Option lists for shadcn Select: `items` feeds SelectValue's label.
+  const subjectItems = SUBJECTS.map((s) => ({ value: s, label: subjectName(s) }));
+  const lessonItems = [
+    { value: 'all', label: `Tổng hợp ${lessons.length} ${units.toLowerCase()}` },
+    ...lessons.map((l) => ({ value: String(l), label: `${units} ${l}` })),
+  ];
+  const countItems = COUNT_OPTIONS.map((n) => ({ value: String(n), label: String(n) }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,63 +181,89 @@ export default function AiGenerateForm({ subjects }: AiGenerateFormProps) {
         <div className="cfg-grid">
           <label>
             Môn học
-            <select
+            <Select
               value={subject}
-              onChange={(e) => {
-                setSubject(e.target.value);
+              onValueChange={(v) => {
+                if (v === null) return;
+                setSubject(v);
                 setLesson('all');
               }}
+              items={subjectItems}
             >
-              {SUBJECTS.map((s) => (
-                <option key={s} value={s}>
-                  {subjectName(s)}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {subjectItems.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label>
             {units}
-            <select
+            <Select
               value={lesson}
-              onChange={(e) => setLesson(e.target.value)}
+              onValueChange={(v) => v !== null && setLesson(v)}
+              items={lessonItems}
               disabled={loading}
             >
-              <option value="all">
-                Tổng hợp {lessons.length} {units.toLowerCase()}
-              </option>
-              {lessons.map((l) => (
-                <option key={l} value={l}>
-                  {units} {l}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {lessonItems.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label>
             Số câu
-            <select value={count} onChange={(e) => setCount(Number(e.target.value))} disabled={loading}>
-              {COUNT_OPTIONS.map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
+            <Select
+              value={String(count)}
+              onValueChange={(v) => v !== null && setCount(Number(v))}
+              items={countItems}
+              disabled={loading}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {countItems.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
 
           <label>
             Mức độ
-            <select
+            <Select
               value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value)}
+              onValueChange={(v) => v !== null && setDifficulty(v)}
+              items={LEVEL_OPTIONS}
               disabled={loading}
             >
-              {LEVEL_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {LEVEL_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
         </div>
 
