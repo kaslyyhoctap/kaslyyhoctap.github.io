@@ -12,7 +12,7 @@
  */
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { typeOf } from '@/lib/quiz/pool';
 import { chemFormat, LETTERS } from '@/lib/quiz/render';
 import {
@@ -30,6 +30,9 @@ interface ResultReviewProps {
   ans: number[];
   cfg: ExamConfig;
   passages: PassageMap;
+  /** Wrong-only filter, owned by ResultView so its toggle can live in the hero. */
+  onlyWrong: boolean;
+  onToggleWrong: () => void;
 }
 
 /** Build the chip text: topic · type · difficulty · Band (app.js `chipFor`, line 23). */
@@ -121,21 +124,13 @@ function ResultOpts({ q, a }: { q: RuntimeQuestion; a: number }) {
   });
 }
 
-export default function ResultReview({ qs, ans, cfg, passages }: ResultReviewProps) {
-  const [onlyWrong, setOnlyWrong] = useState(false);
+export default function ResultReview({ qs, ans, cfg, passages, onlyWrong, onToggleWrong }: ResultReviewProps) {
   const [starred, setStarred] = useState<Record<string, boolean>>({});
-  const reviewRef = useRef<HTMLDivElement>(null);
 
   // Load starred from localStorage on mount (app.js `S.starred`).
   useEffect(() => {
     setStarred(readAppState().starred || {});
   }, []);
-
-  const toggleWrong = () => {
-    setOnlyWrong((v) => !v);
-    // Scroll to review section (app.js scrollTo after toggle, line 296).
-    reviewRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const toggleStar = (id: string) => {
     const next = { ...starred };
@@ -163,18 +158,7 @@ export default function ResultReview({ qs, ans, cfg, passages }: ResultReviewPro
     st === 'ok' ? 'Đúng' : st === 'bad' ? 'Sai' : 'Bỏ qua';
 
   return (
-    <div ref={reviewRef}>
-      <div className="row wrap-btns">
-        <button
-          type="button"
-          className="btn"
-          id="rWrong"
-          onClick={toggleWrong}
-        >
-          {onlyWrong ? 'Xem tất cả câu' : 'Xem lại câu sai'}
-        </button>
-      </div>
-
+    <div id="reviewList">
       <h2>
         Chi tiết từng câu
         {onlyWrong && ' (chỉ câu sai/bỏ qua)'}
@@ -193,6 +177,12 @@ export default function ResultReview({ qs, ans, cfg, passages }: ResultReviewPro
               {/* rev-head (app.js line 289) */}
               <div className="rev-head">
                 <b>Câu {n + 1}</b>
+                <span className={`tag ${st}`}>
+                  {stLabel(st)}
+                </span>
+                <span className="chip">{chipText(s)}</span>
+              </div>
+              <div className="rev-tools">
                 <button
                   type="button"
                   className="btn btn-sm btn-ghost"
@@ -202,10 +192,6 @@ export default function ResultReview({ qs, ans, cfg, passages }: ResultReviewPro
                 >
                   {starred[s.id] ? '★ Sổ tay' : '☆ Sổ tay'}
                 </button>
-                <span className={`tag ${st}`}>
-                  {stLabel(st)}
-                </span>
-                <span className="chip">{chipText(s)}</span>
                 <ExplainButton q={s} userAnswer={ans[n]} />
               </div>
 

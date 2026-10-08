@@ -12,6 +12,7 @@
  */
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { META, TYPES, SKILLS, subjectUnits } from '@/lib/meta';
@@ -64,6 +65,15 @@ export default function ResultView({
   timeout,
 }: ResultData) {
   const router = useRouter();
+  // "Xem lại câu sai" toggle lives here so the button can sit in the hero
+  // section while ResultReview consumes the filter below.
+  const [onlyWrong, setOnlyWrong] = useState(false);
+  const toggleWrong = () => {
+    setOnlyWrong((v) => !v);
+    document
+      .getElementById('reviewList')
+      ?.scrollIntoView({ behavior: 'smooth' });
+  };
   const isEnglish = cfg.subject === 'english';
   const m = META[cfg.subject] || { name: cfg.subject, units: 'Bài' };
   const units = subjectUnits(cfg.subject);
@@ -193,26 +203,41 @@ export default function ResultView({
           </div>
         </div>
 
-        {/* Topics breakdown — non-English only (app.js line 267) */}
-        {!isEnglish && (
-          <div id="rTopics">
-            <h3>Kết quả theo chủ đề</h3>
-            {Object.entries(score.topics)
-              .filter(([t]) => t)
-              .map(([topic, stat]) => {
-                const pct = stat.tot > 0 ? Math.round((stat.ok / stat.tot) * 100) : 0;
-                return (
-                  <div key={topic} className="trow">
-                    <span>{topic}</span>
-                    <span className="pbar">
-                      <i style={{ width: `${pct}%` }}></i>
-                    </span>
-                    <b>{stat.ok}/{stat.tot}</b>
-                  </div>
-                );
-              })}
-          </div>
-        )}
+        {/* Topics breakdown — non-English only (app.js line 267).
+            Small topics (<2 questions) are merged into "Chủ đề khác" so the
+            list stays informative instead of a wall of 0/1 rows. */}
+        {!isEnglish &&
+          (() => {
+            const entries = Object.entries(score.topics).filter(([t]) => t);
+            const big = entries.filter(([, s]) => s.tot >= 2);
+            const small = entries.filter(([, s]) => s.tot < 2);
+            const smallOk = small.reduce((a, [, s]) => a + s.ok, 0);
+            const smallTot = small.reduce((a, [, s]) => a + s.tot, 0);
+            const rows =
+              smallTot > 0
+                ? [...big, ['Chủ đề khác', { ok: smallOk, tot: smallTot }] as const]
+                : big;
+            if (!rows.length) return null;
+            return (
+              <div id="rTopics">
+                <h3>Kết quả theo chủ đề</h3>
+                {rows.map(([topic, stat]) => {
+                  const pct = stat.tot > 0 ? Math.round((stat.ok / stat.tot) * 100) : 0;
+                  return (
+                    <div key={topic} className="trow">
+                      <span>{topic}</span>
+                      <span className="pbar">
+                        <i style={{ width: `${pct}%` }}></i>
+                      </span>
+                      <b>
+                        {stat.ok}/{stat.tot}
+                      </b>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
 
         {/* Types + skills breakdown — English only (app.js lines 269–279) */}
         {isEnglish && (
@@ -251,6 +276,14 @@ export default function ResultView({
           <button
             type="button"
             className="btn"
+            id="rWrongTop"
+            onClick={toggleWrong}
+          >
+            {onlyWrong ? 'Xem tất cả câu' : 'Xem lại câu sai'}
+          </button>
+          <button
+            type="button"
+            className="btn"
             id="rDrill"
             onClick={handleDrill}
             disabled={!wrongIds.length}
@@ -274,7 +307,14 @@ export default function ResultView({
         </div>
       </section>
 
-      <ResultReview qs={qs} ans={ans} cfg={cfg} passages={passages} />
+      <ResultReview
+        qs={qs}
+        ans={ans}
+        cfg={cfg}
+        passages={passages}
+        onlyWrong={onlyWrong}
+        onToggleWrong={toggleWrong}
+      />
     </>
   );
 }

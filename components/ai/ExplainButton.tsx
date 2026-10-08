@@ -63,7 +63,7 @@ export default function ExplainButton({ q, userAnswer }: ExplainButtonProps) {
   };
 
   return (
-    <div className="ai-explain">
+    <div className="ai-explain rev-tools-ai">
       <button
         type="button"
         className="btn btn-sm btn-ghost"
