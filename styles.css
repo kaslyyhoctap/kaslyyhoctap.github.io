@@ -281,18 +281,45 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
 .ai-err p{color:var(--bad);font-weight:600;margin:.2em 0 .8em}
 .spin{display:inline-block;width:16px;height:16px;flex:none;border:2px solid currentColor;border-top-color:transparent;border-radius:99px;animation:spin .7s linear infinite;vertical-align:-3px}
 @keyframes spin{to{transform:rotate(360deg)}}
-/* route skeletons: shimmer blocks mirroring panel/card shapes, theme-aware */
+/* route skeletons: shimmer blocks mirroring each page's real layout, theme-aware */
 .skel{display:grid;gap:18px;margin:16px 0}
 .skel-block{border:1px solid var(--border);border-radius:var(--r);padding:20px;display:grid;gap:12px;background:var(--card)}
 .skel-line{border-radius:8px;min-height:14px;background:linear-gradient(90deg,var(--muted) 25%,var(--border) 50%,var(--muted) 75%);background-size:200% 100%;animation:skel 1.2s ease infinite}
 .skel-line.w40{width:40%}.skel-line.w60{width:60%}.skel-line.w80{width:80%}
 .skel-title{min-height:26px;width:55%}
-.skel-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.skel-sect{min-height:22px;width:220px}
+.skel-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.skel-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .skel-card{min-height:150px;border:1px solid var(--border);border-radius:var(--r);background:linear-gradient(100deg,var(--card) 30%,var(--muted) 50%,var(--card) 70%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+/* home hero */
+.skel-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.9fr);gap:20px}
+.skel-herotxt{border:1px solid var(--border);border-radius:var(--r);background:var(--card);padding:30px;display:grid;gap:12px;align-content:start}
+.skel-herocard{min-height:180px;border-radius:var(--r);background:linear-gradient(100deg,var(--card) 30%,var(--muted) 50%,var(--card) 70%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+.skel-cta{display:flex;gap:10px}.skel-btn{flex:1;min-height:44px;border-radius:12px;background:linear-gradient(90deg,var(--muted) 25%,var(--border) 50%,var(--muted) 75%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+.skel-cta1{min-height:44px;border-radius:12px;background:linear-gradient(90deg,var(--muted) 25%,var(--border) 50%,var(--muted) 75%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+/* forms */
+.skel-form3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.skel-form5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.skel-field{min-height:44px;border-radius:10px;background:linear-gradient(90deg,var(--muted) 25%,var(--border) 50%,var(--muted) 75%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+.skel-search{min-height:44px;border-radius:10px;background:linear-gradient(90deg,var(--muted) 25%,var(--border) 50%,var(--muted) 75%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+/* quiz */
+.skel-quizmeta{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.skel-timer{width:80px;min-height:28px;border-radius:99px;background:linear-gradient(90deg,var(--muted) 25%,var(--border) 50%,var(--muted) 75%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+.skel-quizgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.skel-opt{min-height:52px;border-radius:12px;border:1.5px solid var(--border);background:linear-gradient(90deg,var(--bg) 25%,var(--muted) 50%,var(--bg) 75%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+.skel-pal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.skel-pal::before{content:"";grid-column:1/-1;min-height:220px;border-radius:10px;background:linear-gradient(100deg,var(--bg) 30%,var(--muted) 50%,var(--bg) 70%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+/* result */
+.skel-center{justify-items:center;text-align:center}
+.skel-score{width:120px;height:120px;border-radius:99px;background:linear-gradient(100deg,var(--muted) 25%,var(--border) 50%,var(--muted) 75%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+.skel-stats4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;width:100%}
+.skel-stat{min-height:76px;border:1px solid var(--border);border-radius:12px;background:linear-gradient(100deg,var(--bg) 30%,var(--muted) 50%,var(--bg) 70%);background-size:200% 100%;animation:skel 1.2s ease infinite}
+/* vocab flashcard */
+.skel-flash{min-height:170px;border:1.5px solid var(--border);border-radius:14px;background:linear-gradient(100deg,var(--bg) 30%,var(--muted) 50%,var(--bg) 70%);background-size:200% 100%;animation:skel 1.2s ease infinite}
 @keyframes skel{to{background-position:-200% 0}}
-@media(max-width:900px){.skel-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.skel-cards{grid-template-columns:minmax(0,1fr)}}
-@media(prefers-reduced-motion:reduce){.skel-line,.skel-card{animation:none}}
+@media(max-width:900px){.skel-grid3{grid-template-columns:repeat(2,minmax(0,1fr))}.skel-hero,.skel-grid2,.skel-quizgrid{grid-template-columns:minmax(0,1fr)}.skel-form5{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.skel-grid3,.skel-grid2{grid-template-columns:minmax(0,1fr)}.skel-form3,.skel-form5{grid-template-columns:minmax(0,1fr)}.skel-stats4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.skel-line,.skel-card,.skel-herocard,.skel-btn,.skel-cta1,.skel-field,.skel-search,.skel-timer,.skel-opt,.skel-pal::before,.skel-score,.skel-stat,.skel-flash{animation:none}}
 .prog-row{margin:12px 0} .prog-row .lbl{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;font-weight:600;align-items:flex-start;overflow:hidden}
 .prog-row .lbl span:first-child{overflow:hidden;text-overflow:ellipsis;min-width:0}
 /* tiến độ: panel xếp chồng luôn cách nhau, không dính */

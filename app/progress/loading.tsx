@@ -1,5 +1,5 @@
-import RouteSkeleton from '@/components/ui/route-skeleton';
+import { ProgressSkeleton } from '@/components/ui/route-skeleton';
 
 export default function Loading() {
-  return <RouteSkeleton cards={2} textLines={4} />;
+  return <ProgressSkeleton />;
 }

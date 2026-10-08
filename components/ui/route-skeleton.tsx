@@ -1,53 +1,227 @@
 /**
- * Shared skeleton primitives for route `loading.tsx` files.
+ * Per-route skeletons mirroring each page's real layout.
  * Pure markup + theme-aware CSS (`.skel*` in styles.css) — no JS, no deps.
- * Keep shapes close to the real panels so the swap-in doesn't jump layout.
+ * Shapes match the destination page so the swap-in doesn't jump layout.
  */
-export function SkelTitle() {
+
+function L({ w = '' }: { w?: string }) {
+  return <div className={`skel-line ${w}`} aria-hidden="true" />;
+}
+
+/** Home: hero 2-col + subject cards + lesson cards + guide panel. */
+export function HomeSkeleton() {
   return (
-    <div className="skel-block" aria-hidden="true">
-      <div className="skel-line skel-title" />
-      <div className="skel-line w80" />
+    <div className="skel" role="status" aria-label="Đang tải trang chủ">
+      <div className="skel-hero" aria-hidden="true">
+        <div className="skel-herotxt">
+          <L w="w40" />
+          <div className="skel-line skel-title" />
+          <L w="w80" />
+          <div className="skel-cta">
+            <div className="skel-btn" />
+            <div className="skel-btn" />
+          </div>
+        </div>
+        <div className="skel-herocard" />
+      </div>
+      <div className="skel-line skel-sect" aria-hidden="true" />
+      <div className="skel-grid2" aria-hidden="true">
+        <div className="skel-card" />
+        <div className="skel-card" />
+      </div>
+      <div className="skel-line skel-sect" aria-hidden="true" />
+      <div className="skel-grid3" aria-hidden="true">
+        <div className="skel-card" />
+        <div className="skel-card" />
+        <div className="skel-card" />
+      </div>
     </div>
   );
 }
 
-export function SkelText({ lines = 3 }: { lines?: number }) {
+/** Subject: heading + config form + lesson cards. */
+export function SubjectSkeleton() {
   return (
-    <div className="skel-block" aria-hidden="true">
-      {Array.from({ length: lines }, (_, i) => (
-        <div
-          key={i}
-          className={`skel-line ${i % 3 === 0 ? 'w60' : i % 3 === 1 ? '' : 'w80'}`}
-        />
+    <div className="skel" role="status" aria-label="Đang tải môn học">
+      <L w="w40" />
+      <div className="skel-line skel-title" aria-hidden="true" />
+      <L w="w80" />
+      <div className="skel-block" aria-hidden="true">
+        <div className="skel-line skel-title" />
+        <div className="skel-form3">
+          <div className="skel-field" />
+          <div className="skel-field" />
+          <div className="skel-field" />
+        </div>
+      </div>
+      <div className="skel-grid3" aria-hidden="true">
+        <div className="skel-card" />
+        <div className="skel-card" />
+        <div className="skel-card" />
+      </div>
+    </div>
+  );
+}
+
+/** Theory: eyebrow + title + long article. */
+export function TheorySkeleton() {
+  return (
+    <div className="skel" role="status" aria-label="Đang tải lý thuyết">
+      <L w="w40" />
+      <div className="skel-block" aria-hidden="true">
+        <L w="w40" />
+        <div className="skel-line skel-title" />
+        <L />
+        <L w="w80" />
+        <L w="w60" />
+        <L />
+        <L w="w80" />
+        <L w="w60" />
+      </div>
+    </div>
+  );
+}
+
+/** Quiz: timer header + question card + palette sidebar. */
+export function QuizSkeleton() {
+  return (
+    <div className="skel" role="status" aria-label="Đang tải đề thi">
+      <div className="skel-block" aria-hidden="true">
+        <div className="skel-quizmeta">
+          <L w="w60" />
+          <div className="skel-timer" />
+        </div>
+        <div className="skel-line" />
+      </div>
+      <div className="skel-quizgrid" aria-hidden="true">
+        <div className="skel-block">
+          <div className="skel-line skel-title" />
+          <div className="skel-opt" />
+          <div className="skel-opt" />
+          <div className="skel-opt" />
+          <div className="skel-opt" />
+        </div>
+        <div className="skel-block">
+          <div className="skel-line skel-title" />
+          <div className="skel-pal" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Result: score hero + 4 stat boxes + review rows. */
+export function ResultSkeleton() {
+  return (
+    <div className="skel" role="status" aria-label="Đang tải kết quả">
+      <div className="skel-block skel-center" aria-hidden="true">
+        <div className="skel-score" />
+        <L w="w40" />
+        <div className="skel-stats4">
+          <div className="skel-stat" />
+          <div className="skel-stat" />
+          <div className="skel-stat" />
+          <div className="skel-stat" />
+        </div>
+      </div>
+      <div className="skel-block" aria-hidden="true">
+        <div className="skel-line skel-title" />
+        <L />
+        <L w="w80" />
+      </div>
+      <div className="skel-block" aria-hidden="true">
+        <div className="skel-line skel-title" />
+        <L />
+        <L w="w60" />
+      </div>
+    </div>
+  );
+}
+
+/** Bank: search + filter row + question rows. */
+export function BankSkeleton() {
+  return (
+    <div className="skel" role="status" aria-label="Đang tải ngân hàng câu hỏi">
+      <div className="skel-line skel-title" aria-hidden="true" />
+      <div className="skel-block" aria-hidden="true">
+        <div className="skel-search" />
+        <div className="skel-form5">
+          <div className="skel-field" />
+          <div className="skel-field" />
+          <div className="skel-field" />
+          <div className="skel-field" />
+          <div className="skel-field" />
+        </div>
+      </div>
+      {Array.from({ length: 4 }, (_, i) => (
+        <div className="skel-block" key={i} aria-hidden="true">
+          <L />
+          <L w="w60" />
+        </div>
       ))}
     </div>
   );
 }
 
-export function SkelCards({ count = 3 }: { count?: number }) {
+/** Vocab: big flashcard + thumbnail grid. */
+export function VocabSkeleton() {
   return (
-    <div className="skel-cards" aria-hidden="true">
-      {Array.from({ length: count }, (_, i) => (
-        <div key={i} className="skel-card" />
-      ))}
+    <div className="skel" role="status" aria-label="Đang tải từ vựng">
+      <div className="skel-line skel-title" aria-hidden="true" />
+      <div className="skel-block" aria-hidden="true">
+        <div className="skel-search" />
+      </div>
+      <div className="skel-flash" aria-hidden="true" />
+      <div className="skel-grid3" aria-hidden="true">
+        <div className="skel-card" />
+        <div className="skel-card" />
+        <div className="skel-card" />
+      </div>
     </div>
   );
 }
 
-/** Full route fallback: announced to screen readers via role="status". */
-export default function RouteSkeleton({
-  cards = 3,
-  textLines = 0,
-}: {
-  cards?: number;
-  textLines?: number;
-}) {
+/** Progress: subject panels + chart + history rows. */
+export function ProgressSkeleton() {
   return (
-    <div className="skel" role="status" aria-label="Đang tải nội dung">
-      <SkelTitle />
-      {textLines > 0 && <SkelText lines={textLines} />}
-      {cards > 0 && <SkelCards count={cards} />}
+    <div className="skel" role="status" aria-label="Đang tải tiến độ">
+      <div className="skel-line skel-title" aria-hidden="true" />
+      <div className="skel-grid2" aria-hidden="true">
+        <div className="skel-block">
+          <div className="skel-line skel-title" />
+          <L />
+          <L w="w80" />
+        </div>
+        <div className="skel-block">
+          <div className="skel-line skel-title" />
+          <L />
+          <L w="w60" />
+        </div>
+      </div>
+      <div className="skel-block" aria-hidden="true">
+        <div className="skel-line skel-title" />
+        <L />
+        <L w="w80" />
+        <L w="w60" />
+      </div>
+    </div>
+  );
+}
+
+/** AI generate: config form + CTA. */
+export function AiSkeleton() {
+  return (
+    <div className="skel" role="status" aria-label="Đang tải tạo đề AI">
+      <div className="skel-line skel-title" aria-hidden="true" />
+      <L w="w80" />
+      <div className="skel-block" aria-hidden="true">
+        <div className="skel-form3">
+          <div className="skel-field" />
+          <div className="skel-field" />
+          <div className="skel-field" />
+        </div>
+        <div className="skel-cta1" />
+      </div>
     </div>
   );
 }

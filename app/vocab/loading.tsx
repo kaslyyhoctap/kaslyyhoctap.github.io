@@ -1,5 +1,5 @@
-import RouteSkeleton from '@/components/ui/route-skeleton';
+import { VocabSkeleton } from '@/components/ui/route-skeleton';
 
 export default function Loading() {
-  return <RouteSkeleton cards={3} textLines={0} />;
+  return <VocabSkeleton />;
 }

@@ -1,5 +1,5 @@
-import RouteSkeleton from '@/components/ui/route-skeleton';
+import { BankSkeleton } from '@/components/ui/route-skeleton';
 
 export default function Loading() {
-  return <RouteSkeleton cards={0} textLines={6} />;
+  return <BankSkeleton />;
 }

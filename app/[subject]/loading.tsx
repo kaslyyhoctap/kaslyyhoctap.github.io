@@ -1,5 +1,5 @@
-import RouteSkeleton from '@/components/ui/route-skeleton';
+import { SubjectSkeleton } from '@/components/ui/route-skeleton';
 
 export default function Loading() {
-  return <RouteSkeleton cards={4} textLines={0} />;
+  return <SubjectSkeleton />;
 }
