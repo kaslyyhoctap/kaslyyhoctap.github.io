@@ -183,7 +183,6 @@ export default function ResultReview({ qs, ans, cfg, passages, onlyWrong, onTogg
                 <span className="chip">{chipText(s)}</span>
               </div>
               <div className="rev-tools">
-                <ExplainButton q={s} userAnswer={ans[n]} />
                 <button
                   type="button"
                   className="btn btn-sm btn-ghost"
@@ -193,6 +192,7 @@ export default function ResultReview({ qs, ans, cfg, passages, onlyWrong, onTogg
                 >
                   {starred[s.id] ? '★ Sổ tay' : '☆ Sổ tay'}
                 </button>
+                <ExplainButton q={s} userAnswer={ans[n]} />
               </div>
 
               {/* Passage (app.js line 290) */}
