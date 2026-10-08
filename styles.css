@@ -131,7 +131,7 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 .sec-t{margin-top:26px}
 .subj-card{padding:0;overflow:hidden;transition:transform .18s,box-shadow .18s}
 .subj-card:hover{transform:translateY(-2px)}
-.subj-card .top{padding:22px;display:grid;gap:10px;align-content:start}
+.subj-card .top{padding:22px;display:grid;gap:10px;align-content:start;justify-items:start}
 .subj-card h3{font-size:1.2rem;margin:2px 0}
 .subj-card .muted{margin:0}
 .badge{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle;font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--muted);color:var(--fg);margin:0 6px 6px 0;white-space:nowrap}
