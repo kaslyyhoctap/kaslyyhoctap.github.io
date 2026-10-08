@@ -50,6 +50,12 @@ function writeTheme(theme: Theme): void {
   }
 }
 
+/** Apply theme via data-theme (static-site vars) AND .dark (shadcn dark: variant). */
+function applyTheme(theme: Theme): void {
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.classList.toggle('dark', theme === 'dark');
+}
+
 function getSystemTheme(): Theme {
   if (typeof window === 'undefined' || !window.matchMedia) return 'light';
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -68,12 +74,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initial = getInitialTheme();
     setTheme(initial);
-    document.documentElement.dataset.theme = initial;
+    applyTheme(initial);
   }, []);
 
   // Apply theme to <html> and persist whenever it changes.
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
+    applyTheme(theme);
     writeTheme(theme);
   }, [theme]);
 
