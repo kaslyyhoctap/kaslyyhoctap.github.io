@@ -8,6 +8,7 @@ import { typeOf } from '@/lib/quiz/pool';
 import { passageHtml, chemFormat, isMathSubject } from '@/lib/quiz/render';
 import type { RuntimeQuestion } from '@/lib/quiz/scoring';
 import Options from './Options';
+import TopicChip from './TopicChip';
 import TrueFalseGrid from './TrueFalseGrid';
 
 export interface PassageMap {
@@ -21,6 +22,8 @@ interface QuestionCardProps {
   selected: number;
   tf: number[];
   practice: boolean;
+  /** Quiz type filter — controls whether the topic chip appends the type. */
+  qtype?: string;
   onSelect: (idx: number) => void;
   onTF: (idx: number, val: 0 | 1) => void;
   passages: PassageMap;
@@ -33,6 +36,7 @@ export default function QuestionCard({
   selected,
   tf,
   practice,
+  qtype,
   onSelect,
   onTF,
   passages,
@@ -48,6 +52,7 @@ export default function QuestionCard({
 
   return (
     <div className="panel q-card question-card">
+      <TopicChip subject={q.subject} qtype={qtype} q={q} />
       {headHtml && (
         <div
           className="passage-wrap"

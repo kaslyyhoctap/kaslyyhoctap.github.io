@@ -172,8 +172,8 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--bio));border-radius:99px;transition:width .25s}
 .quiz-sub{display:flex;justify-content:space-between;gap:8px;color:var(--muted-fg);font-size:.9rem}
 .quiz-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
-/* Topic chip sits at the head of the question section, full width */
-.quiz-section-head{margin:0 0 12px}
+/* Topic chip lives at the head of the question card, sized to its text */
+.q-card > #qTopic{display:inline-block;margin:0 0 10px}
 #qFlagRow{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
 .chip{font-size:.74rem;font-weight:700;background:color-mix(in srgb,var(--primary) 14%,transparent);color:var(--primary);border:1px solid color-mix(in srgb,var(--primary) 32%,transparent);padding:4px 10px;border-radius:99px;white-space:nowrap}
 /* ponytail: chip câu topic/review dài (topic · type · level · Band) phải wrap, không nowrap tràn 320px */
