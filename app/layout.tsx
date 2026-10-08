@@ -1,17 +1,21 @@
-import type { Metadata, ReactNode } from 'react';
-import './globals.css';
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
+import '../styles/globals.css';
+import { Geist } from 'next/font/google';
+import { cn } from '@/lib/utils';
+import { ThemeProvider } from '@/lib/theme';
+import { Header } from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: {
-    default: 'ÔnTập12 — Ôn thi Lịch Sử, Sinh Học, Hóa Học & Tiếng Anh lớp 12',
-    template: `%s | ÔnTập12`,
+    default: 'Ôn Tập 12 — Ôn thi Lịch Sử, Sinh Học, Hóa Học & Tiếng Anh lớp 12',
+    template: `%s | Ôn Tập 12`,
   },
   description:
-    'Ôn tập lý thuyết, luyện trắc nghiệm Lịch Sử 12, Sinh học 12 (Kết nối tri thức, Bài 1–3), Hóa học 12 (Chương 1–2) và Tiếng Anh 12 Global Success (Unit 1–2). Chấm điểm, giải thích, theo dõi tiến độ.',
+    'Ôn tập lý thuyết, luyện trắc nghiệm Lịch Sử 12, Sinh học 12 (Kết nốp tri thức, Bài 1–3), Hóa học 12 (Chương 1–2) và Tiếng Anh 12 Global Success (Unit 1–2). Chấm điểm, giải thích, theo dõi tiến độ.',
   keywords: [
     'Õn tập',
     'trắc nghiệm',
@@ -20,14 +24,14 @@ export const metadata: Metadata = {
     'hóa học 12',
     'tiếng anh 12',
     'global success',
-    'kết nối tri thức',
+    'kết nốp tri thức',
   ],
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
   },
-  // Chuyển theme sáng/tối qua CSS variable (cũng dùng ở Vanilla app.js)
-  // Dark mode handled by client-side data-theme attribute + localStorage
+  // Dark mode handled client-side by ThemeProvider (data-theme attribute + localStorage key ontap12-v1)
+  // via the legacy styles.css [data-theme="dark"] selector.
 };
 
 export default function RootLayout({
@@ -36,15 +40,21 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="vi" data-theme="light" className={cn("scroll-smooth", "font-sans", geist.variable)}>
+    <html lang="vi" data-theme="light" className={cn('scroll-smooth', 'font-sans', geist.variable)}>
       <head>
         <meta name="theme-color" content="#F0FDFA" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#0A1414" media="(prefers-color-scheme: dark)" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="antialiased">
-        {children}
+        <ThemeProvider>
+          <Header />
+          <main id="main" className="wrap">
+            {children}
+          </main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

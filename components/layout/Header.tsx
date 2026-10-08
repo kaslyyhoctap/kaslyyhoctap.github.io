@@ -1,0 +1,200 @@
+/**
+ * Site header — ports `<header class="header">` from index.html.
+ *
+ * Client component because it manages mobile-nav + subject-dropdown state
+ * and contains the ThemeToggle (which itself is a client component).
+ */
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { META, SUBJECTS, subjectName } from '@/lib/meta';
+
+export function Header() {
+  const [navOpen, setNavOpen] = useState(false);
+  const [subjOpen, setSubjOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close nav + dropdown on Escape.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setNavOpen(false);
+        setSubjOpen(false);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
+  // Outside click: close dropdown (but not individual nav links — those navigate).
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.nav-group')) setSubjOpen(false);
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
+
+  // Body class for mobile sidebar (consumed by styles.css).
+  useEffect(() => {
+    if (navOpen) {
+      document.body.classList.add('nav-open');
+    } else {
+      document.body.classList.remove('nav-open');
+    }
+    return () => document.body.classList.remove('nav-open');
+  }, [navOpen]);
+
+  // Body class for subject dropdown state.
+  useEffect(() => {
+    document.body.classList.toggle('subj-open', subjOpen);
+  }, [subjOpen]);
+
+  const isSubjectRoute = SUBJECTS.includes(pathname.split('/')[1] || '');
+  const closeNav = () => setNavOpen(false);
+
+  return (
+    <>
+      <a className="skip" href="#main">
+        Bỏ qua tới nội dung chính
+      </a>
+
+      <header className="header" role="banner">
+        <div className="wrap header-in">
+          {/* Mobile menu button */}
+          <button
+            type="button"
+            className="icon-btn menu-btn"
+            aria-label="Mở menu"
+            aria-expanded={navOpen}
+            aria-controls="mainNav"
+            onClick={() => setNavOpen(!navOpen)}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+            <span>Menu</span>
+          </button>
+
+          {/* Logo */}
+          <Link href="/" className="logo" aria-label="ÔnTập12 trang chủ" onClick={closeNav}>
+            <span className="logo-mark" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 3 2 8l10 5 10-5-10-5Z" />
+                <path d="M6 10.5V15c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" />
+                <path d="M22 8v6" />
+              </svg>
+            </span>
+            <span className="logo-t">
+              Ôn Tập<b>12</b>
+            </span>
+            <span className="logo-sub">Kết nốp tri thức</span>
+          </Link>
+
+          {/* Desktop nav */}
+          <nav className={`nav ${navOpen ? '' : ''}`} id="mainNav" aria-label="Đi phương hướng chính">
+            <Link
+              href="/"
+              className={`nav-btn${pathname === '/' ? ' active' : ''}`}
+              onClick={closeNav}
+            >
+              Trang chủ
+            </Link>
+
+            <div className="nav-group">
+              <button
+                type="button"
+                className={`nav-btn${isSubjectRoute ? ' active' : ''}`}
+                id="subjBtn"
+                aria-haspopup="true"
+                aria-expanded={subjOpen}
+                aria-controls="subjMenu"
+                onClick={() => setSubjOpen(!subjOpen)}
+              >
+                Môn học{' '}
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div
+                className="nav-menu"
+                id="subjMenu"
+                role="menu"
+                hidden={!subjOpen}
+              >
+                {SUBJECTS.map((sub) => (
+                  <Link
+                    key={sub}
+                    href={`/${sub}`}
+                    className="nav-btn"
+                    role="menuitem"
+                    onClick={closeNav}
+                  >
+                    {subjectName(sub)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <Link href="/bank" className="nav-btn" onClick={closeNav}>
+              Ngân hàng câu hỏi
+            </Link>
+            <Link href="/vocab" className="nav-btn" onClick={closeNav}>
+              Từ vựng
+            </Link>
+            <Link href="/progress" className="nav-btn" onClick={closeNav}>
+              Tiến độ
+            </Link>
+          </nav>
+
+          {/* Mobile scrim */}
+          <div
+            className="scrim"
+            id="navScrim"
+            hidden={!navOpen}
+            onClick={() => setNavOpen(false)}
+          />
+
+          {/* Right-side actions */}
+          <div className="header-act">
+            <ThemeToggle />
+            <Link href="/quick" className="btn btn-primary btn-sm">
+              Kiểm tra nhanh
+            </Link>
+          </div>
+        </div>
+      </header>
+    </>
+  );
+}
