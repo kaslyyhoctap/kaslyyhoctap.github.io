@@ -175,7 +175,7 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 /* Topic chip sits at the head of the question section, full width */
 .quiz-section-head{margin:0 0 12px}
 #qFlagRow{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
-.chip{font-size:.74rem;font-weight:700;background:var(--muted);padding:4px 10px;border-radius:99px;white-space:nowrap}
+.chip{font-size:.74rem;font-weight:700;background:color-mix(in srgb,var(--primary) 14%,transparent);color:var(--primary);border:1px solid color-mix(in srgb,var(--primary) 32%,transparent);padding:4px 10px;border-radius:99px;white-space:nowrap}
 /* ponytail: chip câu topic/review dài (topic · type · level · Band) phải wrap, không nowrap tràn 320px */
 #qTopic,.rev-head .chip{white-space:normal;overflow-wrap:break-word}
 #qText{font-size:1.1rem;line-height:1.6;margin:.4em 0 .9em;overflow-wrap:break-word}
