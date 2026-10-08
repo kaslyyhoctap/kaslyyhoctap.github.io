@@ -84,6 +84,9 @@ body.nav-open .header{z-index:200}
 .link{background:none;border:0;color:var(--primary);font:inherit;font-weight:600;cursor:pointer;padding:10px 0;font-size:.95rem}
 /* views */
 main{min-height:60vh;isolation:isolate} /* ponytail: nhốt stacking của nội dung trang, sidebar/header không bao giờ bị đè */
+/* Next.js routes render straight into <main class="wrap"> (no .view wrapper
+   like the legacy SPA) — restore the breathing room below the sticky header. */
+main.wrap{padding-top:20px;padding-bottom:28px}
 .view{padding:20px 0 28px;animation:fade .22s ease}
 @keyframes fade{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.fc-main.flipped{transform:none}.fc-back{position:static;transform:none}.fc-face{backface-visibility:visible;-webkit-backface-visibility:visible}}
