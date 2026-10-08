@@ -34,6 +34,34 @@ const ANSWERED_KEY = 'answered';
 
 // ── Reads (public) ───────────────────────────────────────────────────
 
+/**
+ * Count questions matching the same filter set as getQuestions — used for
+ * pagination totals in the questions API.
+ */
+export async function countQuestions(opts?: {
+  subject?: string;
+  lesson?: number;
+  type?: string;
+  difficulty?: string;
+  topic?: string;
+}): Promise<number> {
+  const { subject, lesson, type, difficulty, topic } = opts ?? {};
+
+  const conds: SQLWrapper[] = [];
+  if (subject !== undefined) conds.push(eq(questions.subject, subject));
+  if (lesson !== undefined) conds.push(eq(questions.lesson, lesson));
+  if (type !== undefined) conds.push(eq(questions.type, type));
+  if (difficulty !== undefined) conds.push(eq(questions.difficulty, difficulty));
+  if (topic !== undefined) conds.push(eq(questions.topic, topic));
+  const whereClause = conds.length > 0 ? and(...conds) : undefined;
+
+  const rows = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(questions)
+    .where(whereClause);
+  return Number(rows[0]?.count ?? 0);
+}
+
 export async function getQuestions(opts?: {
   subject?: string;
   lesson?: number;

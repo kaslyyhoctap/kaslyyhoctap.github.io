@@ -4,6 +4,7 @@ import '../styles/globals.css';
 import { Geist } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/lib/theme';
+import { SessionProvider } from 'next-auth/react';
 import { Header } from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
@@ -49,11 +50,13 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <ThemeProvider>
-          <Header />
-          <main id="main" className="wrap">
-            {children}
-          </main>
-          <Footer />
+          <SessionProvider>
+            <Header />
+            <main id="main" className="wrap">
+              {children}
+            </main>
+            <Footer />
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>
