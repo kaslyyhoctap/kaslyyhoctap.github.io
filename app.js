@@ -127,7 +127,7 @@ function pool(o){
  var qts=(o.qtype==="all"||o.qtype==null)?null:(Array.isArray(o.qtype)?o.qtype.slice():[o.qtype]);
  var base=Q.filter(function(q){return q.subject===o.subject&&(!lessons||lessons.indexOf(String(q.lesson))>=0)&&(!o.level||o.level==="all"||q.difficulty===o.level)&&(!o.topic||q.topic===o.topic)&&(!o.band||q.band===+o.band)});
  if(qts)base=base.filter(function(q){return qts.indexOf(typeOf(q))>=0});
- if(o.subject==="chemistry"&&(!o.qtype||o.qtype==="all")){var tfs=base.filter(function(q){return typeOf(q)==="true_false"});var rest=base.filter(function(q){return typeOf(q)!=="true_false"});var k=Math.min(2,tfs.length,o.count);var sel=pickFresh(tfs,k,o.shQ).concat(pickFresh(rest,o.count-k,o.shQ));return o.shQ!==false?shuffle(sel):sel}
+ if(o.subject==="chemistry"&&(!o.qtype||o.qtype==="all")){var tfs=base.filter(function(q){return typeOf(q)==="true_false"});var k=Math.min(2,tfs.length,o.count);var sel=pickFresh(tfs,k,o.shQ);var isHard=function(q){return q.difficulty==="Vận dụng"||q.difficulty==="Vận dụng cao"};var hNeed=(!o.level||o.level==="all")&&o.count>=10?Math.max(0,Math.ceil(o.count*0.3)-sel.filter(isHard).length):0;var hPool=base.filter(function(q){return typeOf(q)!=="true_false"&&isHard(q)&&sel.indexOf(q)<0});sel=sel.concat(pickFresh(hPool,Math.min(hNeed,hPool.length),o.shQ));var rest=base.filter(function(q){return sel.indexOf(q)<0});sel=sel.concat(pickFresh(rest,o.count-sel.length,o.shQ));return o.shQ!==false?shuffle(sel):sel}
  if(o.subject!=="english")return pickFresh(base,o.count,o.shQ);
  var qt=!qts?"all":(qts.length===1?qts[0]:"multi");
  if(qt!=="all"&&qt!=="multi"){var only=base.filter(function(q){return typeOf(q)===qt});
