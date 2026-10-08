@@ -10,6 +10,7 @@
 import Link from 'next/link';
 import { useAppState, lessonProg } from '@/lib/storage';
 import { badgeCls, TYPES } from '@/lib/meta';
+import { buildQuizUrl } from '@/lib/quiz/urls';
 
 export interface LessonCardProps {
   subject: string;
@@ -61,14 +62,22 @@ export default function LessonCard({
         >
           Học lý thuyết
         </Link>
-        <button
-          type="button"
+        <Link
+          href={buildQuizUrl({
+            subject,
+            lesson,
+            count: 10,
+            time: 10,
+            level: 'all',
+            qtype: 'all',
+            practice: true,
+            shQ: true,
+            shA: true,
+          })}
           className="btn btn-sm btn-primary"
-          onClick={(e) => e.preventDefault()}
-          aria-label="Luyện ngay (chưa mở)"
         >
           Luyện ngay
-        </button>
+        </Link>
       </div>
     </div>
   );
