@@ -55,6 +55,7 @@ export default function LessonCard({
       <div className="pbar">
         <i style={{ width: `${prog}%` }}></i>
       </div>
+      <p className="small muted">Tiến độ {prog}%</p>
       <div className="row">
         <Link
           href={`/${subject}/theory/${lesson}`}

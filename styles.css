@@ -140,6 +140,7 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 .subj-card .top{padding:22px;display:grid;gap:10px;align-content:start;justify-items:start}
 .subj-card h3{font-size:1.2rem;margin:2px 0}
 .subj-card .muted{margin:0}
+.subj-card .pbar{justify-self:stretch}
 .badge{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle;font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--muted);color:var(--fg);margin:0 6px 6px 0;white-space:nowrap}
 .badge.h{background:#DBEAFE;color:#1E40AF}[data-theme="dark"] .badge.h{background:#1A2B5E;color:#BFD2FF}
 .badge.b{background:#CCFBF1;color:#0F766E}[data-theme="dark"] .badge.b{background:#0B2E2B;color:#7DF0DD}
@@ -152,6 +153,7 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 .lesson-card{display:flex;flex-direction:column;gap:10px;overflow:hidden;transition:transform .18s,box-shadow .18s}
 .lesson-card:hover{transform:translateY(-2px)}
 .lesson-card h3{margin:0;overflow-wrap:break-word} .lesson-card>p{margin:0;color:var(--muted-fg);font-size:.9rem;line-height:1.55;overflow-wrap:break-word}
+.lesson-card>.badge{align-self:flex-start} .lesson-card>p.small{font-size:.85rem}
 .lesson-card .row{margin-top:auto;padding-top:8px;display:flex;gap:8px;flex-wrap:wrap}
 .lesson-card .row .btn{flex:1 1 130px;min-width:0;padding-left:8px;padding-right:8px}
 .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px} .wrap-btns{justify-content:center}
@@ -164,8 +166,13 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 /* Theory back link: centered between the section above and the article below. */
 .theory-back{display:block;text-align:center}
 #subjectHead h2{margin-top:0}
-.cfg-grid label:nth-child(5){grid-column:span 2}
-.cfg-group{margin:12px 0 0}
+/* Both checkbox groups span the whole grid so their chips lay out in even
+   rows. NOTE: this must be a direct-child selector — `.cfg-grid
+   label:nth-child(5)` (the old rule) matched the nested .chk-grid labels
+   instead, which are flex items, so the span never applied and the "Dạng
+   bài" group was squeezed into one narrow column (ragged chips). */
+.cfg-grid>.cfg-group{grid-column:1/-1}
+.cfg-group{margin:0}
 .chk-grid .chk:has(input:checked){border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
 .cfg label{display:grid;gap:6px;font-size:.88rem;font-weight:600}
 .cfg-group{display:grid;gap:6px;font-size:.88rem;font-weight:600}
@@ -441,7 +448,6 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
   .grid2,.grid3{grid-template-columns:minmax(0,1fr)}
   .r-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cfg-grid,.frow{grid-template-columns:minmax(0,1fr)}
-  .cfg-grid label:nth-child(5){grid-column:auto}
   .vocab{grid-template-columns:minmax(0,1fr)}
   .vgrid{grid-template-columns:minmax(0,1fr)}
   .vfrow{grid-template-columns:minmax(0,1fr)}

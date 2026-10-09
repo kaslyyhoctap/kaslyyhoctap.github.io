@@ -148,6 +148,26 @@ export default function TestConfig({ subject, lessons, typeCounts }: TestConfigP
             </Select>
           </label>
 
+          <label>
+            Mức độ
+            <Select
+              value={level}
+              onValueChange={(v) => v !== null && setLevel(v)}
+              items={LEVEL_OPTIONS}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {LEVEL_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
+
           {/* Bài (chọn nhiều) — index.html line 96 */}
           <div className="cfg-group">
             <span className="cfg-t">Bài (chọn nhiều)</span>
@@ -174,26 +194,6 @@ export default function TestConfig({ subject, lessons, typeCounts }: TestConfigP
               ))}
             </div>
           </div>
-
-          <label>
-            Mức độ
-            <Select
-              value={level}
-              onValueChange={(v) => v !== null && setLevel(v)}
-              items={LEVEL_OPTIONS}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {LEVEL_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
 
           {/* Dạng bài (chọn nhiều) — index.html line 98, counts per type */}
           <div className="cfg-group">

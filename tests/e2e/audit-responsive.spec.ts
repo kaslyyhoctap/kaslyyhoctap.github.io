@@ -1610,3 +1610,153 @@ test('E. error / empty states', async ({ page }) => {
   a.gate();
 });
 
+
+// ============================================================ F. home cards
+
+/**
+ * F. Home-page card chrome (regression for the 2026-10-09 UI pass):
+ *   - the subject card's progress bar must render at real width (it used to
+ *     collapse to 0px inside the `justify-items:start` grid, so "Tiến độ X%"
+ *     had no bar above it),
+ *   - the lesson card must print the same "Tiến độ X%" caption below its bar,
+ *   - the lesson card's subject badge must fit its text instead of stretching
+ *     to the card width (flex column `align-items: stretch`).
+ */
+test('F. home cards: progress bars render, captions match the fill, badges fit', async ({
+  page,
+}) => {
+  test.setTimeout(180_000);
+  const a = area('home-cards', page);
+  await page.setViewportSize({ width: 1280, height: 800 });
+
+  // One lesson's progress (5%) so the fill and the caption carry real values.
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      'ontap12-v1',
+      JSON.stringify({ prog: { history: { 1: 5 } } }),
+    );
+  });
+  await page.goto('/', { waitUntil: 'networkidle', timeout: 60_000 });
+  await expect(page.locator('#subjectCards .pbar').first()).toBeVisible();
+  await expect(page.locator('#lessonCards .pbar').first()).toBeVisible();
+
+  // ---- F1: subject-card bar is actually painted -------------------------
+  await a.check('subject-card progress bar renders at real width', async () => {
+    const w = await page
+      .locator('#subjectCards .pbar')
+      .first()
+      .evaluate((el) => (el as HTMLElement).offsetWidth);
+    expect(w, 'subject card .pbar width').toBeGreaterThan(100);
+  });
+
+  // ---- F2: lesson card caption + fill agree -----------------------------
+  const historyCard = page
+    .locator('#lessonCards > div')
+    .filter({ has: page.locator('a[href="/history/theory/1"]') })
+    .first();
+  await expect(historyCard).toBeVisible();
+  await a.check('lesson card prints "Tiến độ 5%" below its bar', async () => {
+    await expect(historyCard.locator('p.small.muted')).toHaveText('Tiến độ 5%');
+  });
+  await a.check('lesson-card bar fill matches the seeded 5%', async () => {
+    const { barW, fillW } = await historyCard
+      .locator('.pbar')
+      .evaluate((el) => {
+        const i = el.querySelector('i') as HTMLElement | null;
+        return { barW: (el as HTMLElement).offsetWidth, fillW: i?.offsetWidth ?? -1 };
+      });
+    expect(barW).toBeGreaterThan(100);
+    expect(fillW / barW).toBeCloseTo(0.05, 1);
+  });
+
+  // ---- F3: lesson-card badge fits its text ------------------------------
+  await a.check('lesson-card subject badge fits its content', async () => {
+    const { badgeW, cardW } = await historyCard.evaluate((el) => {
+      const b = el.querySelector('span.badge') as HTMLElement;
+      return { badgeW: b.offsetWidth, cardW: (el as HTMLElement).offsetWidth };
+    });
+    expect(badgeW, 'badge width').toBeLessThan(cardW / 2);
+    a.set('lessonBadgeWidth', badgeW);
+    a.set('lessonCardWidth', cardW);
+  });
+
+  a.save();
+  a.gate();
+});
+
+// ============================================================ G. subject cfg
+
+/**
+ * G. Subject page config panel (regression for the 2026-10-09 UI pass):
+ * the `.cfg-grid` used to squeeze each "chọn nhiều" group into ONE narrow
+ * column, because `label:nth-child(5)` matched the nested .chk-grid labels
+ * (flex items) instead of the group itself — so the intended `span 2` never
+ * applied, chips laid out ragged, and the two shuffle toggles landed in
+ * different rows. Fix: `.cfg-grid>.cfg-group{grid-column:1/-1}` (direct
+ * child) + `.cfg-group{margin:0}` + the three selects moved into one row.
+ *
+ * Invariants pinned here: one aligned row of three selects, both checkbox
+ * groups full-width on their own rows, the two toggles sharing a row.
+ */
+test('G. subject config panel: one select row, full-width checkbox groups', async ({
+  page,
+}) => {
+  test.setTimeout(180_000);
+  const a = area('subject-cfg', page);
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/english', { waitUntil: 'networkidle', timeout: 60_000 });
+  await expect(page.locator('.cfg-grid')).toBeVisible();
+
+  const grid = page.locator('.cfg-grid');
+  const selects = grid
+    .locator('> label')
+    .filter({ has: page.locator('[data-slot=select-trigger]') });
+
+  await a.check('three selects share one row, same size', async () => {
+    expect(await selects.count()).toBe(3);
+    const boxes = await selects.evaluateAll((els) =>
+      els.map((el) => {
+        const r = el.getBoundingClientRect();
+        return { top: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) };
+      }),
+    );
+    expect(new Set(boxes.map((b) => b.top)).size).toBe(1);
+    expect(new Set(boxes.map((b) => b.w)).size).toBe(1);
+    expect(new Set(boxes.map((b) => b.h)).size).toBe(1);
+  });
+
+  await a.check('both checkbox groups are full width, one per row', async () => {
+    const groups = grid.locator('> .cfg-group');
+    expect(await groups.count()).toBe(2);
+    const rows = await groups.evaluateAll((els) =>
+      els.map((el) => {
+        const r = el.getBoundingClientRect();
+        return { top: Math.round(r.top), w: Math.round(r.width) };
+      }),
+    );
+    expect(new Set(rows.map((r) => r.top)).size).toBe(2);
+    const gridW = await grid.evaluate((el) => (el as HTMLElement).offsetWidth);
+    for (const r of rows) expect(Math.abs(r.w - gridW)).toBeLessThanOrEqual(1);
+    a.set('groupWidths', rows.map((r) => r.w));
+    a.set('gridWidth', gridW);
+  });
+
+  await a.check('the two shuffle toggles share one row', async () => {
+    const toggles = grid.locator('> label.chk');
+    expect(await toggles.count()).toBe(2);
+    const tops = await toggles.evaluateAll((els) =>
+      els.map((el) => Math.round(el.getBoundingClientRect().top)),
+    );
+    expect(tops[0]).toBe(tops[1]);
+  });
+
+  await a.check('no horizontal overflow on the subject page', async () => {
+    const over = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(over).toBeLessThanOrEqual(0);
+  });
+
+  a.save();
+  a.gate();
+});
