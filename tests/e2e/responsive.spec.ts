@@ -43,7 +43,7 @@ async function overflows(page: Page): Promise<Overflow[]> {
     const vw = window.innerWidth;
     const out: Overflow[] = [];
     const skipSel =
-      '.theory, .nav, .scrim, .skip, [role="dialog"], [data-radix-popper], [data-slot="select-content"]';
+      '.theory, .nav, .scrim, .skip-link, [role="dialog"], [data-radix-popper], [data-slot="select-content"]';
     document.querySelectorAll('body *').forEach((el) => {
       const h = el as HTMLElement;
       if (h.closest(skipSel)) return;

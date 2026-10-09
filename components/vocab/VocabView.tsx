@@ -61,13 +61,17 @@ export default function VocabView({ vocabulary, unit, units }: VocabViewProps) {
   const [masked, setMasked] = useState<Set<number>>(new Set());
 
   // ── Legacy localStorage state (app.js S.starred, S.vocabKnown) ─────
+  // useAppState returns the SSR-matching empty state on first render and the
+  // localStorage read after mount, so these snapshots must re-sync from it.
   const appState = useAppState();
-  const [starred, setStarred] = useState<Record<string, boolean>>(
-    appState.starred || {},
-  );
-  const [vocabKnown, setVocabKnown] = useState<Record<string, boolean>>(
-    appState.vocabKnown || {},
-  );
+  const [starred, setStarred] = useState<Record<string, boolean>>({});
+  const [vocabKnown, setVocabKnown] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    setStarred(appState.starred || {});
+  }, [appState.starred]);
+  useEffect(() => {
+    setVocabKnown(appState.vocabKnown || {});
+  }, [appState.vocabKnown]);
 
   // ── Toast (app.js toast(), line 29) — global top-right component ───
   const showToast = useCallback((msg: string) => {

@@ -119,10 +119,6 @@ export default function ResultView({
     router.push(buildQuizUrl({ ...cfg, quick: false }));
   };
 
-  const handleNew = () => {
-    router.push(buildQuizUrl({ ...cfg, quick: false }));
-  };
-
   const handleHome = () => {
     router.push('/');
   };
@@ -173,7 +169,7 @@ export default function ResultView({
         </div>
 
         <p id="rFrac" className="r-frac">
-          {score.ok}/{score.total} · {Math.round((score.ok / score.total) * 100)}%
+          {score.ok}/{score.total} · {score.total > 0 ? Math.round((score.ok / score.total) * 100) : 0}%
         </p>
 
         <p
@@ -292,9 +288,6 @@ export default function ResultView({
           </button>
           <button type="button" className="btn" id="rRetry" onClick={handleRetry}>
             Làm lại đề
-          </button>
-          <button type="button" className="btn" id="rNew" onClick={handleNew}>
-            Đề mới
           </button>
           <button
             type="button"

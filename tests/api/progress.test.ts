@@ -125,12 +125,13 @@ describe('POST /api/progress/sync', () => {
     expect(res.status).toBe(401);
   });
 
-  it('merges: union keys, cloud wins conflicts except answered map', async () => {
-    // Cloud has: answered={q1:'ok', q2:'bad'}, best=8
-    // Local has:  answered={q3:'ok'}, best=6, exams=5
+  it('merges: union keys, hist unioned (cap 20), numbers take Math.max', async () => {
+    // Cloud has: answered={q1:'ok', q2:'bad'}, best=8, hist=[cloudRec]
+    // Local has:  answered={q3:'ok'}, best=6, exams=5, hist=[localRec]
     mockDb.select.mockReturnValueOnce(chainable([
       { key: 'answered', value: { q1: 'ok', q2: 'bad' } },
       { key: 'best', value: 8 },
+      { key: 'hist', value: [{ when: 2, point: 8 }] },
     ]));
     mockDb.insert.mockReturnValue(insertChain());
 
@@ -141,6 +142,7 @@ describe('POST /api/progress/sync', () => {
           answered: { q3: 'ok' },
           best: 6,
           exams: 5,
+          hist: [{ when: 1, point: 7 }],
         },
       }),
     });
@@ -153,10 +155,13 @@ describe('POST /api/progress/sync', () => {
 
     // answered: union — q1,q2 from cloud, q3 from local (preserved)
     expect(data.progress.answered).toEqual({ q1: 'ok', q2: 'bad', q3: 'ok' });
-    // best: cloud wins (8, not 6)
+    // best: Math.max(local 6, cloud 8) → 8 — monotone, never loses the
+    // better value (B03 completion; was cloud-wins).
     expect(data.progress.best).toBe(8);
     // exams: local-only, added
     expect(data.progress.exams).toBe(5);
+    // hist: union of local + cloud (B03 — local history was dropped before)
+    expect(data.progress.hist).toEqual([{ when: 1, point: 7 }, { when: 2, point: 8 }]);
   });
 
   it('preserves local-only answered entries when cloud has none', async () => {
@@ -177,13 +182,16 @@ describe('POST /api/progress/sync', () => {
     expect(data.progress.answered).toEqual({ q1: 'ok', q2: 'bad' });
   });
 
-  it('local answers override cloud on conflict for answered map', async () => {
-    // Cloud: { answered: { q1: 'bad' } }
-    // Local:  { answered: { q1: 'ok',  q2: 'ok' } }
-    // Cloud wins per-question conflicts, local-only preserved
-    // → { q1: 'bad' (cloud), q2: 'ok' (local) }
+  it('never regresses a local ok to a cloud bad in the answered map (B08)', async () => {
+    // Cloud: { answered: { q1: 'bad', q2: 'bad' } }
+    // Local:  { answered: { q1: 'ok',  q2: 'bad' } }
+    // q1: local 'ok' wins over cloud 'bad' (correct-after-wrong is progress);
+    // q2: both 'bad' → cloud value kept. A local-only key is always preserved.
+    // NOTE: this test replaced the old "local answers override cloud on
+    // conflict" test, which encoded the buggy cloud-wins behavior (cloud 'bad'
+    // overwrote a newer local 'ok', discarding the user's progress).
     mockDb.select.mockReturnValueOnce(chainable([
-      { key: 'answered', value: { q1: 'bad' } },
+      { key: 'answered', value: { q1: 'bad', q2: 'bad' } },
     ]));
     mockDb.insert.mockReturnValue(insertChain());
 
@@ -191,7 +199,7 @@ describe('POST /api/progress/sync', () => {
       method: 'POST',
       body: JSON.stringify({
         localData: {
-          answered: { q1: 'ok', q2: 'ok' },
+          answered: { q1: 'ok', q2: 'bad', q3: 'ok' },
         },
       }),
     });
@@ -200,8 +208,210 @@ describe('POST /api/progress/sync', () => {
     const data = await res.json();
 
     expect(res.status).toBe(200);
-    // { ...local, ...cloud } → cloud overrides local
-    expect(data.progress.answered).toEqual({ q1: 'bad', q2: 'ok' });
+    expect(data.progress.answered).toEqual({ q1: 'ok', q2: 'bad', q3: 'ok' });
+  });
+
+  it('cloud ok still wins over local bad (no false progress)', async () => {
+    // Cloud: { answered: { q1: 'ok' } }, Local: { answered: { q1: 'bad' } }
+    // The never-regress rule is one-directional: cloud 'ok' is kept.
+    mockDb.select.mockReturnValueOnce(chainable([
+      { key: 'answered', value: { q1: 'ok' } },
+    ]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({ localData: { answered: { q1: 'bad' } } }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.progress.answered).toEqual({ q1: 'ok' });
+  });
+
+  it('caps the hist union at 20 entries (app convention)', async () => {
+    const cloudHist = Array.from({ length: 15 }, (_, i) => ({ when: 100 + i }));
+    const localHist = Array.from({ length: 10 }, (_, i) => ({ when: i }));
+    mockDb.select.mockReturnValueOnce(chainable([{ key: 'hist', value: cloudHist }]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({ localData: { hist: localHist } }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.progress.hist).toHaveLength(20);
+  });
+
+  it('best: Math.max — a better local score wins (local 9 over cloud 8)', async () => {
+    // Monotone both directions: the merge keeps the better of the two.
+    mockDb.select.mockReturnValueOnce(chainable([{ key: 'best', value: 8 }]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({ localData: { best: 9 } }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.progress.best).toBe(9);
+  });
+
+  it('starred: shallow union — cloud-only keys kept, local wins per key', async () => {
+    // Cloud {a:true}, local {b:true} → {a:true,b:true} (no local mutation
+    // lost: the second device's star survives).
+    mockDb.select.mockReturnValueOnce(chainable([
+      { key: 'starred', value: { a: true } },
+    ]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({ localData: { starred: { b: true } } }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.progress.starred).toEqual({ a: true, b: true });
+  });
+
+  it('starred: local {a:false} over cloud {a:true} → {a:false} (local wins per key)', async () => {
+    mockDb.select.mockReturnValueOnce(chainable([
+      { key: 'starred', value: { a: true } },
+    ]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({ localData: { starred: { a: false } } }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.progress.starred).toEqual({ a: false });
+  });
+
+  it('prog: per-lesson Math.max — cloud-only subjects/lessons kept', async () => {
+    // Cloud {history:{1:2}}, local {history:{1:3,2:1}} →
+    // {history:{1:3,2:1}} (lesson 1 keeps the better 3, lesson 2 is local).
+    mockDb.select.mockReturnValueOnce(chainable([
+      { key: 'prog', value: { history: { 1: 2 } } },
+    ]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({ localData: { prog: { history: { 1: 3, 2: 1 } } } }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.progress.prog).toEqual({ history: { 1: 3, 2: 1 } });
+  });
+
+  it('marked: array union with dedupe (no cap)', async () => {
+    // Cloud ['a'], local ['b'] → both survive (order-insensitive).
+    mockDb.select.mockReturnValueOnce(chainable([
+      { key: 'marked', value: ['a'] },
+    ]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({ localData: { marked: ['b'] } }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect([...(data.progress.marked as string[])].sort()).toEqual(['a', 'b']);
+  });
+
+  it('fresh device: empty local values do not clobber cloud data', async () => {
+    // best:0 vs cloud 8 → 8 (Math.max); starred:{} vs cloud map → cloud map
+    // (union); exams:0 vs cloud 3 → 3.
+    mockDb.select.mockReturnValueOnce(chainable([
+      { key: 'best', value: 8 },
+      { key: 'starred', value: { a: true } },
+      { key: 'exams', value: 3 },
+    ]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({
+        localData: { best: 0, starred: {}, exams: 0 },
+      }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.progress.best).toBe(8);
+    expect(data.progress.starred).toEqual({ a: true });
+    expect(data.progress.exams).toBe(3);
+  });
+
+  it('unknown keys + type mismatches fall back to local wins', async () => {
+    // Catch-all row of the merge table: the device being synced is the one
+    // the user just used; the post-login steady state (useProgressSync PUTs
+    // every local key) is local-wins, so the merge must not be lossier.
+    mockDb.select.mockReturnValueOnce(chainable([
+      { key: 'theme', value: 'light' },
+      { key: 'marked', value: ['a'] },
+    ]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({
+        localData: { theme: 'dark', marked: 'oops' },
+      }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.progress.theme).toBe('dark');
+    expect(data.progress.marked).toBe('oops');
+  });
+
+  it('tolerates corrupt non-object answered/hist values without 500', async () => {
+    mockDb.select.mockReturnValueOnce(chainable([
+      { key: 'answered', value: { q1: 'ok' } },
+      { key: 'hist', value: [{ when: 2 }] },
+    ]));
+    mockDb.insert.mockReturnValue(insertChain());
+
+    const req = new NextRequest('http://localhost/api/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({ localData: { answered: 'oops', hist: 'oops' } }),
+    });
+
+    const res = await syncPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.progress.answered).toEqual({ q1: 'ok' });
+    expect(data.progress.hist).toEqual([{ when: 2 }]);
   });
 
   it('returns 400 when localData is missing', async () => {

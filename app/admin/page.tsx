@@ -1,6 +1,13 @@
+import { notFound } from 'next/navigation';
+import { requireAdmin } from '@/lib/auth-utils';
 import { getQuestions } from '@/lib/db/queries';
 
 export default async function AdminDashboard() {
+  try {
+    await requireAdmin();
+  } catch {
+    notFound();
+  }
   const questions = await getQuestions({ limit: 1 });
   // Count per subject
   const subjects = ['history', 'biology', 'chemistry', 'english'];

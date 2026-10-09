@@ -1,7 +1,14 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { requireAdmin } from '@/lib/auth-utils';
 import { getQuestions } from '@/lib/db/queries';
 
 export default async function AdminQuestions() {
+  try {
+    await requireAdmin();
+  } catch {
+    notFound();
+  }
   const qs = await getQuestions({ limit: 50 });
   return (
     <div className="panel">

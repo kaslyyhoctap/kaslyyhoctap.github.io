@@ -62,9 +62,16 @@ export function writeAppState(state: Partial<AppState>): void {
 
 /** Hook that reads localStorage and re-reads on `storage` events. */
 export function useAppState(): AppState {
-  const [state, setState] = useState<AppState>(readAppState);
+  // T2 P2: useState(readAppState()) renders stored data on the FIRST client
+  // render while SSR emitted the default-empty state → React 19 discards +
+  // regenerates the tree (hydration pageerrors on /progress, /notebook,
+  // /vocab). Render the default on first client render too, then re-read
+  // after mount so SSR html == first client html. Data appears one frame
+  // later; consumers already handle the empty state (skeletons/empties).
+  const [state, setState] = useState<AppState>(DEFAULT_STATE);
 
   useEffect(() => {
+    setState(readAppState());
     const handler = () => setState(readAppState());
     window.addEventListener('storage', handler);
     return () => window.removeEventListener('storage', handler);

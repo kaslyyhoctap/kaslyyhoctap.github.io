@@ -18,13 +18,31 @@ export async function GET(req: NextRequest) {
     const type = searchParams.get('type');
     const difficulty = searchParams.get('difficulty');
     const topic = searchParams.get('topic');
-    const limit = parseInt(searchParams.get('limit') ?? '50', 10);
-    const offset = parseInt(searchParams.get('offset') ?? '0', 10);
+    // B04/N2: raw parseInt/Number let NaN drop the LIMIT clause (full-table
+    // dump) and negatives/NaN 500 at the SQL layer — clamp everything here.
+    const limitRaw = Number(searchParams.get('limit') ?? 50);
+    const limit = Number.isFinite(limitRaw)
+      ? Math.min(200, Math.max(1, Math.floor(limitRaw)))
+      : 50;
+    const offsetRaw = Number(searchParams.get('offset') ?? 0);
+    const offset = Number.isFinite(offsetRaw) ? Math.max(0, Math.floor(offsetRaw)) : 0;
+
+    let lesson: number | undefined;
+    if (lessonStr !== null && lessonStr !== '') {
+      const n = Number(lessonStr);
+      if (!Number.isInteger(n)) {
+        return NextResponse.json(
+          { error: 'Tham số lesson không hợp lệ.' },
+          { status: 400 },
+        );
+      }
+      lesson = n;
+    }
 
     // Shared filter set — passed to both getQuestions and countQuestions.
     const filterOpts: Record<string, string | number | undefined> = {
       subject: subject || undefined,
-      lesson: lessonStr ? Number(lessonStr) : undefined,
+      lesson,
       type: type || undefined,
       difficulty: difficulty || undefined,
       topic: topic || undefined,

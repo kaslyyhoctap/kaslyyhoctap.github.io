@@ -15,6 +15,13 @@
       "when": 1791481443873,
       "tag": "0001_tired_rumiko_fujikawa",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792135200000,
+      "tag": "0002_quiet_explain_logs",
+      "breakpoints": true
     }
   ]
 }

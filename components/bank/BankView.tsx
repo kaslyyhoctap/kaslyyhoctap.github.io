@@ -81,7 +81,13 @@ export default function BankView({
   // owned locally so star toggles update the UI + `star` filter immediately.
   const appState = useAppState();
   const answered = appState.answered;
-  const [starred, setStarred] = useState<Record<string, boolean>>(appState.starred || {});
+  // `starred` must follow the (post-mount) localStorage read, otherwise it
+  // freezes the SSR-matching empty state and /notebook shows 0 items.
+  const [starredLocal, setStarred] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    setStarred(appState.starred || {});
+  }, [appState.starred]);
+  const starred = starredLocal;
 
   const [filters, setFilters] = useState<FilterValues>({
     ...EMPTY_FILTERS,
@@ -93,6 +99,10 @@ export default function BankView({
   const onReset = () => setFilters({ ...EMPTY_FILTERS, ...initialFilters });
   const [page, setPage] = useState(1);
 
+  // `starredLocal` is the single source of truth in-session: seeded from the
+  // post-mount localStorage read (see the effect above) and thereafter holding
+  // every in-session toggle. A deleted key must stay deleted — merging over
+  // `appState.starred` would resurrect it.
   const toggleStar = (id: string) => {
     setStarred((prev) => {
       const next = { ...prev };

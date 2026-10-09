@@ -106,6 +106,15 @@ export async function getQuestionById(id: string): Promise<Question | null> {
   return (rows[0] as Question | undefined) ?? null;
 }
 
+/** Load several questions by id (used to re-derive exam scoring server-side). */
+export async function getQuestionsByIds(ids: string[]): Promise<Question[]> {
+  if (ids.length === 0) return [];
+  return (await db
+    .select()
+    .from(questions)
+    .where(inArray(questions.id, ids))) as Question[];
+}
+
 export async function getPassages(): Promise<Record<string, Passage>> {
   const rows = await db.select().from(passages);
   return Object.fromEntries(rows.map((p) => [p.passageId, p]));

@@ -74,8 +74,25 @@ function validateQuestion(item: unknown, subject: string, lesson: number | strin
   const opts = Array.isArray(r.options) ? r.options.map(String) : null;
   const ca = Number(r.correctAnswer);
 
-  if (!q || !opts || opts.length !== 4 || Number.isNaN(ca) || ca < 0 || ca > 3) {
+  if (!q || !opts || opts.length !== 4) {
     return null;
+  }
+  // B07: a float correctAnswer (e.g. 2.5) used to pass and was stored into
+  // jsonb as an unanswerable question. Require an integer in range.
+  if (!Number.isInteger(ca) || ca < 0 || ca > opts.length - 1) {
+    return null;
+  }
+  // TF statement shape: exactly 4 statements, boolean ok, non-empty text.
+  if (r.statements !== undefined) {
+    const stmts = r.statements;
+    if (!Array.isArray(stmts) || stmts.length !== 4) return null;
+    for (const s of stmts) {
+      if (!s || typeof s !== 'object') return null;
+      const st = s as Record<string, unknown>;
+      if (typeof (st.t ?? (st as { text?: unknown }).text) !== 'string') return null;
+      const text = String(st.t ?? (st as { text?: unknown }).text ?? '').trim();
+      if (!text || typeof st.ok !== 'boolean') return null;
+    }
   }
 
   return {
@@ -112,6 +129,12 @@ export async function POST(req: NextRequest) {
     // ── Input validation ──────────────────────────────────────────
     if (!subject || !SUBJECTS.includes(subject)) {
       return NextResponse.json({ error: 'Môn học không hợp lệ.' }, { status: 400 });
+    }
+    // B07: lesson was never validated — NaN landed in the stored row's
+    // criteria jsonb (and defeated the 24h cache match). The form sends
+    // 'all' or a lesson number (AiGenerateForm).
+    if (lesson !== 'all' && (!Number.isInteger(Number(lesson)) || Number(lesson) < 1)) {
+      return NextResponse.json({ error: 'Bài học không hợp lệ.' }, { status: 400 });
     }
     if (!count || count < 1 || count > 50) {
       return NextResponse.json({ error: 'Số câu phải từ 1–50.' }, { status: 400 });

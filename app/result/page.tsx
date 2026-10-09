@@ -11,7 +11,7 @@
  */
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ResultView, { type ResultData } from '@/components/result/ResultView';
 
@@ -21,9 +21,16 @@ export default function ResultPage() {
   const router = useRouter();
   const [data, setData] = useState<ResultData | null>(null);
   const [checked, setChecked] = useState(false);
+  // B19: read-once — remove the key on consume so revisiting /result
+  // (or refreshing) doesn't replay a stale exam. Guarded by ref so a dev
+  // StrictMode double-effect doesn't consume-then-redirect on 2nd run.
+  const consumedRef = useRef(false);
 
   useEffect(() => {
+    if (consumedRef.current) return;
+    consumedRef.current = true;
     const raw = sessionStorage.getItem(RESULT_KEY);
+    sessionStorage.removeItem(RESULT_KEY);
     if (!raw) {
       router.replace('/');
       return;

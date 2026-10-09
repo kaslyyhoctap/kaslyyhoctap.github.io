@@ -16,6 +16,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useAppState, STORAGE_KEY } from '@/lib/storage';
 import { META, SUBJECTS, subjectName } from '@/lib/meta';
+import { typeOf } from '@/lib/quiz/pool';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TrendChart, { type HistEntry } from '@/components/progress/TrendChart';
 import WeaknessAnalysis from '@/components/progress/WeaknessAnalysis';
@@ -23,6 +24,36 @@ import questions from '@/data/questions.json';
 import type { Question } from '@/lib/types';
 
 const Q = questions as unknown as Question[];
+
+// N7 (display-layer ruling): pool() drops every short_answer row (no answer
+// UI was ported), so /progress denominators must count pool-eligible rows
+// only — otherwise a perfect user caps at ~50% per lesson.
+
+/**
+ * Per (subject, lesson) question totals + "ok" counts over the
+ * pool-eligible bank (single pass, mirrors app.js renderProgress).
+ * Exported for the vitest regression test.
+ */
+export function buildProgressCounts(
+  bank: Question[],
+  answered: Record<string, string>,
+): {
+  qCount: Record<string, Record<number, number>>;
+  qGood: Record<string, Record<number, number>>;
+} {
+  const qCount: Record<string, Record<number, number>> = {};
+  const qGood: Record<string, Record<number, number>> = {};
+  for (const q of bank) {
+    if (typeOf(q) === 'short_answer') continue;
+    const c = (qCount[q.subject] ||= {});
+    c[q.lesson] = (c[q.lesson] || 0) + 1;
+    if (answered[q.id] === 'ok') {
+      const g = (qGood[q.subject] ||= {});
+      g[q.lesson] = (g[q.lesson] || 0) + 1;
+    }
+  }
+  return { qCount, qGood };
+}
 
 export default function ProgressView() {
   const state = useAppState();
@@ -36,23 +67,19 @@ export default function ProgressView() {
 
   // --- Per (subject, lesson) question count + "ok" count (single pass) ---
   // app.js: n = Q.filter(...).length ; good = Q.filter(...&&answered[q.id]==='ok').length
-  const qCount: Record<string, Record<number, number>> = {};
-  const qGood: Record<string, Record<number, number>> = {};
-  for (const q of Q) {
-    const c = (qCount[q.subject] ||= {});
-    c[q.lesson] = (c[q.lesson] || 0) + 1;
-    if (answered[q.id] === 'ok') {
-      const g = (qGood[q.subject] ||= {});
-      g[q.lesson] = (g[q.lesson] || 0) + 1;
-    }
-  }
+  // N7: denominators count pool-eligible rows only (short_answer excluded).
+  const { qCount, qGood } = buildProgressCounts(Q, answered);
 
   // Lesson numbers present in the bank per subject (app.js lessonsOf reads
   // META lessons; here derived from Q, which carries the same lesson set).
   const lessonsOf = (sub: string): number[] =>
-    Array.from(new Set(Q.filter((q) => q.subject === sub).map((q) => q.lesson))).sort(
-      (a, b) => a - b,
-    );
+    Array.from(
+      new Set(
+        Q.filter((q) => q.subject === sub && typeOf(q) !== 'short_answer').map(
+          (q) => q.lesson,
+        ),
+      ),
+    ).sort((a, b) => a - b);
 
   // --- progCards (app.js lines 456–461), filtered by the subject select ---
   const progCards = SUBJECTS.filter((k) => !subject || k === subject)

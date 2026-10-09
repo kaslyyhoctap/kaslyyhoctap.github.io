@@ -25,18 +25,8 @@ export default async function TheoryPage({
   if (!SUBJECTS.includes(subject) || Number.isNaN(lessonNum)) notFound();
 
   const th = await getTheory(subject, lessonNum);
-  if (!th) {
-    return (
-      <>
-        <Link href={`/${subject}`} className="link theory-back">
-          ← Quay lại
-        </Link>
-        <div className="panel">
-          <p className="muted">Chưa có lý thuyết cho phần này.</p>
-        </div>
-      </>
-    );
-  }
+  // F-B8a: an unresolvable lesson must 404 (not a soft-200 panel).
+  if (!th) notFound();
 
   const cfg = META[subject]!;
 

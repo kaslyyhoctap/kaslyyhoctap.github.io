@@ -11,7 +11,7 @@
  */
 import Link from 'next/link';
 import { getQuestions, getPassages } from '@/lib/db/queries';
-import { type ExamConfig } from '@/lib/quiz/pool';
+import { clampInt, type ExamConfig } from '@/lib/quiz/pool';
 import QuizView, { type PassageMap } from '@/components/quiz/QuizView';
 
 export const metadata = {
@@ -31,8 +31,10 @@ export default async function QuizPage({
     typeof v === 'string' && v.includes(',') ? v.split(',') : v;
   const subject = (sp.subject as string) || 'history';
   const lesson = (parseList(sp.lesson as string) ?? 'all') as ExamConfig['lesson'];
-  const count = Number(sp.count) || 20;
-  const time = Number(sp.time) || 20;
+  // B06: `Number(x) || default` passes negatives — count=-5 selected 85
+  // questions, time=-5 instant-submitted. Clamp at the page (inputs owner).
+  const count = clampInt(sp.count, 1, 100, 20);
+  const time = clampInt(sp.time, 1, 180, 20);
   const practice = (sp.practice as string | undefined) === 'true';
   const level = (sp.level as string) || 'all';
   const qtype = (parseList(sp.qtype as string) ?? 'all') as ExamConfig['qtype'];

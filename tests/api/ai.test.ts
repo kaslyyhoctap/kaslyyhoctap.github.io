@@ -246,6 +246,70 @@ describe('POST /api/ai/generate', () => {
     const res = await generatePOST(req);
     expect(res.status).toBe(400);
   });
+
+  it('returns 400 for non-integer lesson (B07)', async () => {
+    mockGetCurrentUser.mockReturnValue(MOCK_USER);
+
+    for (const lesson of ['abc', 1.5, 0, -2, NaN]) {
+      const req = new NextRequest('http://localhost/api/ai/generate', {
+        method: 'POST',
+        body: JSON.stringify({ subject: 'history', lesson, count: 5 }),
+      });
+      const res = await generatePOST(req);
+      expect(res.status, `lesson=${String(lesson)}`).toBe(400);
+    }
+    expect(mockGenerateText).not.toHaveBeenCalled();
+  });
+
+  it('filters out a float correctAnswer (B07)', async () => {
+    mockGetCurrentUser.mockReturnValue(MOCK_USER);
+    mockDb.select.mockReturnValueOnce(chainable([{ count: 0 }]));
+    mockDb.select.mockReturnValueOnce(chainable([]));
+    mockInsert();
+    mockGenerateText.mockResolvedValue(
+      JSON.stringify([
+        { question: 'Float?', options: ['A', 'B', 'C', 'D'], correctAnswer: 2.5, explanation: 'x' },
+      ]),
+    );
+
+    const req = new NextRequest('http://localhost/api/ai/generate', {
+      method: 'POST',
+      body: JSON.stringify({ subject: 'history', lesson: 1, count: 1 }),
+    });
+
+    const res = await generatePOST(req);
+    // No valid questions remain → 502 fallback, nothing persisted.
+    expect(res.status).toBe(502);
+    expect(mockDb.insert).not.toHaveBeenCalled();
+  });
+
+  it('filters out malformed true/false statements (B07)', async () => {
+    mockGetCurrentUser.mockReturnValue(MOCK_USER);
+    mockDb.select.mockReturnValueOnce(chainable([{ count: 0 }]));
+    mockDb.select.mockReturnValueOnce(chainable([]));
+    mockInsert();
+    mockGenerateText.mockResolvedValue(
+      JSON.stringify([
+        {
+          question: 'TF bad shape?',
+          options: ['A', 'B', 'C', 'D'],
+          correctAnswer: 0,
+          explanation: 'x',
+          // Only 2 statements, and ok is not boolean.
+          statements: [{ t: 'a', ok: 1 }, { t: '', ok: false }],
+        },
+      ]),
+    );
+
+    const req = new NextRequest('http://localhost/api/ai/generate', {
+      method: 'POST',
+      body: JSON.stringify({ subject: 'history', lesson: 1, count: 1 }),
+    });
+
+    const res = await generatePOST(req);
+    expect(res.status).toBe(502);
+    expect(mockDb.insert).not.toHaveBeenCalled();
+  });
 });
 
 // ── POST /api/ai/explain ───────────────────────────────────────────────

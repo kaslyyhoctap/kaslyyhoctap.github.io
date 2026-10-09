@@ -137,3 +137,11 @@ describe('questionStatus (review list helper)', () => {
     expect(questionStatus(MCQ_5[0], runtime[0], -1)).toBe('skip');
   });
 });
+
+describe('scoreExam — empty pool (B09)', () => {
+  it('returns a 0-point score, never NaN', () => {
+    const score = scoreExam([], [], cfg());
+    expect(score).toMatchObject({ point: 0, ok: 0, bad: 0, skip: 0, total: 0 });
+    expect(Number.isNaN(score.point)).toBe(false);
+  });
+});

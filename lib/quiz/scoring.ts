@@ -73,6 +73,11 @@ export function mapToRuntime(questions: Question[], shA: boolean = true): Runtim
  *   breakdown).
  */
 export function scoreExam(qs: RuntimeQuestion[], ans: number[], cfg: ExamConfig): ExamScore {
+  // B09: empty pool → pts/0 = NaN. All live callers guard, but the pure
+  // function must not produce a NaN point on its own.
+  if (qs.length === 0) {
+    return { point: 0, ok: 0, bad: 0, skip: 0, total: 0, verdict: 'Cần cố gắng', verdictClass: 'low', topics: {}, types: {} };
+  }
   let ok = 0;
   let bad = 0;
   let skip = 0;
@@ -154,4 +159,34 @@ export function questionStatus(q: Question, runtime: RuntimeQuestion, ansIdx: nu
     return an === 0 ? 'skip' : gd === 4 ? 'ok' : 'bad';
   }
   return ansIdx >= 0 ? (runtime.opts[ansIdx]?.ok ? 'ok' : 'bad') : 'skip';
+}
+
+/**
+ * Re-derive a runtime question's correctness from the authoritative DB row.
+ *
+ * Only the client's *display* state survives — option/statement text order
+ * (the shuffle happens client-side) and the TF answer slots. Everything
+ * truth-bearing (`opts[].ok`, `statements[].ok`, `correctAnswer`) is dropped:
+ * those arrive from the browser and a forged `opts: [{ok:true}, …]` used to
+ * score a perfect exam (B02). Options/statements are matched to the DB row by
+ * text so a reordered client list still scores against the right flag.
+ */
+export function serverRuntime(client: RuntimeQuestion, db: Question): RuntimeQuestion {
+  if (typeOf(db) === 'true_false') {
+    const truth = new Map((db.statements || []).map((s) => [s.t, s.ok]));
+    return {
+      ...client,
+      statements: (client.statements || []).map((s) => ({ t: s.t, ok: truth.get(s.t) ?? false })),
+      opts: [],
+      tf: Array.isArray(client.tf) ? client.tf.slice() : [],
+    };
+  }
+  const options = db.options || [];
+  const correct = db.correctAnswer != null ? options[db.correctAnswer] : undefined;
+  return {
+    ...client,
+    correctAnswer: db.correctAnswer ?? null,
+    opts: (client.opts || []).map((o) => ({ t: o.t, ok: correct !== undefined && o.t === correct })),
+    tf: [],
+  };
 }

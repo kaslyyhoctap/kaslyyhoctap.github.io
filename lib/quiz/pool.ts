@@ -32,6 +32,25 @@ export interface ExamConfig extends Omit<QuizParams, 'practice'> {
 export type AnsweredMap = Record<string, true>;
 
 /**
+ * Clamp an unknown (URL search-param) value to an integer in [min, max].
+ * Non-finite / non-numeric → `def`. (B06: `Number(x) || default` passed
+ * negatives through — count=-5 selected 85 questions, time=-5
+ * instant-submitted. URL params arrive as strings, so numeric strings are
+ * floored and clamped like numbers.)
+ */
+export function clampInt(
+  v: unknown,
+  min: number,
+  max: number,
+  def: number,
+): number {
+  const n = Number(v);
+  return Number.isFinite(n)
+    ? Math.min(max, Math.max(min, Math.floor(n)))
+    : def;
+}
+
+/**
  * Question type label, defaulting to `multiple_choice` (app.js `typeOf`,
  * line 22).
  */

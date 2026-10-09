@@ -419,6 +419,12 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
   /* ponytail: filter/backdrop tạo containing block nhốt position:fixed của sidebar → tắt trên mobile */
   .header{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--card)}
   .menu-btn{display:inline-flex!important;grid-area:menu}
+  /* P1: #mainNav (fixed, z-300) is a CHILD of the z-310 .header stacking
+     context, so it paints above the non-positioned .menu-btn — the toggle
+     becomes one-way (open via button, close only via scrim/Escape).
+     Give the button its own stacking above the drawer (CSS-only, no
+     markup change). */
+  body.nav-open .menu-btn{position:relative;z-index:320}
   .scrim{display:block!important}
   .logo{grid-area:logo;justify-self:start} .header-act{grid-area:actions}
   .menu-btn #menuLbl{display:none}

@@ -100,13 +100,27 @@ describe('POST /api/exam/submit', () => {
     mockGetCurrentUser.mockReturnValue(null); // anonymous by default
   });
 
-  it('scores MCQ: 3 correct 1 wrong → point 7.5, wrongIds has 1 entry', async () => {
-    const q1 = makeRuntime(makeQuestion('h1'));
-    const q2 = makeRuntime(makeQuestion('h2'));
-    const q3 = makeRuntime(makeQuestion('h3'));
-    const q4 = makeRuntime(makeQuestion('h4'));
+  /**
+   * The route re-derives correctness from the DB, so every submit test must
+   * supply the authoritative `questions` rows (previously the client's own
+   * runtime objects were trusted, which is the bug being fixed).
+   */
+  function mockDbRows(rows: Question[]) {
+    mockDb.select.mockReturnValueOnce(chainable(rows));
+  }
 
-    const questions = [q1, q2, q3, q4];
+  function mockInsert() {
+    const values = vi.fn().mockReturnValue({
+      onConflictDoUpdate: vi.fn().mockResolvedValue(undefined),
+    });
+    mockDb.insert.mockReturnValue({ values });
+    return values;
+  }
+
+  it('scores MCQ: 3 correct 1 wrong → point 7.5, wrongIds has 1 entry', async () => {
+    const base = [makeQuestion('h1'), makeQuestion('h2'), makeQuestion('h3'), makeQuestion('h4')];
+    const questions = base.map(makeRuntime);
+    mockDbRows(base);
     // First 3 correct (ans=0), 4th wrong (ans=1)
     const answers = [0, 0, 0, 1];
 
@@ -133,8 +147,173 @@ describe('POST /api/exam/submit', () => {
     expect(data.wrongIds).toEqual(['h4']);
   });
 
+  it('scores against the client\'s shuffled option order, not the DB order', async () => {
+    const q = makeQuestion('h1'); // correctAnswer 0 → 'Đúng'
+    mockDbRows([q]);
+    // Client shuffled opts: 'Đúng' now sits at index 2 (matching answer 2).
+    const questions = [
+      {
+        ...q,
+        opts: [
+          { t: 'Sai 3', ok: false },
+          { t: 'Sai 1', ok: false },
+          { t: 'Đúng', ok: false },
+          { t: 'Sai 2', ok: false },
+        ],
+        tf: [],
+      } as RuntimeQuestion,
+    ];
+
+    const req = new NextRequest('http://localhost/api/exam/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        answers: [2],
+        flags: [false],
+        timeSec: 60,
+        cfg: { subject: 'history', lesson: 1, count: 1, time: 10, practice: false },
+        questions,
+      }),
+    });
+
+    const res = await submitPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.ok).toBe(1);
+    expect(data.point).toBe(10);
+  });
+
+  it('ignores forged opts ok flags: wrong answers cannot score (B02)', async () => {
+    const base = [makeQuestion('h1'), makeQuestion('h2'), makeQuestion('h3'), makeQuestion('h4')];
+    mockDbRows(base);
+    // Forged runtime: every option claims to be correct, correctAnswer is junk.
+    const forged: RuntimeQuestion[] = base.map((q) => ({
+      ...q,
+      correctAnswer: 99,
+      opts: ['Đúng', 'Sai 1', 'Sai 2', 'Sai 3'].map((t) => ({ t, ok: true })),
+      tf: [],
+    }));
+    // Answers all point at index 1 → 'Sai 1' → wrong per the DB row.
+    const answers = [1, 1, 1, 1];
+
+    const req = new NextRequest('http://localhost/api/exam/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        answers,
+        flags: [false, false, false, false],
+        timeSec: 300,
+        cfg: { subject: 'history', lesson: 1, count: 4, time: 10, practice: false },
+        questions: forged,
+      }),
+    });
+
+    const res = await submitPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.ok).toBe(0);
+    expect(data.bad).toBe(4);
+    expect(data.point).toBe(0);
+    expect(data.wrongIds).toEqual(['h1', 'h2', 'h3', 'h4']);
+  });
+
+  it('ignores forged true_false statements ok flags (B02)', async () => {
+    const tfQuestion: Question = {
+      ...makeQuestion('tf1'),
+      type: 'true_false',
+      options: null,
+      correctAnswer: null,
+      statements: [
+        { t: 'Ý 1', ok: true },
+        { t: 'Ý 2', ok: false },
+        { t: 'Ý 3', ok: false },
+        { t: 'Ý 4', ok: true },
+      ],
+    };
+    mockDbRows([tfQuestion]);
+    // Forged: every statement claims ok, answers all "Đúng".
+    const questions = [
+      {
+        ...tfQuestion,
+        statements: (tfQuestion.statements || []).map((s) => ({ t: s.t, ok: true })),
+        opts: [],
+        tf: [1, 1, 1, 1],
+      } as RuntimeQuestion,
+    ];
+
+    const req = new NextRequest('http://localhost/api/exam/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        answers: [-1],
+        flags: [false],
+        timeSec: 60,
+        cfg: { subject: 'history', lesson: 1, count: 1, time: 10, practice: false },
+        questions,
+      }),
+    });
+
+    const res = await submitPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.ok).toBe(0);
+    expect(data.bad).toBe(1);
+    // 2 of the 4 DB statements were genuinely right — a forged all-`ok`
+    // statements list used to score 4/4 (point 10).
+    expect(data.point).toBe(2.5);
+  });
+
+  it('returns 400 when a submitted question id is unknown to the DB', async () => {
+    const q = makeQuestion('h1');
+    mockDbRows([q]);
+    const questions = [makeRuntime(q), makeRuntime(makeQuestion('ghost'))];
+
+    const req = new NextRequest('http://localhost/api/exam/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        answers: [0, 0],
+        flags: [false, false],
+        timeSec: 60,
+        cfg: { subject: 'history', lesson: 1, count: 2, time: 10, practice: false },
+        questions,
+      }),
+    });
+
+    const res = await submitPOST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('persists lesson 0 (tổng hợp) for the default lesson="all" config (N4)', async () => {
+    mockGetCurrentUser.mockReturnValue({ id: 'user-1', name: 'Test', email: 't@t.com' });
+    const base = [makeQuestion('h1'), makeQuestion('h2')];
+    const questions = base.map(makeRuntime);
+    mockDbRows(base); // scoring lookup
+    mockDb.select.mockReturnValueOnce(chainable([])); // getUserProgress → no rows
+    const values = mockInsert();
+
+    const req = new NextRequest('http://localhost/api/exam/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        answers: [0, -1],
+        flags: [false, false],
+        timeSec: 120,
+        cfg: { subject: 'history', lesson: 'all', count: 2, time: 10, practice: false },
+        questions,
+      }),
+    });
+
+    const res = await submitPOST(req);
+    expect(res.status).toBe(200);
+
+    // saveExamResult is the first insert — lesson must be 0, never NaN.
+    expect(values.mock.calls[0][0].lesson).toBe(0);
+    expect(Number.isNaN(values.mock.calls[0][0].lesson)).toBe(false);
+  });
+
   it('scores with skipped questions (ans -1)', async () => {
-    const qs = [makeRuntime(makeQuestion('h1')), makeRuntime(makeQuestion('h2'))];
+    const base = [makeQuestion('h1'), makeQuestion('h2')];
+    const qs = base.map(makeRuntime);
+    mockDbRows(base);
     const answers = [0, -1]; // 1 correct, 1 skip
 
     const req = new NextRequest('http://localhost/api/exam/submit', {

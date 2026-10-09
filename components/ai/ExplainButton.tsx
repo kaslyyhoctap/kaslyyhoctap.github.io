@@ -77,13 +77,17 @@ export default function ExplainButton({ q, userAnswer }: ExplainButtonProps) {
       {error && <span className="muted small" style={{ display: 'block', marginTop: 4 }}>{error}</span>}
 
       {text && (
-        <div
-          className="muted small"
-          style={{ marginTop: 8, lineHeight: 1.5 }}
-          dangerouslySetInnerHTML={{
-            __html: isChem ? chemFormat(text) : text,
-          }}
-        />
+        // Non-chemistry explanations are model text and render as React text
+        // children (escaped). Passing them through dangerouslySetInnerHTML let
+        // a prompt-injected / malformed response inject HTML (stored XSS).
+        // Chemistry keeps chemFormat, which escapes before adding markup.
+        <div className="muted small" style={{ marginTop: 8, lineHeight: 1.5 }}>
+          {isChem ? (
+            <span dangerouslySetInnerHTML={{ __html: chemFormat(text) }} />
+          ) : (
+            <span>{text}</span>
+          )}
+        </div>
       )}
     </div>
   );
