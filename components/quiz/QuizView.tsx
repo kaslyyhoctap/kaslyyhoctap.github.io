@@ -181,10 +181,12 @@ export default function QuizView({ cfg, questions, passages }: QuizViewProps) {
           total={quiz.qs.length}
           selected={quiz.ans[quiz.i]}
           tf={q.tf}
+          sa={q.sa ?? ''}
           practice={cfg.practice}
           qtype={cfg.qtype}
           onSelect={quiz.answer}
           onTF={quiz.tfAnswer}
+          onSA={quiz.saAnswer}
           passages={passages}
         />
 

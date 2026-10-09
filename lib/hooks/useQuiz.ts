@@ -15,6 +15,7 @@ import { pool, type ExamConfig, type AnsweredMap, typeOf } from '@/lib/quiz/pool
 import {
   mapToRuntime,
   scoreExam,
+  saOk,
   type RuntimeQuestion,
   type ExamScore,
 } from '@/lib/quiz/scoring';
@@ -51,6 +52,8 @@ export interface UseQuizReturn {
   start: (questions: Question[], answeredMap?: AnsweredMap) => void;
   answer: (idx: number) => void;
   tfAnswer: (idx: number, val: 0 | 1) => void;
+  /** Type an SA candidate string for the current question (maxLen-capped). */
+  saAnswer: (value: string) => void;
   next: () => void;
   prev: () => void;
   goTo: (idx: number) => void;
@@ -162,6 +165,19 @@ export function useQuiz(cfg: ExamConfig): UseQuizReturn {
     [i],
   );
 
+  const saAnswer = useCallback(
+    (value: string) => {
+      setQs((list) => {
+        const next = list.slice();
+        const cur = next[i];
+        const max = cur.maxLen ?? undefined;
+        next[i] = { ...cur, sa: max != null ? value.slice(0, max) : value };
+        return next;
+      });
+    },
+    [i],
+  );
+
   const goTo = useCallback((idx: number) => setI(Math.max(0, Math.min(idx, qs.length - 1))), [qs.length]);
   const next = useCallback(() => goTo(i + 1), [goTo, i]);
   const prev = useCallback(() => goTo(i - 1), [goTo, i]);
@@ -207,6 +223,9 @@ export function useQuiz(cfg: ExamConfig): UseQuizReturn {
         const gd = (s.statements || []).reduce((m, t, k) => m + (s.tf[k] === (t.ok ? 1 : 0) ? 1 : 0), 0);
         const an = s.tf.filter((v) => v >= 0).length;
         status[s.id] = an === 0 ? 'skip' : gd === 4 ? 'ok' : 'bad';
+      } else if (typeOf(s) === 'short_answer') {
+        const sa = s.sa ?? '';
+        status[s.id] = sa === '' ? 'skip' : saOk(sa, s.answer) ? 'ok' : 'bad';
       } else {
         status[s.id] = ans[n] >= 0 ? (s.opts[ans[n]]?.ok ? 'ok' : 'bad') : 'skip';
       }
@@ -286,6 +305,7 @@ export function useQuiz(cfg: ExamConfig): UseQuizReturn {
 
   const doneCount = qs.reduce((n, s, idx) => {
     if (typeOf(s) === 'true_false') return n + (s.tf.some((v) => v >= 0) ? 1 : 0);
+    if (typeOf(s) === 'short_answer') return n + ((s.sa ?? '') !== '' ? 1 : 0);
     return n + (ans[idx] >= 0 ? 1 : 0);
   }, 0);
   const progressPct = Math.round((doneCount / (qs.length || 1)) * 100);
@@ -297,7 +317,7 @@ export function useQuiz(cfg: ExamConfig): UseQuizReturn {
       const key = e.key;
       if (key >= '1' && key <= '4') {
         const q = qs[i];
-        if (q && typeOf(q) !== 'true_false') answer(+key - 1);
+        if (q && typeOf(q) !== 'true_false' && typeOf(q) !== 'short_answer') answer(+key - 1);
       } else if (key === 'ArrowRight') {
         next();
       } else if (key === 'ArrowLeft') {
@@ -314,6 +334,6 @@ export function useQuiz(cfg: ExamConfig): UseQuizReturn {
     qs, ans, flag, i, practice, timeLeft, started, done, score,
     doneCount, progressPct,
     current: qs[i], starred,
-    start, answer, tfAnswer, next, prev, goTo, toggleFlag, toggleStar, submit, onKeyDown,
+    start, answer, tfAnswer, saAnswer, next, prev, goTo, toggleFlag, toggleStar, submit, onKeyDown,
   };
 }

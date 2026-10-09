@@ -10,6 +10,7 @@ import type { RuntimeQuestion } from '@/lib/quiz/scoring';
 import Options from './Options';
 import TopicChip from './TopicChip';
 import TrueFalseGrid from './TrueFalseGrid';
+import ShortAnswerInput from './ShortAnswerInput';
 
 export interface PassageMap {
   [passageId: string]: { title?: string | null; text?: string | null };
@@ -21,11 +22,14 @@ interface QuestionCardProps {
   total: number;
   selected: number;
   tf: number[];
+  /** SA candidate string ('' = unanswered). */
+  sa: string;
   practice: boolean;
   /** Quiz type filter — controls whether the topic chip appends the type. */
   qtype?: 'all' | string | string[];
   onSelect: (idx: number) => void;
   onTF: (idx: number, val: 0 | 1) => void;
+  onSA: (value: string) => void;
   passages: PassageMap;
 }
 
@@ -35,13 +39,16 @@ export default function QuestionCard({
   total,
   selected,
   tf,
+  sa,
   practice,
   qtype,
   onSelect,
   onTF,
+  onSA,
   passages,
 }: QuestionCardProps) {
   const isTF = typeOf(q) === 'true_false';
+  const isSA = typeOf(q) === 'short_answer';
 
   const passage = q.passageId ? passages[q.passageId] : undefined;
   // cloze blank number is the (N) inside the question text like "Chọn (3)."
@@ -70,6 +77,8 @@ export default function QuestionCard({
 
       {isTF ? (
         <TrueFalseGrid q={q} tf={tf} onTF={onTF} practice={practice} />
+      ) : isSA ? (
+        <ShortAnswerInput q={q} value={sa} onChange={onSA} practice={practice} />
       ) : (
         <Options q={q} selected={selected} onSelect={onSelect} practice={practice} />
       )}

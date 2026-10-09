@@ -155,15 +155,13 @@ export function pool(
       ? null
       : (Array.isArray(qtypeRaw) ? qtypeRaw.slice() : [qtypeRaw as string]);
 
-  // ponytail: short_answer có trong bank (Xem ngân hàng câu hỏi) nhưng UI
-  // nhập đáp án chưa được port — tạm bỏ khỏi mọi đề; đưa vào khi có ô nhập.
+  // SA rows are quiz-reachable (short_answer input UI is ported).
   let base = questions.filter((q) => {
     if (q.subject !== opts.subject) return false;
     if (lessons && !lessons.includes(String(q.lesson))) return false;
     if (opts.level && opts.level !== 'all' && q.difficulty !== opts.level) return false;
     if (opts.topic && q.topic !== opts.topic) return false;
     if (opts.band && q.band !== +opts.band) return false;
-    if (typeOf(q) === 'short_answer') return false;
     return true;
   });
   // Checked type boxes (app.js line 129): keep only the requested types.

@@ -33,6 +33,12 @@ export async function POST(req: NextRequest) {
     // (`opts[].ok`, `statements[].ok`, `correctAnswer`) are untrusted: reload
     // the questions by id and re-tag them from the DB rows.
     const submitted = questions as RuntimeQuestion[];
+    if (submitted.length > 100) {
+      return NextResponse.json(
+        { error: 'Too many questions (max 100)' },
+        { status: 400 },
+      );
+    }
     const dbRows = await getQuestionsByIds(submitted.map((q) => q.id));
     const byId = new Map(dbRows.map((q) => [q.id, q]));
     const unknown = submitted.find((q) => !byId.has(q.id));

@@ -41,7 +41,30 @@ function makeRuntime(q: Question): RuntimeQuestion {
     ...q,
     opts: (q.options || []).map((t, i) => ({ t, ok: i === q.correctAnswer })),
     tf: [],
+    sa: '',
   };
+}
+
+function makeSA(id: string, answer: string, maxLen = 10): Question {
+  return {
+    id,
+    subject: 'history',
+    lesson: 1,
+    type: 'short_answer',
+    topic: 'Trả lời ngắn',
+    difficulty: 'Nhận biết',
+    question: `Điền ${id}`,
+    options: null,
+    correctAnswer: null,
+    answer,
+    maxLen,
+    explanation: 'Giải thích',
+    passageId: null,
+  } as Question;
+}
+
+function makeSARuntime(q: Question, sa: string): RuntimeQuestion {
+  return { ...q, opts: [], tf: [], sa };
 }
 
 // chainable mock builder
@@ -161,6 +184,7 @@ describe('POST /api/exam/submit', () => {
           { t: 'Sai 2', ok: false },
         ],
         tf: [],
+        sa: '',
       } as RuntimeQuestion,
     ];
 
@@ -192,6 +216,7 @@ describe('POST /api/exam/submit', () => {
       correctAnswer: 99,
       opts: ['Đúng', 'Sai 1', 'Sai 2', 'Sai 3'].map((t) => ({ t, ok: true })),
       tf: [],
+      sa: '',
     }));
     // Answers all point at index 1 → 'Sai 1' → wrong per the DB row.
     const answers = [1, 1, 1, 1];
@@ -238,6 +263,7 @@ describe('POST /api/exam/submit', () => {
         statements: (tfQuestion.statements || []).map((s) => ({ t: s.t, ok: true })),
         opts: [],
         tf: [1, 1, 1, 1],
+        sa: '',
       } as RuntimeQuestion,
     ];
 
@@ -337,6 +363,113 @@ describe('POST /api/exam/submit', () => {
     expect(data.total).toBe(2);
     expect(data.point).toBe(5.0); // 1/2 * 100 / 10 = 5.0
     expect(data.wrongIds).toEqual([]);
+  });
+
+  it('scores short_answer: correct string → ok (case/accent-insensitive)', async () => {
+    const base = [makeSA('sa1', 'Hồ Chí Minh'), makeSA('sa2', '1945', 4)];
+    mockDbRows(base);
+    const questions = [makeSARuntime(base[0], 'ho chi minh'), makeSARuntime(base[1], '1945')];
+
+    const req = new NextRequest('http://localhost/api/exam/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        answers: [-1, -1],
+        flags: [false, false],
+        timeSec: 60,
+        cfg: { subject: 'history', lesson: 1, count: 2, time: 10, practice: false },
+        questions,
+      }),
+    });
+
+    const res = await submitPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.ok).toBe(2);
+    expect(data.bad).toBe(0);
+    expect(data.skip).toBe(0);
+    expect(data.point).toBe(10);
+    expect(data.wrongIds).toEqual([]);
+  });
+
+  it('ignores forged short_answer key: server re-derives from db.answer (B02)', async () => {
+    const dbRow = makeSA('sa1', 'REAL');
+    mockDbRows([dbRow]);
+    // Forged: client claims the answer key is 'FORGED' and typed it correctly.
+    const questions = [{ ...makeSARuntime(dbRow, 'FORGED'), answer: 'FORGED' } as RuntimeQuestion];
+
+    const req = new NextRequest('http://localhost/api/exam/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        answers: [-1],
+        flags: [false],
+        timeSec: 60,
+        cfg: { subject: 'history', lesson: 1, count: 1, time: 10, practice: false },
+        questions,
+      }),
+    });
+
+    const res = await submitPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    // 'FORGED' !== db 'REAL' → bad. The forged key cannot inflate the score.
+    expect(data.ok).toBe(0);
+    expect(data.bad).toBe(1);
+    expect(data.point).toBe(0);
+    expect(data.wrongIds).toEqual(['sa1']);
+  });
+
+  it('scores unknown short_answer string → bad, empty → skip', async () => {
+    const base = [makeSA('sa1', 'REAL'), makeSA('sa2', 'REAL')];
+    mockDbRows(base);
+    const questions = [makeSARuntime(base[0], 'nope'), makeSARuntime(base[1], '')];
+
+    const req = new NextRequest('http://localhost/api/exam/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        answers: [-1, -1],
+        flags: [false, false],
+        timeSec: 60,
+        cfg: { subject: 'history', lesson: 1, count: 2, time: 10, practice: false },
+        questions,
+      }),
+    });
+
+    const res = await submitPOST(req);
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.ok).toBe(0);
+    expect(data.bad).toBe(1);
+    expect(data.skip).toBe(1);
+    expect(data.point).toBe(0);
+    expect(data.wrongIds).toEqual(['sa1']);
+  });
+
+  it('returns 400 without touching the DB when >100 questions are submitted', async () => {
+    const questions = Array.from({ length: 101 }, (_, n) =>
+      makeRuntime(makeQuestion(`h${n}`)),
+    );
+
+    const req = new NextRequest('http://localhost/api/exam/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        answers: new Array(101).fill(0),
+        flags: new Array(101).fill(false),
+        timeSec: 60,
+        cfg: { subject: 'history', lesson: 1, count: 101, time: 10, practice: false },
+        questions,
+      }),
+    });
+
+    const res = await submitPOST(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toMatch(/max 100/);
+    // The cap fires before getQuestionsByIds — the select stub must not be
+    // touched (beforeEach already reset it; a read would consume mockReturnValue).
+    expect(mockDb.select).not.toHaveBeenCalled();
   });
 
   it('returns 400 when questions array is empty', async () => {

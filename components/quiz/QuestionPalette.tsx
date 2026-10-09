@@ -17,6 +17,7 @@ interface QuestionPaletteProps {
 
 function qDoneN(q: RuntimeQuestion, ans: number[], n: number): boolean {
   if (typeOf(q) === 'true_false') return q.tf.some((v) => v >= 0);
+  if (typeOf(q) === 'short_answer') return (q.sa ?? '') !== '';
   return ans[n] >= 0;
 }
 

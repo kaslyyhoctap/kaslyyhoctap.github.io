@@ -4,7 +4,7 @@
  * Client component: renders a button, calls POST /api/ai/explain on click,
  * shows a loading state, then renders the explanation inline.
  *
- * Works for both MCQ and true/false questions.
+ * Works for MCQ, true/false, and short_answer questions.
  */
 'use client';
 
@@ -26,6 +26,7 @@ export default function ExplainButton({ q, userAnswer }: ExplainButtonProps) {
   const [error, setError] = useState('');
 
   const isTF = typeOf(q) === 'true_false';
+  const isSA = typeOf(q) === 'short_answer';
   const isChem = q.subject === 'chemistry';
 
   const handleExplain = async () => {
@@ -41,9 +42,11 @@ export default function ExplainButton({ q, userAnswer }: ExplainButtonProps) {
           question: q.question,
           options: isTF
             ? (q.statements || []).map((s) => s.t)
-            : (q.opts || []).map((o) => o.t),
-          correctAnswer: isTF ? -1 : (q.opts || []).findIndex((o) => o.ok),
-          userAnswer: isTF ? q.tf : userAnswer,
+            : isSA
+              ? []
+              : (q.opts || []).map((o) => o.t),
+          correctAnswer: isTF || isSA ? -1 : (q.opts || []).findIndex((o) => o.ok),
+          userAnswer: isTF ? q.tf : isSA ? (q.sa ?? '') : userAnswer,
           explanation: q.explanation || undefined,
           statements: isTF ? q.statements || undefined : undefined,
         }),

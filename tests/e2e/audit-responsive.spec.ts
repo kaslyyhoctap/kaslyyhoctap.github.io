@@ -676,9 +676,11 @@ test('A. responsive matrix — /result after a completed quiz x 5 viewports', as
   const matrix: Record<string, Measure> = {};
 
   // Complete a short quiz (the task-2 flow) so /result has real content.
+  // qtype=multiple_choice keeps the exam MCQ-only: the SA port put short_answer
+  // rows into every pool, and these loops hard-click `.opt` per question.
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto(
-    '/quiz?subject=history&lesson=all&count=5&time=10&level=all&qtype=all&practice=true&shQ=true&shA=true',
+    '/quiz?subject=history&lesson=all&count=5&time=10&level=all&qtype=multiple_choice&practice=true&shQ=true&shA=true',
     { waitUntil: 'networkidle', timeout: 60_000 },
   );
   await expect(page.locator('#qRoot')).toBeVisible({ timeout: 30_000 });
@@ -699,7 +701,7 @@ test('A. responsive matrix — /result after a completed quiz x 5 viewports', as
     // the exam. Measure each viewport by re-running the quiz fresh at that
     // width (one navigation per viewport, no reload).
     await page.goto(
-      '/quiz?subject=history&lesson=all&count=5&time=10&level=all&qtype=all&practice=true&shQ=true&shA=true',
+      '/quiz?subject=history&lesson=all&count=5&time=10&level=all&qtype=multiple_choice&practice=true&shQ=true&shA=true',
       { waitUntil: 'networkidle', timeout: 60_000 },
     );
     await expect(page.locator('#qRoot')).toBeVisible({ timeout: 30_000 });
@@ -1581,11 +1583,12 @@ test('E. error / empty states', async ({ page }) => {
   });
 
   // ---- E3: /history/theory/99 ------------------------------------------
-  await page.goto('/history/theory/99', { waitUntil: 'networkidle', timeout: 60_000 });
+  const res99 = await page.goto('/history/theory/99', { waitUntil: 'networkidle', timeout: 60_000 });
   const theoryText = await page.locator('body').innerText();
-  await a.check('/history/theory/99 renders the 404 page (F-B8a: no soft-200 panel)', async () => {
-    // F-B8a replaced the "Chưa có lý thuyết" soft-200 panel with notFound(),
-    // so the route now renders the standard 404 UI.
+  await a.check('/history/theory/99 returns a REAL 404 (F-B8a + soft-404 fix)', async () => {
+    // F-B8a replaced the "Chưa có lý thuyết" soft-200 panel with notFound();
+    // the soft-404 fix makes the response status a real 404 too.
+    expect(res99?.status(), 'theory/99 status').toBe(404);
     expect(
       theoryText.includes('404') ||
         theoryText.includes('could not be found') ||
@@ -1599,10 +1602,11 @@ test('E. error / empty states', async ({ page }) => {
     expect(hits3, JSON.stringify(hits3)).toEqual([]);
   });
 
-  // ---- E4: unknown route is a safe 404 page -----------------------------
-  await page.goto('/xyz', { waitUntil: 'networkidle', timeout: 60_000 });
+  // ---- E4: unknown route is a safe, real 404 ---------------------------
+  const xyzRes = await page.goto('/xyz', { waitUntil: 'networkidle', timeout: 60_000 });
   const notFoundText = await page.locator('body').innerText();
-  await a.check('/xyz renders the 404 page, not a raw error', async () => {
+  await a.check('/xyz returns a REAL 404, not a raw error', async () => {
+    expect(xyzRes?.status(), '/xyz status').toBe(404);
     expect(notFoundText).toMatch(/404|Không tìm thấy/);
     expect(notFoundText).not.toMatch(/Application error|Unhandled Runtime/);
   });

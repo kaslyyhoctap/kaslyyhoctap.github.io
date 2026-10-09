@@ -30,6 +30,7 @@ function makeQ(subject: string): RuntimeQuestion {
       { t: 'D', ok: false },
     ],
     tf: [],
+    sa: '',
   };
 }
 

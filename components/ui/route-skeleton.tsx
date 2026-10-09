@@ -39,49 +39,6 @@ export function HomeSkeleton() {
   );
 }
 
-/** Subject: heading + config form + lesson cards. */
-export function SubjectSkeleton() {
-  return (
-    <div className="skel" role="status" aria-label="Đang tải môn học">
-      <L w="w40" />
-      <div className="skel-line skel-title" aria-hidden="true" />
-      <L w="w80" />
-      <div className="skel-block" aria-hidden="true">
-        <div className="skel-line skel-title" />
-        <div className="skel-form3">
-          <div className="skel-field" />
-          <div className="skel-field" />
-          <div className="skel-field" />
-        </div>
-      </div>
-      <div className="skel-grid3" aria-hidden="true">
-        <div className="skel-card" />
-        <div className="skel-card" />
-        <div className="skel-card" />
-      </div>
-    </div>
-  );
-}
-
-/** Theory: eyebrow + title + long article. */
-export function TheorySkeleton() {
-  return (
-    <div className="skel" role="status" aria-label="Đang tải lý thuyết">
-      <L w="w40" />
-      <div className="skel-block" aria-hidden="true">
-        <L w="w40" />
-        <div className="skel-line skel-title" />
-        <L />
-        <L w="w80" />
-        <L w="w60" />
-        <L />
-        <L w="w80" />
-        <L w="w60" />
-      </div>
-    </div>
-  );
-}
-
 /** Quiz: timer header + question card + palette sidebar. */
 export function QuizSkeleton() {
   return (

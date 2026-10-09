@@ -79,16 +79,18 @@ under a 60s budget) timed out twice under load; it passes standalone in 43.9s an
 serves in 0.37s, so it is a harness budget, not a product or test regression. The assertion is
 untouched.
 
-## 5. Remaining issues (parked, with rulings)
+## 5. Remaining issues (status after the 2026-10-10 follow-up wave)
 
-| Item | Status | Ruling |
-|---|---|---|
-| Public `/api/questions` returns `correctAnswer`/`answer`/`statements` for all 1524 questions | **By design** | The legacy static site shipped the same answers in public JS and the bank UI publishes answers + explanations without login; gating breaks the offline-first, no-login product. Now pinned by a real assertion: gating the answers fails the test by design (`audit-responsive.spec.ts`, `ruled: public …`). |
-| 369 `short_answer` questions have no quiz UI (N7 root cause) | Feature, not a bug | `/progress` denominators fixed at the display layer this audit; porting an SA answer-input quiz is its own task, recorded in the ledger. |
-| Soft-404: `/xyz`, `/history/theory/99` render correct 404 **content** but return HTTP 200 | Parked P3 | Root `app/loading.tsx` streams the shell, committing 200 before `notFound()` sets the status; removing the skeleton would regress instant-load UX on every route for SEO-only gain. Real fix when SEO matters: per-segment `loading.tsx` (or a `not-found.tsx` outside the suspension boundary). Note `audit-routes.spec.ts` pins `status === 200` — flip it in the same change. |
-| `drizzle/meta/0002_snapshot.json` does not exist | Low impact | Chain is self-consistent (0001's snapshot already lists the table; the project provisions out-of-band), but regenerate a 0002 snapshot on the next `drizzle-kit` run. |
-| Admin PUT with `{}` body → 500 instead of 400 | Minor | Data-quality gap, single-admin tool. Also `submit`'s id list is unbounded at the API layer (bounded to 100 by the quiz page) — both low-risk. |
-| `serverRuntime` matches options/statements by exact text | Documented assumption | A row with duplicate option text would flag every match `ok` — impossible for the real bank; worth a one-line comment. |
+| Item | Status |
+|---|---|
+| Public `/api/questions` returns `correctAnswer`/`answer`/`statements` for all 1524 questions | **By design** (unchanged ruling). The legacy static site shipped the same answers in public JS and the bank UI publishes answers + explanations without login; gating breaks the offline-first, no-login product. Pinned by a real assertion: gating the answers fails the test by design (`audit-responsive.spec.ts`, `ruled: public …`). |
+| 369 `short_answer` questions had no quiz UI (N7 root cause) | **RESOLVED 2026-10-10** — SA ported as a first-class type: pool includes SA, `TestConfig` checkbox unlocked, `#saIn` text input (accent-insensitive exact-match scoring, empty = skip), `serverRuntime` re-derives from the DB row, palette/review surfaces handle SA. +13 unit/API cases, +1 e2e flow. |
+| Soft-404: `/xyz`, `/history/theory/99` returned 200 with 404 content | **RESOLVED 2026-10-10** — root/`[subject]`/`[lesson]` loading boundaries removed (they streamed a shell that committed 200 before `notFound()`); the home page keeps its skeleton via an in-page `<Suspense>`. Both paths now return a real **404** status + UI; the e2e pins assert 404. Cost: subject/theory/login pages render without a skeleton (header paints instantly, content pops in <1s). |
+| `drizzle/meta/0002_snapshot.json` missing | **RESOLVED 2026-10-10** — snapshot created (identical table set to 0001; `prevId` chained) + a journal-chain drift-guard test. |
+| Admin PUT with `{}` body → 500 instead of 400 | **RESOLVED 2026-10-10** — rejected as 400 ("Không có nội dung nào để cập nhật") with a regression test. |
+| `/api/exam/submit` unbounded submitted-id array | **RESOLVED 2026-10-10** — capped at 100 (the quiz page's own max) with a regression test; the cap fires before the DB read. |
+| `serverRuntime` matches options/statements by exact text | **Documented** — the assumption (unique option text per row, fail-open only on data the bank never contains) is now a written comment on `serverRuntime`. |
+| Detector findings (`border-left:3px` accent, bounce easing, 2× `transition: width`, staggered vocab card delays) | **RESOLVED 2026-10-10** — callout border de-accented, flip easing is a clean ease-out quart, width transitions dropped (progress fills snap), vocabulary stagger removed. `impeccable detect` over the touched UI files: **0 findings**. |
 
 ## 6. Changed files
 

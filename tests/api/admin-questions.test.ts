@@ -98,4 +98,12 @@ describe('admin question writes validation (B05/N3)', () => {
     expect(setArg.id).toBeUndefined();
     expect(setArg.createdAt).toBeUndefined();
   });
+
+  it('PUT {} → 400 "empty update", not 500 (no-writable-field rejection)', async () => {
+    const res = await PUT(put({}), { params: Promise.resolve({ id: 'h1' }) });
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBeDefined();
+    expect(mockDb.update).not.toHaveBeenCalled();
+  });
 });

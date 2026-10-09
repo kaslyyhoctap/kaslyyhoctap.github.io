@@ -15,10 +15,12 @@ import type { ExamConfig } from './pool';
 
 /** A question that carries its runtime answer state. */
 export interface RuntimeQuestion extends Question {
-  /** MCQ: options shuffled, each tagged with whether it's correct. TF: `[]`. */
+  /** MCQ: options shuffled, each tagged with whether it's correct. TF: `[]`. SA: `[]`. */
   opts: { t: string; ok: boolean }[];
-  /** TF: per-statement answer slot, -1=unanswered, 0=Sai (false), 1=Đúng (true). MCQ: `[]`. */
+  /** TF: per-statement answer slot, -1=unanswered, 0=Sai (false), 1=Đúng (true). MCQ/SA: `[]`. */
   tf: number[];
+  /** SA: the user's typed candidate string ('' = unanswered). MCQ/TF: `''`. */
+  sa: string;
 }
 
 /** Verdict label + CSS class pair (app.js `verdict`, line 238). */
@@ -53,12 +55,36 @@ export interface ExamScore {
 export function mapToRuntime(questions: Question[], shA: boolean = true): RuntimeQuestion[] {
   return questions.map((q) => {
     if (typeOf(q) === 'true_false') {
-      return { ...q, opts: [], tf: [-1, -1, -1, -1] };
+      return { ...q, opts: [], tf: [-1, -1, -1, -1], sa: '' };
+    }
+    if (typeOf(q) === 'short_answer') {
+      return { ...q, opts: [], tf: [], sa: '' };
     }
     const opts = (q.options || []).map((t, i) => ({ t, ok: i === q.correctAnswer }));
     const shuffled = shA !== false ? shuffle(opts) : opts;
-    return { ...q, opts: shuffled, tf: [] };
+    return { ...q, opts: shuffled, tf: [], sa: '' };
   });
+}
+
+/**
+ * Accent- and case-insensitive short-answer comparison (Vietnamese answers
+ * like 'Hồ Chí Minh' must match 'ho chi minh' or 'HÀ NỘI' → 'Hà Nội').
+ */
+export function normSA(v: unknown): string {
+  return String(v ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase()
+    .trim();
+}
+
+/** True when the typed SA candidate matches the DB answer key. Empty never matches. */
+export function saOk(candidate: unknown, key: unknown): boolean {
+  const x = normSA(candidate);
+  const y = normSA(key);
+  return x !== '' && x === y;
 }
 
 /**
@@ -102,6 +128,10 @@ export function scoreExam(qs: RuntimeQuestion[], ans: number[], cfg: ExamConfig)
       st = an === 0 ? 'skip' : gd === 4 ? 'ok' : 'bad';
       // Points: 4/4=1, 3/4=0.5, 2/4=0.25, else 0 (app.js line 244).
       fr = gd === 4 ? 1 : gd === 3 ? 0.5 : gd === 2 ? 0.25 : 0;
+    } else if (typeOf(q) === 'short_answer') {
+      // Exact, case- and accent-insensitive match; empty = skip, no partial.
+      st = (s.sa ?? '') === '' ? 'skip' : saOk(s.sa, q.answer) ? 'ok' : 'bad';
+      fr = st === 'ok' ? 1 : 0;
     } else {
       st = a >= 0 ? (s.opts[a]?.ok ? 'ok' : 'bad') : 'skip';
       fr = st === 'ok' ? 1 : 0;
@@ -158,6 +188,10 @@ export function questionStatus(q: Question, runtime: RuntimeQuestion, ansIdx: nu
     const an = runtime.tf.filter((v) => v >= 0).length;
     return an === 0 ? 'skip' : gd === 4 ? 'ok' : 'bad';
   }
+  if (typeOf(q) === 'short_answer') {
+    const sa = runtime.sa ?? '';
+    return sa === '' ? 'skip' : saOk(sa, q.answer) ? 'ok' : 'bad';
+  }
   return ansIdx >= 0 ? (runtime.opts[ansIdx]?.ok ? 'ok' : 'bad') : 'skip';
 }
 
@@ -170,6 +204,11 @@ export function questionStatus(q: Question, runtime: RuntimeQuestion, ansIdx: nu
  * those arrive from the browser and a forged `opts: [{ok:true}, …]` used to
  * score a perfect exam (B02). Options/statements are matched to the DB row by
  * text so a reordered client list still scores against the right flag.
+ *
+ * Assumption: option/statement text is unique within a row (real bank rows
+ * are). A degenerate row with duplicate option text would flag every text
+ * match `ok` — fail-open on data the bank never contains; tighten with an
+ * index-based match only if such rows ever enter the DB.
  */
 export function serverRuntime(client: RuntimeQuestion, db: Question): RuntimeQuestion {
   if (typeOf(db) === 'true_false') {
@@ -179,6 +218,18 @@ export function serverRuntime(client: RuntimeQuestion, db: Question): RuntimeQue
       statements: (client.statements || []).map((s) => ({ t: s.t, ok: truth.get(s.t) ?? false })),
       opts: [],
       tf: Array.isArray(client.tf) ? client.tf.slice() : [],
+      sa: '',
+    };
+  }
+  if (typeOf(db) === 'short_answer') {
+    // The typed candidate string survives; the key always comes from the DB
+    // row, so forging a client `answer` field cannot inflate the score.
+    return {
+      ...client,
+      answer: db.answer ?? null,
+      opts: [],
+      tf: [],
+      sa: typeof client.sa === 'string' ? client.sa : '',
     };
   }
   const options = db.options || [];
@@ -188,5 +239,6 @@ export function serverRuntime(client: RuntimeQuestion, db: Question): RuntimeQue
     correctAnswer: db.correctAnswer ?? null,
     opts: (client.opts || []).map((o) => ({ t: o.t, ok: correct !== undefined && o.t === correct })),
     tf: [],
+    sa: '',
   };
 }

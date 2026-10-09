@@ -149,7 +149,7 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 .lesson-meta{display:flex;gap:0 6px;flex-wrap:wrap;margin:8px 0}
 .lesson-meta .badge{white-space:normal}
 .pbar{height:8px;background:var(--muted);border-radius:99px;overflow:hidden}
-.pbar i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .3s}
+.pbar i{display:block;height:100%;background:var(--primary);border-radius:99px}
 .lesson-card{display:flex;flex-direction:column;gap:10px;overflow:hidden;transition:transform .18s,box-shadow .18s}
 .lesson-card:hover{transform:translateY(-2px)}
 .lesson-card h3{margin:0;overflow-wrap:break-word} .lesson-card>p{margin:0;color:var(--muted-fg);font-size:.9rem;line-height:1.55;overflow-wrap:break-word}
@@ -188,7 +188,7 @@ main.wrap{padding-top:20px;padding-bottom:28px}
 .timer{flex:none;background:var(--muted);padding:6px 14px;border-radius:99px;font-variant-numeric:tabular-nums}
 .timer.low{background:var(--bad-bg);color:var(--bad)}
 .progress{height:10px;background:var(--muted);border-radius:99px;overflow:hidden;margin:12px 0 8px}
-.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--bio));border-radius:99px;transition:width .25s}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--bio));border-radius:99px}
 .quiz-sub{display:flex;justify-content:space-between;gap:8px;color:var(--muted-fg);font-size:.9rem}
 .quiz-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
 /* Topic chip lives at the head of the question card, sized to its text */
@@ -257,7 +257,7 @@ kbd{background:var(--muted);border:1px solid var(--border);border-radius:6px;pad
 /* Sổ tay + AI giải thích cùng dồn về phải trong một hàng công cụ. */
 .rev-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;justify-content:flex-end}
 .tag{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:99px;white-space:nowrap} .tag.ok{background:var(--ok-bg);color:var(--ok)} .tag.bad{background:var(--bad-bg);color:var(--bad)} .tag.skip{background:var(--skip-bg);color:var(--skip)}
-.rev .exp{border-left:3px solid var(--primary);padding:10px 12px;background:var(--bg);border-radius:0 10px 10px 0;margin-top:8px;font-size:.93rem;white-space:pre-line;overflow-wrap:break-word}
+.rev .exp{border:1px solid var(--border);padding:10px 12px;background:var(--bg);border-radius:10px;margin-top:8px;font-size:.93rem;white-space:pre-line;overflow-wrap:break-word}
 .rev .exp b{color:var(--primary)}
 /* công thức toán/sinh: gọn, không MathJax */
 .fx{display:inline-block;background:var(--muted);border:1px solid var(--border);border-radius:8px;padding:1px 9px;margin:1px 2px;font-variant-numeric:tabular-nums;overflow-wrap:break-word}
@@ -299,7 +299,7 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
 .vcard .rowline{display:flex;gap:6px;align-items:center;justify-content:space-between;margin-top:auto}
 .fc-top{margin-bottom:14px}
 .fc-stage{perspective:1200px}
-.fc-main{background:var(--bg);border:1.5px solid var(--border);border-radius:14px;min-height:170px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;text-align:center;padding:24px;cursor:pointer;transition:border-color .18s,transform .45s cubic-bezier(.2,.7,.3,1.2);transform-style:preserve-3d;position:relative}
+.fc-main{background:var(--bg);border:1.5px solid var(--border);border-radius:14px;min-height:170px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;text-align:center;padding:24px;cursor:pointer;transition:border-color .18s,transform .45s cubic-bezier(.22,.61,.21,1);transform-style:preserve-3d;position:relative}
 .fc-main:hover{border-color:var(--primary)}
 .fc-main.flipped{transform:rotateY(180deg)}
 .fc-face{display:flex;flex-direction:column;align-items:center;gap:8px;backface-visibility:hidden;-webkit-backface-visibility:hidden;width:100%}

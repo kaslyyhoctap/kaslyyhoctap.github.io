@@ -1,8 +1,26 @@
 import { describe, it, expect } from 'vitest';
-import { scoreExam, verdict, mapToRuntime, questionStatus } from '@/lib/quiz/scoring';
+import { scoreExam, verdict, mapToRuntime, questionStatus, normSA, saOk, serverRuntime } from '@/lib/quiz/scoring';
 import type { ExamConfig } from '@/lib/quiz/pool';
 import { MCQ_5 } from './fixtures';
 import type { Question, Statement } from '@/lib/types';
+
+function saQ(id: string, answer: string, maxLen = 10): Question {
+  return {
+    id,
+    subject: 'history',
+    lesson: 1,
+    type: 'short_answer',
+    topic: 'Trả lời ngắn',
+    difficulty: 'Nhận biết',
+    question: `Điền ${id}`,
+    options: null,
+    correctAnswer: null,
+    answer,
+    maxLen,
+    explanation: 'Giải thích',
+    passageId: null,
+  } as Question;
+}
 
 const cfg = (over: Partial<ExamConfig> = {}): ExamConfig =>
   ({ subject: 'history', lesson: 1, count: 5, time: 10, practice: false, shQ: true, shA: true, ...over } as ExamConfig);
@@ -135,6 +153,95 @@ describe('questionStatus (review list helper)', () => {
     expect(questionStatus(MCQ_5[0], runtime[0], 0)).toBe('ok');
     expect(questionStatus(MCQ_5[0], runtime[0], 1)).toBe('bad');
     expect(questionStatus(MCQ_5[0], runtime[0], -1)).toBe('skip');
+  });
+});
+
+describe('scoreExam — short_answer', () => {
+  it('exact match → ok/1pt', () => {
+    const runtime = mapToRuntime([saQ('sa1', '1945', 4)], false);
+    runtime[0].sa = '1945';
+    const score = scoreExam(runtime, [-1], cfg({ count: 1 }));
+    expect(score).toMatchObject({ ok: 1, bad: 0, skip: 0, total: 1, point: 10.0 });
+  });
+
+  it('case- and accent-insensitive match → ok', () => {
+    const r1 = mapToRuntime([saQ('sa1', 'Hà Nội')], false);
+    r1[0].sa = 'HÀ NỘI';
+    expect(scoreExam(r1, [-1], cfg({ count: 1 }))).toMatchObject({ ok: 1, point: 10.0 });
+
+    const r2 = mapToRuntime([saQ('sa2', 'Hồ Chí Minh')], false);
+    r2[0].sa = 'ho chi minh';
+    expect(scoreExam(r2, [-1], cfg({ count: 1 }))).toMatchObject({ ok: 1, point: 10.0 });
+  });
+
+  it('wrong string → bad/0pt (no partial credit)', () => {
+    const runtime = mapToRuntime([saQ('sa1', '1945', 4)], false);
+    runtime[0].sa = '1946';
+    const score = scoreExam(runtime, [-1], cfg({ count: 1 }));
+    expect(score).toMatchObject({ ok: 0, bad: 1, skip: 0, total: 1, point: 0.0 });
+  });
+
+  it('empty string → skip', () => {
+    const runtime = mapToRuntime([saQ('sa1', '1945', 4)], false);
+    const score = scoreExam(runtime, [-1], cfg({ count: 1 }));
+    expect(score).toMatchObject({ ok: 0, bad: 0, skip: 1, total: 1, point: 0.0 });
+  });
+
+  it('mixed exam (MCQ + TF + SA) point-sums correctly', () => {
+    const tf = {
+      id: 'tf1', subject: 'history', lesson: 1, question: 'TF', type: 'true_false',
+      topic: 'T', difficulty: 'Thông hiểu', options: null, correctAnswer: null,
+      explanation: 'e', statements: [
+        { t: 'a', ok: true },
+        { t: 'b', ok: false },
+        { t: 'c', ok: true },
+        { t: 'd', ok: false },
+      ] as Statement[],
+    } as Question;
+    const runtime = mapToRuntime([MCQ_5[0], tf, saQ('sa1', '1945', 4)], false);
+    runtime[1].tf = [1, 0, 1, 0]; // 4/4 → 1pt
+    runtime[2].sa = '1945'; // → 1pt
+    // MCQ correct (correctAnswer=0) → 1pt. Total 3pts / 3 = 10.
+    const score = scoreExam(runtime, [0, -1, -1], cfg({ count: 3 }));
+    expect(score).toMatchObject({ ok: 3, bad: 0, skip: 0, total: 3, point: 10.0 });
+  });
+
+  it('questionStatus returns ok/bad/skip for SA', () => {
+    const runtime = mapToRuntime([saQ('sa1', '1945', 4)], false);
+    runtime[0].sa = '1945';
+    expect(questionStatus(saQ('sa1', '1945', 4), runtime[0], -1)).toBe('ok');
+    runtime[0].sa = '1946';
+    expect(questionStatus(saQ('sa1', '1945', 4), runtime[0], -1)).toBe('bad');
+    runtime[0].sa = '';
+    expect(questionStatus(saQ('sa1', '1945', 4), runtime[0], -1)).toBe('skip');
+  });
+
+  it('serverRuntime keeps the typed string but re-derives the key from the DB', () => {
+    const forged = { ...mapToRuntime([saQ('sa1', 'REAL', 4)], false)[0], answer: 'FORGED', sa: 'real' };
+    const clean = serverRuntime(forged, saQ('sa1', 'REAL', 4));
+    expect(clean.answer).toBe('REAL');
+    expect(clean.sa).toBe('real');
+    // 'real' matches the DB key 'REAL' → ok.
+    expect(scoreExam([clean], [-1], cfg({ count: 1 }))).toMatchObject({ ok: 1, point: 10.0 });
+    // Tagging ok by any other channel is impossible: only sa-vs-db decides.
+    const wrong = serverRuntime({ ...forged, sa: 'nope' }, saQ('sa1', 'REAL', 4));
+    expect(scoreExam([wrong], [-1], cfg({ count: 1 }))).toMatchObject({ ok: 0, bad: 1 });
+  });
+});
+
+describe('normSA / saOk', () => {
+  it('strips accents, lowercases, trims; đ→d', () => {
+    expect(normSA('Hồ Chí Minh')).toBe('ho chi minh');
+    expect(normSA('HÀ NỘI')).toBe('ha noi');
+    expect(normSA('  Đà Nẵng ')).toBe('da nang');
+    expect(normSA('E. coli')).toBe('e. coli');
+  });
+
+  it('saOk: empty never matches, even an empty key', () => {
+    expect(saOk('', 'Hà Nội')).toBe(false);
+    expect(saOk('', '')).toBe(false);
+    expect(saOk('Hà Nội', '')).toBe(false);
+    expect(saOk('1945', '1945')).toBe(true);
   });
 });
 

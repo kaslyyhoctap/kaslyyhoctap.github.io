@@ -5,8 +5,10 @@
  * composes client-aware sub-components. Progress bars and hero stats are
  * read from localStorage by Hero / SubjectCard / LessonCard via `useAppState`.
  */
+import { Suspense } from 'react';
 import { getSubjects, getQuestions, getTheory } from '@/lib/db/queries';
 import { META, badgeCls, btnCls } from '@/lib/meta';
+import { HomeSkeleton } from '@/components/ui/route-skeleton';
 import Hero, { type HeroSubject } from '@/components/home/Hero';
 import SubjectCard from '@/components/home/SubjectCard';
 import LessonCard from '@/components/home/LessonCard';
@@ -96,7 +98,23 @@ async function getHomeData(): Promise<SubjectInfo[]> {
   );
 }
 
-export default async function HomePage() {
+/**
+ * Sync wrapper + in-page Suspense: keeps the home skeleton without a root
+ * `app/loading.tsx`, which used to stream its shell for EVERY route and
+ * committed HTTP 200 before dynamic routes could `notFound()` (the soft-404
+ * bug). The skeleton boundary now lives inside the page, so `/` streams its
+ * fallback while `/xyz` and friends render with no boundary above them and
+ * return a real 404 status.
+ */
+export default function HomePage() {
+  return (
+    <Suspense fallback={<HomeSkeleton />}>
+      <HomeBody />
+    </Suspense>
+  );
+}
+
+async function HomeBody() {
   let subjects: SubjectInfo[] = [];
   let totalQuestions = 0;
 

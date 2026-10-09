@@ -63,6 +63,13 @@ export function validateQuestionInput(
     if (!KNOWN_FIELDS.has(key)) return `Trường không hợp lệ: ${key}.`;
   }
 
+  // Empty update: PUT carries no writable field, so `.set({})` would throw
+  // at the ORM layer. Reject it as a 400 with a clear message instead of
+  // letting it surface as a 500.
+  if (mode === 'PUT' && Object.keys(b).length === 0) {
+    return 'Không có nội dung nào để cập nhật.';
+  }
+
   if (mode === 'POST') {
     if (!nonEmpty(b.id)) return 'Thiếu id câu hỏi.';
     if (!nonEmpty(b.subject)) return 'Thiếu môn học.';

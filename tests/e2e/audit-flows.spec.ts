@@ -48,6 +48,8 @@ interface Check { name: string; pass: boolean; detail?: string }
 
 interface SessionEvents {
   consoleErrors: ConsoleErr[];
+  /** Console errors that are the expected surface of intended behavior. */
+  consoleErrorsExpected: ConsoleErr[];
   pageErrors: string[];
   pageErrorsExpected: string[];
   requestFailed: ReqFail[];
@@ -63,6 +65,7 @@ const benignReqFail = (u: string, e: string) =>
 function session(page: Page): SessionEvents {
   const ev: SessionEvents = {
     consoleErrors: [],
+    consoleErrorsExpected: [],
     pageErrors: [],
     pageErrorsExpected: [],
     requestFailed: [],
@@ -71,9 +74,18 @@ function session(page: Page): SessionEvents {
   };
   page.on('console', (m) => {
     if (m.type() === 'error') {
-      ev.consoleErrors.push({
+      // A REAL 404 document makes the browser log a console error for it.
+      // The invalid-route probes (flow7's /history/theory/99) expect exactly
+      // this — the soft-404 fix turned the old 200-with-404-content into a
+      // true 404, so the browser now surfaces the status it always should.
+      const loc = m.location().url || '';
+      const is404Doc =
+        /Failed to load resource: the server responded with a status of 404/.test(
+          m.text(),
+        ) && /\/(history|biology|chemistry|english)\/theory\/\d+/.test(loc);
+      (is404Doc ? ev.consoleErrorsExpected : ev.consoleErrors).push({
         text: m.text().slice(0, 300),
-        url: (m.location().url || '').slice(0, 200),
+        url: loc.slice(0, 200),
       });
     }
   });
@@ -96,10 +108,15 @@ function session(page: Page): SessionEvents {
   });
   page.on('response', (res) => {
     if (res.status() >= 400) {
+      const intended404 =
+        res.status() === 404 &&
+        /\/(history|biology|chemistry|english)\/theory\/\d+/.test(res.url());
       ev.badResponses.push({
         url: res.url().slice(0, 300),
         status: res.status(),
-        expected: res.status() === 401 && /\/api\/(auth|progress)/.test(res.url()),
+        expected:
+          intended404 ||
+          (res.status() === 401 && /\/api\/(auth|progress)/.test(res.url())),
       });
     }
   });
@@ -223,13 +240,27 @@ async function pickSelect(page: Page, triggerLabel: string, option: string) {
   await item.click({ timeout: 10_000 });
 }
 
-/** Answer the current quiz question (MCQ → option A; TF → first statement Đúng). */
-async function answerCurrent(page: Page): Promise<'mcq' | 'tf'> {
-  const mcq = page.locator('#qOpts .opt').first();
-  if (await mcq.isVisible().catch(() => false)) {
+/** Kind of the currently rendered question, probed from the DOM. */
+async function currentKind(page: Page): Promise<'mcq' | 'tf' | 'sa'> {
+  if (await page.locator('#qOpts #saIn').isVisible().catch(() => false)) return 'sa';
+  if (await page.locator('#qOpts .tf-row').first().isVisible().catch(() => false)) return 'tf';
+  return 'mcq';
+}
+
+/** Answer the current quiz question (MCQ → option A; TF → first statement Đúng; SA → typed text). */
+async function answerCurrent(page: Page): Promise<'mcq' | 'tf' | 'sa'> {
+  const kind = await currentKind(page);
+  if (kind === 'mcq') {
+    const mcq = page.locator('#qOpts .opt').first();
     await mcq.click();
     await expect(mcq).toHaveAttribute('aria-checked', 'true', { timeout: 5_000 });
     return 'mcq';
+  }
+  if (kind === 'sa') {
+    const inp = page.locator('#qOpts #saIn');
+    await inp.fill('1'); // maxLen can truncate longer strings; 1 char always fits
+    await expect(inp).toHaveValue('1', { timeout: 5_000 });
+    return 'sa';
   }
   const tf = page.locator('#qOpts .tf-row button[aria-label="Đúng"]').first();
   await tf.click();
@@ -268,23 +299,38 @@ test('flow1: practice-mode mechanics → submit → result', async ({ page }) =>
   });
 
   await f.check('selecting highlights the picked option (click option A on Q1)', async () => {
-    const optA = page.locator('#qOpts .opt').first();
-    await optA.click();
-    await expect(optA).toHaveClass(/(?:^|\s)sel(?:\s|$)/);
-    await expect(optA).toHaveAttribute('aria-checked', 'true');
+    const kind = await answerCurrent(page);
+    if (kind === 'mcq') {
+      const optA = page.locator('#qOpts .opt').first();
+      await expect(optA).toHaveClass(/(?:^|\s)sel(?:\s|$)/);
+      await expect(optA).toHaveAttribute('aria-checked', 'true');
+    } else {
+      await expect(page.locator('#qOpts #saIn')).toHaveValue('1');
+      await expect(page.locator('#qPal button').first()).toHaveClass(/done/);
+    }
   });
 
   await f.check('practice feedback: ✓/✗ marks + "Giải thích" after answering', async () => {
-    const opts = page.locator('#qOpts .opt');
-    const checkCount = await opts.filter({ hasText: '✓' }).count();
-    expect(checkCount, 'exactly one ✓ (the correct option) shown in practice').toBe(1);
-    const exp = page.locator('#qOpts .rev.exp');
-    await expect(exp).toBeVisible();
-    await expect(exp).toContainText('Giải thích:');
-    const selText = await page.locator('#qOpts .opt.sel').first().innerText();
-    f.rec.notes.push(
-      `Q1 option A was ${selText.includes('✓') ? 'CORRECT (✓)' : 'wrong (✗ shown)'}`,
-    );
+    const kind = await currentKind(page);
+    if (kind === 'mcq') {
+      const opts = page.locator('#qOpts .opt');
+      const checkCount = await opts.filter({ hasText: '✓' }).count();
+      expect(checkCount, 'exactly one ✓ (the correct option) shown in practice').toBe(1);
+      await expect(page.locator('#qOpts .rev.exp')).toBeVisible();
+      await expect(page.locator('#qOpts .rev.exp')).toContainText('Giải thích:');
+      const selText = await page.locator('#qOpts .opt.sel').first().innerText();
+      f.rec.notes.push(
+        `Q1 option A was ${selText.includes('✓') ? 'CORRECT (✓)' : 'wrong (✗ shown)'}`,
+      );
+    } else {
+      // SA: post-answer ok/bad coloring + explanation, never the answer key.
+      await expect(page.locator('#qOpts .rev.exp')).toBeVisible();
+      await expect(page.locator('#qOpts .rev.exp')).toContainText('Giải thích:');
+      const answered = await page.locator('#qOpts #saIn').inputValue();
+      expect(answered.length, 'SA answered before feedback').toBeGreaterThan(0);
+      await expect(page.locator('#qOpts #saIn')).toHaveClass(/practice-ok|practice-bad/);
+      f.rec.notes.push('Q1 is a short_answer row — practice coloring shown post-answer');
+    }
   });
 
   await f.check('next/prev buttons navigate (Câu 1↔2)', async () => {
@@ -297,9 +343,24 @@ test('flow1: practice-mode mechanics → submit → result', async ({ page }) =>
   });
 
   await f.check('keyboard 1-4 selects, ←/→ navigate', async () => {
+    const kind = await currentKind(page);
+    if (kind === 'mcq') {
+      await page.locator('#qRoot').focus();
+      await page.keyboard.press('1');
+      await expect(page.locator('#qOpts .opt').first()).toHaveAttribute('aria-checked', 'true');
+    } else {
+      // While the SA input is focused, the 1-4 / arrow shortcuts must not fire
+      // (useQuiz.onKeyDown bails on HTMLInputElement) — the user needs ←/→ to
+      // move the text caret. Typing itself is the browser default and is fine.
+      const inp = page.locator('#qOpts #saIn');
+      await inp.focus();
+      await page.keyboard.press('ArrowRight');
+      await expect(page.locator('#qCount')).toHaveText('Câu 2/5'); // suppressed
+      await page.keyboard.press('ArrowLeft');
+      await expect(page.locator('#qCount')).toHaveText('Câu 2/5'); // suppressed
+      await expect(page.locator('#qOpts .opt')).toHaveCount(0); // no MCQ answers
+    }
     await page.locator('#qRoot').focus();
-    await page.keyboard.press('1');
-    await expect(page.locator('#qOpts .opt').first()).toHaveAttribute('aria-checked', 'true');
     await page.keyboard.press('ArrowRight');
     await expect(page.locator('#qCount')).toHaveText('Câu 3/5');
     await page.keyboard.press('ArrowLeft');
@@ -352,18 +413,23 @@ test('flow1: practice-mode mechanics → submit → result', async ({ page }) =>
     f.rec.notes.push(`flow1 result: ${JSON.stringify(s)}`);
     expect(s.ok + s.bad + s.skip).toBe(5);
     expect(s.frac).toBe(`${s.ok}/5 · ${Math.round((s.ok / 5) * 100)}%`);
-    // history exam is all-MCQ (bank has no TF/short-answer pool entries) → pts = ok
+    // MCQ and SA both score 1pt per correct question (scoring.ts), and TF is
+    // absent from the history bank — so pts === ok here.
     const expPoint = Math.round((s.ok / 5) * 100) / 10; // scoring.ts line 129
     expect(s.point).toBeCloseTo(expPoint, 10);
   });
 
-  await f.check('review lists all 5 with "Đáp án đúng" letters', async () => {
+  await f.check('review lists all 5 with an answer (MCQ letter / TF per-statement / SA key)', async () => {
     const revs = page.locator('#reviewList > .rev');
     await expect(revs).toHaveCount(5);
     const n = await revs.count();
     for (let i = 0; i < n; i++) {
       const t = await revs.nth(i).innerText();
-      expect(t, `rev ${i + 1}`).toMatch(/Đáp án đúng: [A-D]|Đúng\/Sai từng ý/);
+      // SA rows render "Bạn trả lời:" + "Đáp án: <key>" instead of an option letter.
+      const hasSA = t.includes('Bạn trả lời:') && t.includes('Đáp án:');
+      const hasMCQ = /Đáp án đúng: [A-D]/.test(t);
+      const hasTF = t.includes('Đúng/Sai từng ý');
+      expect(hasSA || hasMCQ || hasTF, `rev ${i + 1} has no MCQ/TF/SA answer: ${t.slice(0, 120)}`).toBe(true);
     }
   });
 
@@ -483,25 +549,28 @@ test('flows 2-4: timed exam (timeout) → result review → drill/retry → prog
       [...document.querySelectorAll('#reviewList > .rev')].map((rev) => {
         const cls = rev.querySelector('.tag')?.className ?? '';
         const st = /bad/.test(cls) ? 'bad' : /skip/.test(cls) ? 'skip' : /ok/.test(cls) ? 'ok' : '';
-        // TF revs: each statement row has <b>… Đáp án: Đúng/Sai … ✓/✗</b>
+        // TF revs: each statement row has <b>… Đáp án: Đúng/Sai … ✓/✗</b>.
+        // SA revs use a <span> (not <b>) so they stay on the 1pt-per-question path.
         const marks = [...rev.querySelectorAll('.result-opts .opt b')].map(
           (b) => ((b.textContent ?? '').includes('✓') ? 1 : 0),
         );
-        return { st, isTF: marks.length > 0, gd: marks.reduce<number>((a, b) => a + b, 0) };
+        const isSA = !!rev.querySelector('.result-opts .opt .sa-cand');
+        return { st, isTF: marks.length > 0, isSA, gd: marks.reduce<number>((a, b) => a + b, 0) };
       }),
     );
     expect(revs.length).toBe(10);
-    let pts = 0, ok = 0, bad = 0, skip = 0, tfSeen = 0;
+    let pts = 0, ok = 0, bad = 0, skip = 0, tfSeen = 0, saSeen = 0;
     for (const r of revs) {
       if (r.st === 'ok') ok++; else if (r.st === 'bad') bad++; else skip++;
       if (r.isTF) {
         tfSeen++;
         pts += r.gd === 4 ? 1 : r.gd === 3 ? 0.5 : r.gd === 2 ? 0.25 : 0; // scoring.ts lines 97-99
       } else {
-        pts += r.st === 'ok' ? 1 : 0; // scoring.ts line 102
+        pts += r.st === 'ok' ? 1 : 0; // scoring.ts line 102 (MCQ + SA)
       }
+      if (r.isSA) saSeen++;
     }
-    f3.rec.notes.push(`review-derived: ok=${ok} bad=${bad} skip=${skip} tfQuestions=${tfSeen} pts=${pts}`);
+    f3.rec.notes.push(`review-derived: ok=${ok} bad=${bad} skip=${skip} tfQuestions=${tfSeen} saQuestions=${saSeen} pts=${pts}`);
     expect([ok, bad, skip]).toEqual([stats.ok, stats.bad, stats.skip]);
     const expPoint = Math.round((pts / 10) * 100) / 10; // scoring.ts line 129
     expect(stats.point, `UI rPoint ${stats.point} vs recomputed ${expPoint}`).toBeCloseTo(expPoint, 10);
@@ -513,7 +582,7 @@ test('flows 2-4: timed exam (timeout) → result review → drill/retry → prog
     await expect(page.locator('#reviewList > .rev')).toHaveCount(10);
   });
 
-  await f3.check('"Đáp án đúng" letters (MCQ) / per-statement answers (TF) shown', async () => {
+  await f3.check('"Đáp án đúng" letters (MCQ) / per-statement answers (TF) / SA answer shown', async () => {
     const info = await page.evaluate(() =>
       [...document.querySelectorAll('#reviewList > .rev')].map((rev, i) => {
         const t = (rev as HTMLElement).innerText;
@@ -521,13 +590,18 @@ test('flows 2-4: timed exam (timeout) → result review → drill/retry → prog
           i,
           mcqLetter: /Đáp án đúng: ([A-D])/.exec(t)?.[1] ?? null,
           tfAns: (t.match(/Đáp án: (Đúng|Sai)/g) ?? []).length,
+          isSA: !!rev.querySelector('.result-opts .opt .sa-cand'),
         };
       }),
     );
     expect(info.length).toBe(10);
-    let mcq = 0, tf = 0;
+    let mcq = 0, tf = 0, sa = 0;
     for (const r of info) {
-      if (r.tfAns > 0) {
+      if (r.isSA) {
+        sa++;
+        // SA: no option letter — the typed candidate + the DB key are shown.
+        expect(r.mcqLetter, `rev ${r.i + 1} SA row must not show an MCQ letter`).toBeNull();
+      } else if (r.tfAns > 0) {
         tf++;
         expect(r.tfAns, `rev ${r.i + 1} TF statement answers`).toBe(4);
       } else {
@@ -535,7 +609,7 @@ test('flows 2-4: timed exam (timeout) → result review → drill/retry → prog
         expect(r.mcqLetter, `rev ${r.i + 1} "Đáp án đúng" letter`).toMatch(/^[A-D]$/);
       }
     }
-    f3.rec.notes.push(`review: ${mcq} MCQ (letters shown), ${tf} TF (4 statement answers each)`);
+    f3.rec.notes.push(`review: ${mcq} MCQ (letters shown), ${tf} TF (4 statement answers each), ${sa} SA (key shown)`);
   });
 
   const wrongTexts: string[] = [];
@@ -836,9 +910,12 @@ test('flow7: theory /biology/theory/4 → practice quiz; /history/theory/99 safe
     await expect(page.locator('#qCount')).toHaveText('Câu 1/10');
   });
 
-  await f.check('/history/theory/99 → 404 (F-B8a: no soft-200 panel)', async () => {
-    // Wave B replaced the "Chưa có lý thuyết" soft-200 panel with notFound().
-    await page.goto('/history/theory/99', { waitUntil: 'networkidle', timeout: 45_000 });
+  await f.check('/history/theory/99 → 404 (F-B8a + soft-404 fix)', async () => {
+    // Wave B replaced the "Chưa có lý thuyết" soft-200 panel with notFound();
+    // the soft-404 fix (root/[subject]/[theory] loading boundaries gone)
+    // makes it a REAL 404 response, not just 404 content.
+    const res = await page.goto('/history/theory/99', { waitUntil: 'networkidle', timeout: 45_000 });
+    expect(res?.status(), 'theory/99 status').toBe(404);
     const body = await page.locator('body').innerText();
     const is404ish =
       body.includes('404') ||
@@ -980,6 +1057,141 @@ test('flow9: /quick redirects to a playable timed quiz', async ({ page }) => {
     await answerCurrent(page);
     await expect(page.locator('#qPal button').first()).toHaveClass(/done/);
     await expect(page.locator('#qDone')).toHaveText('Đã làm: 1');
+  });
+
+  await cleanCheck(page, f);
+  await f.save();
+  gate(f.rec);
+});
+
+// ---------------------------------------------------------------- flow 10
+
+test('flow10: short_answer is a first-class question type (input → scoring → review)', async ({
+  page,
+}) => {
+  test.setTimeout(180_000);
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const f = flow(page, '10-short-answer');
+
+  // Seeded from the app's own public bank API (ruled public by design), so the
+  // answer keys are real and the scoring assertions are ground truth.
+  const res = await page.request.get('/api/questions?subject=history&type=short_answer&limit=200');
+  expect(res.status(), '/api/questions?type=short_answer status').toBe(200);
+  const data = (await res.json()) as { questions: Record<string, any>[] };
+  const pool = data.questions.filter(
+    (q) => typeof q.answer === 'string' && !(q.question ?? '').includes(q.answer),
+  );
+  expect(pool.length, 'history short_answer rows available').toBeGreaterThan(1);
+  f.rec.notes.push(`SA bank rows available: ${pool.length}`);
+
+  // Row A: accented key → typed without accents AND lowercased (case- and
+  // accent-insensitive match). Row B: any key → typed wrong.
+  const stripAccents = (s: string) =>
+    s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+  const accented = pool.find(
+    (q) => stripAccents(q.answer) !== q.answer && stripAccents(q.answer).length <= (q.maxLen ?? 99),
+  );
+  expect(accented, 'at least one accented SA answer key').toBeTruthy();
+  const rowA = accented!;
+  const rowB = pool.find((q) => q.id !== rowA.id)!;
+  const typedA = stripAccents(rowA.answer).toLowerCase();
+  const wrongB = 'zzzz';
+
+  const ids = [rowA.id, rowB.id].join(',');
+  // shQ=false keeps the quiz order identical to the requested ids.
+  await page.goto(
+    `/quiz?subject=history&lesson=all&count=2&time=10&level=all&qtype=all&practice=false&shQ=false&shA=false&ids=${ids}`,
+    { waitUntil: 'networkidle', timeout: 60_000 },
+  );
+  await expect(page.locator('#qRoot')).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator('#qCount')).toHaveText('Câu 1/2');
+
+  await f.check('SA question renders a text input, not MCQ options', async () => {
+    await expect(page.locator('#qOpts #saIn')).toBeVisible();
+    await expect(page.locator('#qOpts #saIn')).toHaveAttribute('maxlength', String(rowA.maxLen));
+    await expect(page.locator('#qOpts .opt')).toHaveCount(0);
+    await expect(page.locator('#qOpts .tf-row')).toHaveCount(0);
+  });
+
+  await f.check('the answer key is never rendered before answering', async () => {
+    // Method: live-DOM probe of the rendered answer surface only. The server
+    // component ships the whole subject bank in the RSC payload (dev + prod
+    // both include every MCQ/TF answer key), so a page-source scan would "leak"
+    // for every type equally; what matters is what the UI renders pre-answer.
+    const key = rowA.answer as string;
+    const live = await page.evaluate(() => {
+      const opts = document.querySelector('#qOpts') as HTMLElement | null;
+      const qText = document.querySelector('#qText') as HTMLElement | null;
+      const chip = document.querySelector('#qTopic') as HTMLElement | null;
+      return {
+        opts: opts?.innerText ?? '',
+        optsHtml: opts?.innerHTML ?? '',
+        qText: qText?.innerText ?? '',
+        chip: chip?.innerText ?? '',
+      };
+    });
+    for (const [where, text] of Object.entries(live)) {
+      expect(text, `answer key "${key}" rendered in #${where} pre-answer`).not.toContain(key);
+    }
+    // No ok/bad coloring, no explanation block before answering.
+    await expect(page.locator('#qOpts .rev.exp')).toHaveCount(0);
+    await expect(page.locator('#qOpts #saIn')).not.toHaveClass(/practice-ok|practice-bad/);
+    f.rec.notes.push(`key "${key}" absent from #qOpts text+HTML, #qText, #qTopic, pre-answer`);
+  });
+
+  await f.check('typing the accent- and case-stripped answer scores ok', async () => {
+    const inp = page.locator('#qOpts #saIn');
+    await inp.fill(typedA);
+    await expect(inp).toHaveValue(typedA);
+    await expect(page.locator('#qDone')).toHaveText('Đã làm: 1');
+    await expect(page.locator('#qPal button').first()).toHaveClass(/done/);
+    f.rec.notes.push(`typed "${typedA}" for key "${rowA.answer}"`);
+    await page.locator('#qNext').click();
+    await expect(page.locator('#qCount')).toHaveText('Câu 2/2');
+  });
+
+  await f.check('typing a wrong answer scores bad, maxLen caps the input', async () => {
+    const inp = page.locator('#qOpts #saIn');
+    await inp.fill(wrongB);
+    await expect(inp).toHaveValue(wrongB.slice(0, rowB.maxLen ?? wrongB.length));
+    await expect(page.locator('#qDone')).toHaveText('Đã làm: 2');
+  });
+
+  await f.check('submit → /result shows the SA rows with the right tags', async () => {
+    await page.locator('#qSubmit').click();
+    await expect(page).toHaveURL(/\/result/, { timeout: 20_000 });
+    await expect(page.locator('#rPoint')).toBeVisible({ timeout: 15_000 });
+    const revs = page.locator('#reviewList > .rev');
+    await expect(revs).toHaveCount(2);
+    // Row A: ok tag + typed candidate + the DB key.
+    const a = revs.nth(0);
+    await expect(a.locator('.tag')).toHaveClass(/ok/);
+    await expect(a.locator('.result-opts .opt .sa-cand')).toContainText(`Bạn trả lời: ${typedA}`);
+    await expect(a.locator('.result-opts .opt')).toContainText(`Đáp án: ${rowA.answer}`);
+    await expect(a.locator('.result-opts .opt')).toContainText('✓');
+    await expect(a).toContainText(`Đáp án đúng: ${rowA.answer}`);
+    // Row B: bad tag + its DB key.
+    const b = revs.nth(1);
+    await expect(b.locator('.tag')).toHaveClass(/bad/);
+    await expect(b.locator('.result-opts .opt')).toContainText(`Đáp án: ${rowB.answer}`);
+    await expect(b.locator('.result-opts .opt')).toContainText('✗');
+    // 1 correct of 2 → 5.0 (scoring.ts: 1 SA pt per correct question).
+    await expect(page.locator('#rPoint')).toHaveText('5.0');
+    await expect(page.locator('#rOk')).toHaveText('1');
+    await expect(page.locator('#rBad')).toHaveText('1');
+    await expect(page.locator('#rSkip')).toHaveText('0');
+    const drill = page.locator('#rDrill');
+    await expect(drill).toBeEnabled();
+    f.rec.notes.push(`SA review: A ok ("${typedA}" vs "${rowA.answer}"), B bad ("${wrongB}" vs "${rowB.answer}")`);
+  });
+
+  await f.check('"Luyện câu sai" drills the wrong SA row back into a practice quiz', async () => {
+    await page.locator('#rDrill').click();
+    await expect(page).toHaveURL(new RegExp(`ids=${rowB.id}`), { timeout: 20_000 });
+    await expect(page.locator('#qRoot')).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('#qCount')).toHaveText('Câu 1/1');
+    await expect(page.locator('#qOpts #saIn')).toBeVisible();
+    await expect(page.locator('#qTitle')).toContainText('Luyện tập · Lịch sử 12');
   });
 
   await cleanCheck(page, f);

@@ -17,6 +17,7 @@ import { typeOf } from '@/lib/quiz/pool';
 import { chemFormat, isMathSubject, LETTERS } from '@/lib/quiz/render';
 import {
   questionStatus,
+  saOk,
   type RuntimeQuestion,
 } from '@/lib/quiz/scoring';
 import { TYPES } from '@/lib/meta';
@@ -57,7 +58,7 @@ function chipText(q: {
   return parts.join(' · ') || '—';
 }
 
-/** "Đáp án đúng: A" letter for an MCQ question (app.js line 293). */
+/** "Đáp án đúng: A" letter for an MCQ question (app.js line 293). MCQ-only. */
 function correctLetter(s: RuntimeQuestion): string {
   const idx = s.opts.findIndex((o) => o.ok);
   return idx >= 0 ? LETTERS[idx] : '?';
@@ -67,8 +68,7 @@ function correctLetter(s: RuntimeQuestion): string {
 function ResultOpts({ q, a }: { q: RuntimeQuestion; a: number }) {
   const isMath = isMathSubject(q.subject);
 
-  if (typeOf(q) === 'true_false') {
-    return q.statements?.map((t, i) => {
+  if (typeOf(q) === 'true_false') {    return q.statements?.map((t, i) => {
       const mine = q.tf[i];
       const good = mine >= 0 && mine === (t.ok ? 1 : 0);
       return (
@@ -95,6 +95,25 @@ function ResultOpts({ q, a }: { q: RuntimeQuestion; a: number }) {
         </div>
       );
     });
+  }
+
+  // SA (app.js line 206): user's answer + expected key + ✓/✗.
+  if (typeOf(q) === 'short_answer') {
+    const mine = q.sa ?? '';
+    const good = mine !== '' && saOk(mine, q.answer);
+    return (
+      <div
+        className={`opt${mine !== '' ? (good ? ' practice-ok' : ' practice-bad') : ''}`}
+        style={{ cursor: 'default' }}
+      >
+        <span className="k">Ab</span>
+        <span className="sa-cand">Bạn trả lời: {mine === '' ? '—' : mine}</span>
+        <b>
+          Đáp án: {q.answer ?? ''}
+          {mine !== '' ? (good ? ' · ✓ Đúng' : ' · ✗ Sai') : ''}
+        </b>
+      </div>
+    );
   }
 
   // MCQ
@@ -171,6 +190,7 @@ export default function ResultReview({ qs, ans, cfg, passages, onlyWrong, onTogg
           const st = questionStatus(s, s, ans[n]);
           const isMath = isMathSubject(s.subject);
           const isTF = typeOf(s) === 'true_false';
+          const isSA = typeOf(s) === 'short_answer';
 
           return (
             <div key={s.id} className="panel rev">
@@ -237,6 +257,33 @@ export default function ResultReview({ qs, ans, cfg, passages, onlyWrong, onTogg
                     ) : (
                       s.explanation
                     )}
+                  </>
+                ) : isSA ? (
+                  <>
+                    <b>Đáp án đúng: {s.answer ?? ''}</b>
+                    <br />
+                    <b>Giải thích:</b>{' '}
+                    {isMath ? (
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: chemFormat(s.explanation || ''),
+                        }}
+                      />
+                    ) : (
+                      s.explanation || ''
+                    )}
+                    {s.wrongWord && (
+                      <>
+                        <br />
+                        <b>Từ sai:</b> {s.wrongWord} → <b>nên dùng:</b>{' '}
+                        {s.correctWord || ''}
+                      </>
+                    )}
+                    <br />
+                    <span className="muted small">
+                      Nguồn: {s.source || ''}
+                      {s.sourceType && ` (${s.sourceType})`}
+                    </span>
                   </>
                 ) : (
                   <>

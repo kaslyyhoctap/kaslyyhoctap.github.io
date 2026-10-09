@@ -27,10 +27,6 @@ const LEVEL_OPTIONS: { value: string; label: string }[] = LEVELS.map((v) => ({
   label: v === 'all' ? 'Mọi mức độ' : v,
 }));
 
-// ponytail: short_answer có trong bank nhưng UI nhập đáp án trong đề chưa
-// port — tạm khóa checkbox này; mở khi có ô nhập (app.js renderSA/#saIn).
-const LOCKED_TYPES = new Set(['short_answer']);
-
 export default function TestConfig({ subject, lessons, typeCounts }: TestConfigProps) {
   const units = subjectUnits(subject);
   const router = useRouter();
@@ -46,15 +42,14 @@ export default function TestConfig({ subject, lessons, typeCounts }: TestConfigP
   const typeEntries = Object.keys(TYPES).map((t) => ({
     key: t,
     count: typeCounts[t] ?? 0,
-    locked: LOCKED_TYPES.has(t),
   }));
-  const selectableTypes = typeEntries.filter((t) => t.count > 0 && !t.locked);
+  const selectableTypes = typeEntries.filter((t) => t.count > 0);
 
   const [lessonChecks, setLessonChecks] = useState<Record<string, boolean>>(
     Object.fromEntries(lessonKeys.map((l) => [l, true])),
   );
   const [typeChecks, setTypeChecks] = useState<Record<string, boolean>>(
-    Object.fromEntries(typeEntries.map((t) => [t.key, t.count > 0 && !t.locked])),
+    Object.fromEntries(typeEntries.map((t) => [t.key, t.count > 0])),
   );
 
   const allLessonsChecked = lessonKeys.every((l) => lessonChecks[l]);
@@ -210,13 +205,12 @@ export default function TestConfig({ subject, lessons, typeCounts }: TestConfigP
               {typeEntries.map((t) => (
                 <label
                   key={t.key}
-                  className={`chk${t.count === 0 || t.locked ? ' dis' : ''}`}
-                  title={t.locked ? 'Sắp có — ô nhập đáp án đang được port' : undefined}
+                  className={`chk${t.count === 0 ? ' dis' : ''}`}
                 >
                   <input
                     type="checkbox"
                     checked={!!typeChecks[t.key]}
-                    disabled={t.count === 0 || t.locked}
+                    disabled={t.count === 0}
                     onChange={(e) =>
                       setTypeChecks((prev) => ({ ...prev, [t.key]: e.target.checked }))
                     }

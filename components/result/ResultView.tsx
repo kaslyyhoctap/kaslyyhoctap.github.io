@@ -20,6 +20,7 @@ import { buildQuizUrl } from '@/lib/quiz/urls';
 import { typeOf } from '@/lib/quiz/pool';
 import {
   questionStatus,
+  saOk,
   type ExamScore,
   type RuntimeQuestion,
 } from '@/lib/quiz/scoring';
@@ -132,7 +133,9 @@ export default function ResultView({
         if (s.topic !== k) return;
         const a = ans[n];
         tot++;
-        if (a >= 0 && s.opts[a]?.ok) ok++;
+        if (typeOf(s) === 'short_answer') {
+          if (saOk(s.sa ?? '', s.answer)) ok++;
+        } else if (a >= 0 && s.opts[a]?.ok) ok++;
       });
       if (!tot) return null;
       const pct = Math.round((ok / tot) * 100);
