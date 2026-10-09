@@ -48,8 +48,6 @@ interface Check { name: string; pass: boolean; detail?: string }
 
 interface SessionEvents {
   consoleErrors: ConsoleErr[];
-  /** Console errors that are the expected surface of intended behavior. */
-  consoleErrorsExpected: ConsoleErr[];
   pageErrors: string[];
   pageErrorsExpected: string[];
   requestFailed: ReqFail[];
@@ -65,7 +63,6 @@ const benignReqFail = (u: string, e: string) =>
 function session(page: Page): SessionEvents {
   const ev: SessionEvents = {
     consoleErrors: [],
-    consoleErrorsExpected: [],
     pageErrors: [],
     pageErrorsExpected: [],
     requestFailed: [],
@@ -74,18 +71,9 @@ function session(page: Page): SessionEvents {
   };
   page.on('console', (m) => {
     if (m.type() === 'error') {
-      // A REAL 404 document makes the browser log a console error for it.
-      // The invalid-route probes (flow7's /history/theory/99) expect exactly
-      // this — the soft-404 fix turned the old 200-with-404-content into a
-      // true 404, so the browser now surfaces the status it always should.
-      const loc = m.location().url || '';
-      const is404Doc =
-        /Failed to load resource: the server responded with a status of 404/.test(
-          m.text(),
-        ) && /\/(history|biology|chemistry|english)\/theory\/\d+/.test(loc);
-      (is404Doc ? ev.consoleErrorsExpected : ev.consoleErrors).push({
+      ev.consoleErrors.push({
         text: m.text().slice(0, 300),
-        url: loc.slice(0, 200),
+        url: (m.location().url || '').slice(0, 200),
       });
     }
   });
@@ -108,15 +96,10 @@ function session(page: Page): SessionEvents {
   });
   page.on('response', (res) => {
     if (res.status() >= 400) {
-      const intended404 =
-        res.status() === 404 &&
-        /\/(history|biology|chemistry|english)\/theory\/\d+/.test(res.url());
       ev.badResponses.push({
         url: res.url().slice(0, 300),
         status: res.status(),
-        expected:
-          intended404 ||
-          (res.status() === 401 && /\/api\/(auth|progress)/.test(res.url())),
+        expected: res.status() === 401 && /\/api\/(auth|progress)/.test(res.url()),
       });
     }
   });
@@ -910,12 +893,11 @@ test('flow7: theory /biology/theory/4 → practice quiz; /history/theory/99 safe
     await expect(page.locator('#qCount')).toHaveText('Câu 1/10');
   });
 
-  await f.check('/history/theory/99 → 404 (F-B8a + soft-404 fix)', async () => {
+  await f.check('/history/theory/99 → 404 (F-B8a: no soft-200 panel)', async () => {
     // Wave B replaced the "Chưa có lý thuyết" soft-200 panel with notFound();
-    // the soft-404 fix (root/[subject]/[theory] loading boundaries gone)
-    // makes it a REAL 404 response, not just 404 content.
-    const res = await page.goto('/history/theory/99', { waitUntil: 'networkidle', timeout: 45_000 });
-    expect(res?.status(), 'theory/99 status').toBe(404);
+    // the status stays 200 while the loading shell streams (parked ruling,
+    // re-asserted by the user 2026-10-10 — skeleton UX over status).
+    await page.goto('/history/theory/99', { waitUntil: 'networkidle', timeout: 45_000 });
     const body = await page.locator('body').innerText();
     const is404ish =
       body.includes('404') ||

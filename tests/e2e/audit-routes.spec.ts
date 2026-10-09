@@ -407,13 +407,16 @@ test('audit: /result after completing a quiz', async ({ page }) => {
 // ------------------------------------------------------- invalid / edge
 
 /**
- * RESOLVED (was a parked P3): unknown single-segment routes now return a REAL
- * 404 status. The old root `app/loading.tsx` streamed its shell for every
- * route and committed HTTP 200 before `notFound()` could act; the boundary is
- * gone (the home page keeps its skeleton via an in-page <Suspense> instead),
- * so /xyz renders the 404 UI with the 404 status. This test pins BOTH.
+ * Ruling (ledger, re-asserted by the user 2026-10-10): the HTTP status for
+ * unknown single-segment routes is a parked P3. The per-segment skeletons
+ * (root/[subject]/[lesson] loading.tsx) stream a shell that commits 200
+ * before `notFound()` can act; removing them was tried and reversed the same
+ * day — the instant-load UX is worth more here than the status line.
+ * `notFound()` renders the correct 404 content, and deep unknown paths
+ * (/abc/def/ghi) genuinely 404. This test pins the CONTENT contract, not the
+ * status code.
  */
-test('audit: /xyz renders the 404 page with a real 404 status', async ({ page }) => {
+test('audit: /xyz renders the 404 page (status is a parked P3)', async ({ page }) => {
   const data = await audit(page, 'invalid-xyz', '/xyz', {
     allow404Doc: true,
     extra: async (p, d) => {
@@ -434,18 +437,17 @@ test('audit: /xyz renders the 404 page with a real 404 status', async ({ page })
       body.includes('Không tìm thấy'),
     `/xyz should render the 404 page; body: ${body.slice(0, 160)}`,
   ).toBe(true);
-  expect(data.status, 'soft-404 fixed: status must be 404 now').toBe(404);
+  expect(data.status, 'status 200 while the skeleton shell commits first (parked P3)').toBe(200);
   // No answer/question data leaks through the 404 body.
   expect(body).not.toMatch(/correctAnswer|correct_answer/);
 });
 
-test('audit: /history/theory/99 — 404 UI + 404 status (F-B8a + soft-404 fix)', async ({ page }) => {
-  const data = await audit(page, 'theory-99', '/history/theory/99', {
-    allow404Doc: true,
-  });
-  expect(data.status, 'soft-404 fixed: status must be 404 now').toBe(404);
+test('audit: /history/theory/99 — 404 UI (F-B8a: no soft-200 panel)', async ({ page }) => {
+  const data = await audit(page, 'theory-99', '/history/theory/99');
+  expect([200, 404]).toContain(data.status);
   // F-B8a replaced the "Chưa có lý thuyết" soft-200 panel with notFound(),
-  // and the boundary removal lets the status commit as a real 404.
+  // so the route must render the real 404 UI (status can still commit 200
+  // while the loading shell streams first — parked soft-404 ruling).
   const body = await page
     .locator('body')
     .innerText({ timeout: 5_000 })
