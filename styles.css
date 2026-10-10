@@ -399,6 +399,7 @@ sup{font-size:.72em;line-height:0} sub{font-size:.72em;line-height:0}
 @media(max-width:600px){.skel-grid3,.skel-grid2{grid-template-columns:minmax(0,1fr)}.skel-form3,.skel-form5{grid-template-columns:minmax(0,1fr)}.skel-stats4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.skel-line,.skel-card,.skel-herocard,.skel-btn,.skel-cta1,.skel-field,.skel-search,.skel-timer,.skel-opt,.skel-pal::before,.skel-score,.skel-stat,.skel-flash{animation:none}}
 .prog-row{margin:12px 0} .prog-row .lbl{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;font-weight:600;align-items:flex-start;overflow:hidden}
+.prog-row .lbl+.pbar{margin-top:8px}
 .prog-row .lbl span:first-child{overflow:hidden;text-overflow:ellipsis;min-width:0}
 /* tiến độ: panel xếp chồng luôn cách nhau, không dính */
 #view-progress>.panel{margin-top:18px}
