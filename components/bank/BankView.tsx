@@ -10,15 +10,19 @@
  * Answer-status (`S.answered`) and star state (`S.starred`) are read from the
  * legacy `ontap12-v1` localStorage via `useAppState`; star toggles persist back
  * to the same key so the `star` filter sees them immediately.
+ *
+ * The old /notebook route redirects here (`/bank?st=star`) — the "Sổ tay"
+ * heading + empty text activate when the star filter is pinned via the URL.
  */
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import BankFilters, { type FilterValues, EMPTY_FILTERS } from './BankFilters';
 import BankItem, { type PassageMap } from './BankItem';
 import { typeOf } from '@/lib/quiz/pool';
 import { subjectUnits } from '@/lib/meta';
-import { readAppState, useAppState, STORAGE_KEY } from '@/lib/storage';
+import { useAppState, STORAGE_KEY } from '@/lib/storage';
 import type { Question } from '@/lib/types';
 
 const PAGE_SIZE = 20;
@@ -28,12 +32,6 @@ interface BankViewProps {
   questions: Question[];
   /** Reading passages keyed by passageId (app.js `window.PASSAGES`). */
   passages: PassageMap;
-  /** Filters applied on mount + after "Xóa bộ lọc" — e.g. the notebook pins st:'star'. */
-  initialFilters?: Partial<FilterValues>;
-  /** Heading above the list (default: "Ngân hàng câu hỏi"). */
-  heading?: string;
-  /** Empty-state message (default: the bank's "nới lỏng bộ lọc" hint). */
-  emptyText?: string;
 }
 
 /**
@@ -61,9 +59,6 @@ function isValidBankQuestion(q: Question): boolean {
 export default function BankView({
   questions,
   passages,
-  initialFilters,
-  heading,
-  emptyText,
 }: BankViewProps) {
   // Build the valid, de-duplicated bank once (app.js global `Q`, lines 24–26).
   const bank = useMemo(() => {
@@ -77,12 +72,19 @@ export default function BankView({
     });
   }, [questions]);
 
+  // The notebook merged into the bank: /notebook redirects to /bank?st=star,
+  // so the star pin lives in the URL. It re-syncs on client-side navigations
+  // (drawer Sổ tay ↔ Ngân hàng) — not just on mount.
+  const searchParams = useSearchParams();
+  const urlStar = searchParams.get('st') === 'star';
+  const pinned: Partial<FilterValues> = urlStar ? { st: 'star' } : {};
+
   // Legacy user state (app.js `S`). Answered is read-once per mount; starred is
   // owned locally so star toggles update the UI + `star` filter immediately.
   const appState = useAppState();
   const answered = appState.answered;
   // `starred` must follow the (post-mount) localStorage read, otherwise it
-  // freezes the SSR-matching empty state and /notebook shows 0 items.
+  // freezes the SSR-matching empty state and /bank?st=star shows 0 items.
   const [starredLocal, setStarred] = useState<Record<string, boolean>>({});
   useEffect(() => {
     setStarred(appState.starred || {});
@@ -91,12 +93,18 @@ export default function BankView({
 
   const [filters, setFilters] = useState<FilterValues>({
     ...EMPTY_FILTERS,
-    ...initialFilters,
+    ...pinned,
   });
+  // Re-pin when the URL changes client-side (drawer Sổ tay ↔ Ngân hàng
+  // navigates without remounting the page shell).
+  useEffect(() => {
+    setFilters({ ...EMPTY_FILTERS, ...pinned });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlStar]);
   const onChange = (patch: Partial<FilterValues>) =>
     setFilters((f) => ({ ...f, ...patch }));
-  // Reset returns to the page's pinned defaults (notebook keeps st:'star').
-  const onReset = () => setFilters({ ...EMPTY_FILTERS, ...initialFilters });
+  // Reset keeps the star pin when it came from the URL.
+  const onReset = () => setFilters({ ...EMPTY_FILTERS, ...pinned });
   const [page, setPage] = useState(1);
 
   // `starredLocal` is the single source of truth in-session: seeded from the
@@ -177,9 +185,11 @@ export default function BankView({
         onReset={onReset}
       />
 
-      {/* bankCount (app.js line 322): "· X/Y câu" + pager position */}
+      {/* bankCount (app.js line 322): "· X/Y câu" + pager position.
+          The notebook's heading + empty text live here: with the star filter
+          pinned via the URL the bank IS the notebook view. */}
       <h2>
-        {heading ?? 'Ngân hàng câu hỏi'}{' '}
+        {urlStar ? 'Sổ tay' : 'Ngân hàng câu hỏi'}{' '}
         <small className="muted">
           · {list.length}/{bank.length} câu
         </small>
@@ -187,7 +197,9 @@ export default function BankView({
 
       {showList.length === 0 ? (
         <div className="panel">
-          {emptyText ?? 'Không tìm thấy câu hỏi nào. Hãy thử nới lỏng bộ lọc.'}
+          {urlStar
+            ? 'Chưa có câu nào trong sổ tay. Bấm ☆ Sổ tay khi làm bài, trong ngân hàng câu hỏi hoặc ở trang kết quả để lưu câu vào đây.'
+            : 'Không tìm thấy câu hỏi nào. Hãy thử nới lỏng bộ lọc.'}
         </div>
       ) : (
         <div id="bankList">

@@ -7,7 +7,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
@@ -63,7 +63,17 @@ export function Header() {
   }, [subjOpen, explOpen]);
 
   const isSubjectRoute = SUBJECTS.includes(pathname.split('/')[1] || '');
-  const isExploreRoute = ['/bank', '/vocab', '/progress', '/notebook'].some((p) =>
+  // /notebook redirects to /bank?st=star — the star view is a query state on
+  // /bank, so the active link must read the query (not just the pathname),
+  // otherwise both links highlight at once. Header sits in the root layout,
+  // which needs a Suspense boundary for useSearchParams (see app/layout.tsx).
+  const searchParams = useSearchParams();
+  const isStarView = searchParams.get('st') === 'star';
+  const isBankRoute = pathname.startsWith('/bank') && !isStarView;
+  const isNotebookView =
+    pathname.startsWith('/notebook') ||
+    (pathname.startsWith('/bank') && isStarView);
+  const isExploreRoute = ['/bank', '/notebook', '/vocab', '/progress'].some((p) =>
     pathname.startsWith(p),
   );
   const closeNav = () => setNavOpen(false);
@@ -216,7 +226,7 @@ export function Header() {
               >
                 <Link
                   href="/bank"
-                  className={`nav-btn${pathname.startsWith('/bank') ? ' active' : ''}`}
+                  className={`nav-btn${isBankRoute ? ' active' : ''}`}
                   role="menuitem"
                   onClick={closeNav}
                 >
@@ -224,7 +234,7 @@ export function Header() {
                 </Link>
                 <Link
                   href="/notebook"
-                  className={`nav-btn${pathname.startsWith('/notebook') ? ' active' : ''}`}
+                  className={`nav-btn${isNotebookView ? ' active' : ''}`}
                   role="menuitem"
                   onClick={closeNav}
                 >

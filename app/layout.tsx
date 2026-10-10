@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Suspense } from 'react';
 import '../styles/globals.css';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/lib/theme';
@@ -58,7 +59,19 @@ export default function RootLayout({
         <ThemeProvider>
           <SessionProvider>
             <ProgressSyncProvider />
-            <Header />
+            {/* Header reads ?st= via useSearchParams (Sổ tay = /bank?st=star),
+                so prerendered routes need this Suspense boundary (Next 16 build
+                fails without it). The fallback is an empty 64px sticky bar so
+                static pages don't shift when the real header hydrates in. */}
+            <Suspense
+              fallback={
+                <header className="header">
+                  <div className="wrap header-in" />
+                </header>
+              }
+            >
+              <Header />
+            </Suspense>
             <main id="main" className="wrap">
               {children}
             </main>

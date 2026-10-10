@@ -7,8 +7,10 @@
  * `renderBank`, lines 314–329).
  */
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { getQuestions, getPassages } from '@/lib/db/queries';
 import BankView from '@/components/bank/BankView';
+import { BankSkeleton } from '@/components/ui/route-skeleton';
 import type { Question } from '@/lib/types';
 
 export const metadata = {
@@ -51,7 +53,11 @@ export default async function BankPage() {
       <Link href="/" className="link">
         ← Trang chủ
       </Link>
-      <BankView questions={questions} passages={passages} />
+      {/* BankView reads ?st= from the URL (the notebook redirects here), so it
+          needs its own Suspense boundary. */}
+      <Suspense fallback={<BankSkeleton />}>
+        <BankView questions={questions} passages={passages} />
+      </Suspense>
     </>
   );
 }
