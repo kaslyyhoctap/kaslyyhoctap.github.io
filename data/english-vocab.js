@@ -1620,5 +1620,98 @@ window.VOCAB = {
    "vi": "Lãng phí",
    "kind": "phrase"
   }
+ ],
+ "3": [
+  {
+   "en": "proliferation",
+   "pos": "n",
+   "ipa": "/prəˌlɪfəˈreɪʃn/",
+   "vi": "sự bùng nổ, sự gia tăng nhanh",
+   "kind": "word"
+  },
+  {
+   "en": "accountability",
+   "pos": "n",
+   "ipa": "/əˌkaʊntəˈbɪləti/",
+   "vi": "trách nhiệm giải trình, tính chịu trách nhiệm",
+   "kind": "word"
+  },
+  {
+   "en": "mitigate",
+   "pos": "v",
+   "ipa": "/ˈmɪtɪɡeɪt/",
+   "vi": "làm giảm nhẹ, xoa dịu (tác hại)",
+   "kind": "word"
+  },
+  {
+   "en": "incentive",
+   "pos": "n",
+   "ipa": "/ɪnˈsentɪv/",
+   "vi": "động lực (thường là vật chất)",
+   "kind": "word"
+  },
+  {
+   "en": "manipulate",
+   "pos": "v",
+   "ipa": "/məˈnɪpjuleɪt/",
+   "vi": "thao túng, điều khiển",
+   "kind": "word"
+  },
+  {
+   "en": "emancipatory",
+   "pos": "adj",
+   "ipa": "/ɪˈmænsɪpətri/",
+   "vi": "giải phóng",
+   "kind": "word"
+  },
+  {
+   "en": "attenuate",
+   "pos": "v",
+   "ipa": "/əˈtenjueɪt/",
+   "vi": "làm suy yếu, làm giảm",
+   "kind": "word"
+  },
+  {
+   "en": "predicated (on)",
+   "pos": "adj",
+   "ipa": "/ˈpredɪkeɪtɪd/",
+   "vi": "dựa trên, căn cứ trên",
+   "kind": "phrase"
+  },
+  {
+   "en": "proxy discrimination",
+   "pos": "n",
+   "ipa": "",
+   "vi": "phân biệt đối xử gián tiếp (qua biến trung gian)",
+   "kind": "phrase"
+  },
+  {
+   "en": "representational adequacy",
+   "pos": "n",
+   "ipa": "",
+   "vi": "tính đầy đủ của dữ liệu đại diện",
+   "kind": "phrase"
+  },
+  {
+   "en": "disparate impact",
+   "pos": "n",
+   "ipa": "",
+   "vi": "tác động chênh lệch giữa các nhóm",
+   "kind": "phrase"
+  },
+  {
+   "en": "asymmetric",
+   "pos": "adj",
+   "ipa": "/ˌeɪsɪˈmetrɪk/",
+   "vi": "bất đối xứng, mất cân bằng",
+   "kind": "word"
+  },
+  {
+   "en": "ethics washing",
+   "pos": "n",
+   "ipa": "",
+   "vi": "tẩy rửa đạo đức — chỉ có vẻ có trách nhiệm",
+   "kind": "phrase"
+  }
  ]
 };

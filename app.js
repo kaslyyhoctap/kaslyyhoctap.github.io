@@ -10,15 +10,17 @@ var META={
  history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh"}},
  biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene",4:"Bài 4: Đột biến gene"}},
  chemistry:{name:"Hóa học 12",short:"Hóa",units:"Chương",book:"Kết nối tri thức",lessons:{1:"Chương 1: Ester – Lipid",2:"Chương 2: Carbohydrate"}},
- english:{name:"Tiếng Anh 12",short:"Anh",units:"Unit",book:"Global Success",lessons:{1:"Unit 1: Life stories we admire",2:"Unit 2: A multicultural world",3:"Đề thi thử TN THPT 2027 – Mã 1101"}}
+ english:{name:"Tiếng Anh 12",short:"Anh",units:"Unit",book:"Global Success",lessons:{1:"Unit 1: Life stories we admire",2:"Unit 2: A multicultural world"}},
+ thptqg:{name:"Đề tham khảo THPTQG",short:"Đề",units:"Mã đề",book:"Đề thi thử tốt nghiệp 2026-2027",lessons:{1101:"Mã đề 1101 — Đề thi thử TN THPT 2027 (Tiếng Anh)"}}
 };
 var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning",reading_comprehension:"Reading Comprehension",true_false:"True/False",short_answer:"Short Answer"};
 var SKILLS={Vocabulary:"Vocabulary",Grammar:"Grammar","Cloze test":"Cloze Test","Word usage":"Word Usage","Closest meaning":"Paraphrase","Reading":"Reading"};
 function lessonsOf(sub){return Object.keys(META[sub].lessons).map(Number).sort(function(a,b){return a-b})}
-function badgeCls(k){return k==="history"?"h":k==="biology"?"b":k==="chemistry"?"c":"e"}
-function btnCls(k){return k==="history"?"btn-primary":k==="biology"?"btn-bio":k==="chemistry"?"btn-chem":"btn-eng"}
-function subjTag(q){return q.subject==="history"?"Sử":q.subject==="biology"?"Sinh":q.subject==="chemistry"?"Hóa":"Anh"}
-function unitTag(q){return (q.subject==="english"?"U":q.subject==="chemistry"?"C":"B")+q.lesson}
+function badgeCls(k){return k==="history"?"h":k==="biology"?"b":k==="chemistry"?"c":k==="thptqg"?"q":"e"}
+function btnCls(k){return k==="history"?"btn-primary":k==="biology"?"btn-bio":k==="chemistry"?"btn-chem":k==="thptqg"?"btn-qg":"btn-eng"}
+function subjTag(q){return q.subject==="history"?"Sử":q.subject==="biology"?"Sinh":q.subject==="chemistry"?"Hóa":q.subject==="thptqg"?"Đề":"Anh"}
+function unitTag(q){return q.subject==="thptqg"?String(q.lesson):((q.subject==="english"?"U":q.subject==="chemistry"?"C":"B")+q.lesson)}
+function isEngType(sub){return sub==="english"||sub==="thptqg"}
 function typeOf(q){return q.type||"multiple_choice"}
 function chipFor(q){var t=q.type?TYPES[q.type]:"";if(t&&q.topic&&t.toLowerCase()===q.topic.toLowerCase())t="";return esc(q.topic)+(t?" · "+esc(t):"")+" · "+esc(q.difficulty)+(q.band?" · Band "+Number(q.band).toFixed(1):"")}
 var Q=(window.QBANK||[]).filter(function(q){return q&&q.id&&q.question&&((q.options&&q.options.length===4&&q.correctAnswer>=0&&q.correctAnswer<4)||(q.type==="true_false"&&q.statements&&q.statements.length===4)||(q.type==="short_answer"&&typeof q.answer==="string"))&&q.explanation});
@@ -48,7 +50,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape"){setNav(fals
 
 /* router */
 var views=["home","subject","theory","quiz","bank","vocab","progress","result"];
-var SUBJS=["history","biology","chemistry","english"];
+var SUBJS=["history","biology","chemistry","english","thptqg"];
 function go(v){views.forEach(function(x){$("view-"+x).hidden=x!==v});document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.toggle("active",b.dataset.nav===v||(v==="subject"&&curSub&&b.dataset.nav===curSub))});var sb=$("subjBtn");if(sb)sb.classList.toggle("active",v==="subject");setNav(false);setSubj(false);window.scrollTo({top:0,behavior:"smooth"});$("main").querySelector("h1,h2")?.setAttribute("tabindex","-1")}
 document.addEventListener("click",function(e){var b=e.target.closest("[data-nav]");if(!b)return;var v=b.dataset.nav;
  if(v==="home")renderHome();
@@ -92,19 +94,19 @@ function bindCheckAll(id){var box=$(id);if(!box||!box.querySelector)return;var a
 function cfgSetLesson(v){Array.prototype.forEach.call($("cfgLesson").querySelectorAll("input"),function(i){i.checked=(v==="all")?true:i.value===String(v)})}
 function typeCounts(sub,l){var tc={};Q.filter(function(q){return q.subject===sub&&q.lesson===l}).forEach(function(q){var t=typeOf(q);tc[t]=(tc[t]||0)+1});return tc}
 function renderSubject(sub){curSub=sub;var m=META[sub];var th=window.THEORY[sub]||{};var ls=lessonsOf(sub);
- $("subjectHead").innerHTML='<h2>'+m.name+' <small class="muted">· '+counts(sub)+' câu · '+m.units+' 1–'+ls.length+'</small></h2><p class="muted">'+m.book+' — chọn '+m.units.toLowerCase()+' để học lý thuyết, luyện trắc nghiệm hoặc tạo đề kiểm tra tính giờ.</p>';
- $("cfgLesson").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+ls.map(function(l){return '<label class="chk"><input type="checkbox" value="'+l+'" checked> '+m.units+' '+l+'</label>'}).join("");
+ $("subjectHead").innerHTML='<h2>'+m.name+' <small class="muted">· '+counts(sub)+' câu · '+(sub==="thptqg"?("mã đề 1101 · "+((window.THEORY.thptqg&&window.THEORY.thptqg[1101])?window.THEORY.thptqg[1101].title:"")):(m.units+' 1–'+ls.length))+'</small></h2><p class="muted">'+m.book+' — chọn '+m.units.toLowerCase()+' để học lý thuyết, luyện trắc nghiệm hoặc tạo đề kiểm tra tính giờ.</p>';
+ $("cfgLesson").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+ls.map(function(l){return '<label class="chk"><input type="checkbox" value="'+l+'" checked> '+(sub==="thptqg"&&th[l]?th[l].title:(m.units+' '+l))+'</label>'}).join("");
  var tys=Object.keys(TYPES).filter(function(t){return Q.some(function(q){return q.subject===sub&&typeOf(q)===t})});
  $("cfgType").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+tys.map(function(t){var n=Q.filter(function(q){return q.subject===sub&&typeOf(q)===t}).length;return '<label class="chk'+(n?"":" dis")+'"><input type="checkbox" value="'+t+'" checked> '+TYPES[t]+' ('+n+')</label>'}).join("");
  bindCheckAll("cfgLesson");bindCheckAll("cfgType");
  var tw=$("cfgTypeWrap");if(tw)tw.style.display=tys.length>1?"":"none";
  cfgAvail();
  $("subjectLessons").innerHTML=ls.map(function(l){var n=Q.filter(function(q){return q.subject===sub&&q.lesson===l}).length;var p=(S.prog[sub]||{})[l]||0;
-  var meta=sub==="english"?Object.keys(TYPES).map(function(t){return (typeCounts(sub,l)[t]||0)+" "+TYPES[t].split(" ")[0]}).join(" · "):"Nhận biết → Vận dụng cao";
+  var meta=isEngType(sub)?Object.keys(TYPES).map(function(t){return (typeCounts(sub,l)[t]||0)+" "+TYPES[t].split(" ")[0]}).join(" · "):"Nhận biết → Vận dụng cao";
   var title=(th[l]&&th[l].title)||(m.units+" "+l);
   var desc=(th[l]&&th[l].desc)||"";
   return '<div class="panel lesson-card"><h3>'+esc(title)+'</h3><p>'+esc(desc)+'</p><div class="lesson-meta"><span class="badge">'+n+' câu</span><span class="badge">'+meta+'</span></div><div class="pbar"><i style="width:'+p+'%"></i></div><p class="small muted">Tiến độ '+p+'%</p><div class="row"><button class="btn btn-sm" data-theory="'+sub+':'+l+'">Học lý thuyết</button><button class="btn btn-sm btn-primary" data-quiz="'+sub+':'+l+'">Trắc nghiệm</button><button class="btn btn-sm btn-ghost" data-test="'+sub+':'+l+'">Kiểm tra</button></div></div>'}).join("")
- +'<div class="panel lesson-card"><h3>Tổng hợp '+ls.length+' '+m.units.toLowerCase()+'</h3><p>Đề trộn đủ các '+(sub==="english"?"dạng bài":"bài học")+', đúng như kiểm tra cuối kỳ.</p><div class="lesson-meta"><span class="badge">'+counts(sub)+' câu</span></div><div class="row"><button class="btn btn-sm btn-primary" data-test="'+sub+':all">Kiểm tra tổng hợp</button></div></div>';
+ +'<div class="panel lesson-card"><h3>Tổng hợp '+ls.length+' '+m.units.toLowerCase()+'</h3><p>Đề trộn đủ các '+(isEngType(sub)?"dạng bài":"bài học")+', đúng như kiểm tra cuối kỳ.</p><div class="lesson-meta"><span class="badge">'+counts(sub)+' câu</span></div><div class="row"><button class="btn btn-sm btn-primary" data-test="'+sub+':all">Kiểm tra tổng hợp</button></div></div>';
  go("subject");
 }
 document.addEventListener("click",function(e){var t=e.target.closest("[data-test]");if(!t)return;var a=t.dataset.test.split(":");cfgSetLesson(a[1]);collectCfg(a[0],false)});
@@ -139,7 +141,7 @@ function pool(o){
  if(o.subject!=="english")return pickFresh(base,o.count,o.shQ);
  var qt=!qts?"all":(qts.length===1?qts[0]:"multi");
  if(qt!=="all"&&qt!=="multi"){var only=base.filter(function(q){return typeOf(q)===qt});
-  if(qt==="cloze"||qt==="reading_comprehension"){var gs={};only.forEach(function(q){var p=q.passageId||"x";(gs[p]=gs[p]||[]).push(q)});var gl=Object.keys(gs).map(function(p){return gs[p]});var fl={};Q.filter(function(q){return q.subject==="english"&&q.passageId}).forEach(function(q){fl[q.passageId]=(fl[q.passageId]||0)+1});gl=gl.filter(function(g){var p=g[0].passageId;return !p||g.length===(fl[p]||g.length)});if(o.shQ!==false)gl=shuffle(gl);var take=[],n=o.count;gl.forEach(function(g){if(take.length+g.length<=n)take=take.concat(g)});if(!take.length&&gl.length)take=gl[0].slice(0,n);return take}
+  if(qt==="cloze"||qt==="reading_comprehension"){var gs={};only.forEach(function(q){var p=q.passageId||"x";(gs[p]=gs[p]||[]).push(q)});var gl=Object.keys(gs).map(function(p){return gs[p]});var fl={};Q.filter(function(q){return (q.subject==="english"||q.subject==="thptqg")&&q.passageId}).forEach(function(q){fl[q.passageId]=(fl[q.passageId]||0)+1});gl=gl.filter(function(g){var p=g[0].passageId;return !p||g.length===(fl[p]||g.length)});if(o.shQ!==false)gl=shuffle(gl);var take=[],n=o.count;gl.forEach(function(g){if(take.length+g.length<=n)take=take.concat(g)});if(!take.length&&gl.length)take=gl[0].slice(0,n);return take}
   return pickFresh(only,o.count,o.shQ)}
  var N=o.count;
  var mc=base.filter(function(q){return typeOf(q)==="multiple_choice"});
@@ -153,7 +155,7 @@ function pool(o){
  var budget=N-wueSel.length-cmSel.length;
  // ponytail: passage (cloze/reading) là bó nguyên bài — chỉ lấy bài đọc còn đủ chỗ trống sau lọc, vừa ngân sách, không xẻ lẻ
  var fullLen={};
- Q.filter(function(q){return q.subject==="english"&&q.passageId}).forEach(function(q){fullLen[q.passageId]=(fullLen[q.passageId]||0)+1});
+ Q.filter(function(q){return (q.subject==="english"||q.subject==="thptqg")&&q.passageId}).forEach(function(q){fullLen[q.passageId]=(fullLen[q.passageId]||0)+1});
  var fullPs=ps.filter(function(g){var p=g[0].passageId;return g.length===(fullLen[p]||g.length)});
  if(o.shQ!==false)fullPs=shuffle(fullPs);
  var maxPass=(qt==="cloze"||qt==="reading_comprehension")?fullPs.length:(o.lesson==="all"?(N>=40?Math.min(2,fullPs.length):Math.min(1,fullPs.length)):Math.min(1,fullPs.length));
@@ -211,8 +213,8 @@ function resultOpts(q,s,a){
 function tfRows(q){return q.statements.map(function(s2,i){return '<div class="opt" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+chem(s2.t)+'</span><b>'+(s2.ok?"Đúng":"Sai")+'</b></div>'}).join("")}
 function renderQ(){
  var q=curQ(),st=E.qs[E.i],m=META[E.cfg.subject];
- var scope=E.cfg.lesson==="all"?" · Tổng hợp":(" · "+m.units+" "+E.cfg.lesson);
- var kind=E.cfg.subject==="english"&&E.cfg.qtype&&E.cfg.qtype!=="all"?(" · "+TYPES[E.cfg.qtype]):"";
+ var scope=E.cfg.lesson==="all"?" · Tổng hợp":(E.cfg.subject==="thptqg"?" · "+((window.THEORY.thptqg&&window.THEORY.thptqg[E.cfg.lesson])?window.THEORY.thptqg[E.cfg.lesson].title:("Mã đề "+E.cfg.lesson)):(" · "+m.units+" "+E.cfg.lesson));
+ var kind=isEngType(E.cfg.subject)&&E.cfg.qtype&&E.cfg.qtype!=="all"?(" · "+(Array.isArray(E.cfg.qtype)?E.cfg.qtype.map(function(t){return TYPES[t]||t}).join(" + "):TYPES[E.cfg.qtype])):"";
  $("qTitle").textContent=(E.cfg.quick?"Kiểm tra nhanh · ":E.practice?"Luyện tập · ":"Kiểm tra · ")+m.name+scope+kind;
  $("qCount").textContent="Câu "+(E.i+1)+"/"+E.qs.length;
  var done=E.qs.filter(function(x,n){return qDoneN(n)}).length;
@@ -220,7 +222,7 @@ function renderQ(){
  var pct=Math.round(done/E.qs.length*100);$("qProg").style.width=pct+"%";$("qProgWrap").setAttribute("aria-valuenow",pct);
  $("qFlag").textContent=(E.flag[E.i]?"★ ":"☆ ")+"Đánh dấu xem lại";
   $("qStar").textContent=((S.starred&&S.starred[curQ().id])?"★ Sổ tay":"☆ Sổ tay");
- $("qTopic").textContent=q.topic+((E.cfg.subject==="english"&&q.type&&TYPES[q.type].toLowerCase()!==String(q.topic).toLowerCase())?" · "+TYPES[q.type]:"")+" · "+q.difficulty+(q.band?" · Band "+Number(q.band).toFixed(1):"");
+ $("qTopic").textContent=q.topic+((isEngType(E.cfg.subject)&&q.type&&TYPES[q.type].toLowerCase()!==String(q.topic).toLowerCase())?" · "+TYPES[q.type]:"")+" · "+q.difficulty+(q.band?" · Band "+Number(q.band).toFixed(1):"");
  var head=passageHtml(q);
  $("qText").innerHTML=(head?head+"<br>":"")+"Câu "+(E.i+1)+": "+(q.subject==="chemistry"?chem(q.question):esc(q.question));
  var box=$("qOpts");box.innerHTML="";
@@ -266,7 +268,7 @@ function submit(auto){
   pts+=fr;S.answered[s.id]=st;if(st==="ok"){ok++;S.correct++}
   if(st==="bad")bad++;else if(st==="skip")skip++;
   var tp=topics[q.topic]=topics[q.topic]||{ok:0,tot:0};tp.tot++;if(st==="ok")tp.ok++;
-  if(E.cfg.subject==="english"){var ty=types[typeOf(q)]=types[typeOf(q)]||{ok:0,tot:0};ty.tot++;if(st==="ok")ty.ok++}});
+  if(isEngType(E.cfg.subject)){var ty=types[typeOf(q)]=types[typeOf(q)]||{ok:0,tot:0};ty.tot++;if(st==="ok")ty.ok++}});
  var secs=Math.min(Math.floor((Date.now()-E.t0)/1000),E.limit);
  var tot=E.qs.length,point=Math.round(pts/tot*100)/10;
  S.exams++;S.best=Math.max(S.best,point);
@@ -277,17 +279,17 @@ function submit(auto){
  var rec={when:Date.now(),sub:E.cfg.subject,lesson:E.cfg.lesson,point:point,ok:ok,tot:tot,time:secs,ids:E.qs.map(function(s){return s.id})};
  S.hist.unshift(rec);S.hist=S.hist.slice(0,20);save();
  var m=META[E.cfg.subject];
- var scope=E.cfg.lesson==="all"?(" · Tổng hợp "+lessonsOf(E.cfg.subject).length+" "+m.units.toLowerCase()):(" · "+m.units+" "+E.cfg.lesson);
+ var scope=E.cfg.lesson==="all"?(" · Tổng hợp "+lessonsOf(E.cfg.subject).length+" "+m.units.toLowerCase()):(E.cfg.subject==="thptqg"?(" · "+((window.THEORY.thptqg&&window.THEORY.thptqg[E.cfg.lesson])?window.THEORY.thptqg[E.cfg.lesson].title:("Mã đề "+E.cfg.lesson))):(" · "+m.units+" "+E.cfg.lesson));
  $("rSub").textContent=(auto?"Hết giờ · ":"")+m.name+scope;
  $("rPoint").textContent=point.toFixed(1);
  $("rFrac").textContent=ok+"/"+tot+" · "+Math.round(ok/tot*100)+"%";
  var v=verdict(point);var ve=$("rVerdict");ve.textContent=v[0];ve.className="r-verdict "+v[1];
  $("rOk").textContent=ok;$("rBad").textContent=bad;$("rSkip").textContent=skip;
  $("rTime").textContent=Math.floor(secs/60)+":"+String(secs%60).padStart(2,"0");
- if(E.cfg.subject==="english"){$("rTopics").innerHTML="";}else{$("rTopics").innerHTML="<h3>Kết quả theo chủ đề</h3>"+Object.keys(topics).map(function(t){var p=Math.round(topics[t].ok/topics[t].tot*100);
+ if(isEngType(E.cfg.subject)){$("rTopics").innerHTML="";}else{$("rTopics").innerHTML="<h3>Kết quả theo chủ đề</h3>"+Object.keys(topics).map(function(t){var p=Math.round(topics[t].ok/topics[t].tot*100);
   return '<div class="trow"><span>'+esc(t)+'</span><span class="pbar"><i style="width:'+p+'%"></i></span><b>'+topics[t].ok+'/'+topics[t].tot+'</b></div>'}).join("");}
  var rt=$("rTypes");
- if(E.cfg.subject==="english"){
+ if(isEngType(E.cfg.subject)){
   var order=["multiple_choice","cloze","word_usage_error","closest_meaning","reading_comprehension"];
    var letters={multiple_choice:"A",cloze:"B",word_usage_error:"C",closest_meaning:"D",reading_comprehension:"E"};
    var rows=order.map(function(t){var s=types[t];if(!s)return "";
@@ -363,7 +365,7 @@ function vocabKey(w){return $("vUnit").value+"::"+w.en}
 function renderVocab(){
  V.list=vocabFilter();V.i=0;V.flip=false;
  var u=$("vUnit").value,all=(vocabAll()[u]||[]).length;
- $("vocabCount").textContent="· Unit "+u+" · "+V.list.length+"/"+all+" thẻ";
+ $("vocabCount").textContent=(u==="3"?"· Đề 1101":"· Unit "+u)+" · "+V.list.length+"/"+all+" thẻ";
  renderFc();renderVGrid();
  go("vocab");
 }
@@ -437,8 +439,8 @@ function weakStats(){
   if(tot>=3)dims.push({label:label,ok:ok,tot:tot,acc:Math.round(ok/tot*100),action:action});
  }
  var ts=Object.keys(TYPES),t;
- for(t=0;t<ts.length;t++)(function(ty){agg(TYPES[ty]+" · Anh",function(q){return q.subject==="english"&&typeOf(q)===ty},{subject:"english",qtype:ty})})(ts[t]);
- [5.5,6.0,6.5,7.0,7.5,8.0,8.5].forEach(function(b){agg("Band "+b.toFixed(1)+" · Anh",function(q){return q.subject==="english"&&q.band===b},{subject:"english",band:b})});
+ for(t=0;t<ts.length;t++)(function(ty){agg(TYPES[ty]+" · "+META.english.short,function(q){return q.subject==="english"&&typeOf(q)===ty},{subject:"english",qtype:ty})})(ts[t]);
+ [5.5,6.0,6.5,7.0,7.5,8.0,8.5].forEach(function(b){agg("Band "+b.toFixed(1)+" · "+META.english.short,function(q){return q.subject==="english"&&q.band===b},{subject:"english",band:b})});
  var sk=Object.keys(META),ti,li;
  for(ti=0;ti<sk.length;ti++){var ls=lessonsOf(sk[ti]);for(li=0;li<ls.length;li++)(function(k,l){var lbl=(META[k].lessons[l]||(META[k].units+" "+l)).split(":")[0];agg(lbl+" · "+META[k].short,function(q){return q.subject===k&&q.lesson===l},{subject:k,lesson:String(l)})})(sk[ti],ls[li])}
  var tp={};

@@ -69,6 +69,7 @@ body.nav-open .header{z-index:200}
 .btn-eng{background:#7C3AED;border-color:#7C3AED;color:#fff}
 .btn-eng:hover{background:#6D28D9}
 .btn-chem{background:#EA580C;border-color:#EA580C;color:#fff}
+.btn-qg{background:#DC2626;border-color:#DC2626;color:#fff}
 .btn-chem:hover{background:#C2410C}
 [data-theme="dark"] .btn-chem{background:#FB923C;border-color:#FB923C;color:#431407}
 .fig{margin:14px 0;text-align:center}
@@ -114,6 +115,7 @@ main{min-height:60vh;isolation:isolate} /* ponytail: nhốt stacking của nội
 .badge.b{background:#CCFBF1;color:#0F766E}[data-theme="dark"] .badge.b{background:#0B2E2B;color:#7DF0DD}
 .badge.e{background:#EDE9FE;color:#5B21B6}[data-theme="dark"] .badge.e{background:#2A1B5E;color:#D6C6FF}
 .badge.c{background:#FFEDD5;color:#9A3412}[data-theme="dark"] .badge.c{background:#431407;color:#FDBA74}
+.badge.q{background:#FEE2E2;color:#991B1B}[data-theme="dark"] .badge.q{background:#450A0A;color:#FECACA}
 .lesson-meta{display:flex;gap:0 6px;flex-wrap:wrap;margin:8px 0}
 .lesson-meta .badge{white-space:normal}
 .pbar{height:8px;background:var(--muted);border-radius:99px;overflow:hidden}
