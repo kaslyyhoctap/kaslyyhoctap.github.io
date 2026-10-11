@@ -10,7 +10,7 @@ html: `<h2>1. Cấu trúc đề (Mã 1101)</h2>
 <tr><td>5</td><td>Đọc hiểu 1 (Endowment effect)</td><td>8 (câu 23-30)</td><td>Thông hiểu – Vận dụng</td></tr>
 <tr><td>6</td><td>Đọc hiểu 2 (Algorithmic bias)</td><td>14 (câu 31-44)</td><td>Vận dụng – Vận dụng cao</td></tr></table>
 <h2>2. Đáp án nhanh</h2>
-<div class="key">1A · 2A · 3C · 4A · 5A · 6B · 7C · 8A · 9B · 10A · 11A · 12C · 13G · 14D · 15B · 16F · 17C · 18C · 19E · 20G · 21B · 22A · 23B · 24B · 25C · 26B · 27B · 28A · 29C · 30B · 31C · 32D · 33B · 34C · 35C · 36C · 37B · 38A · 39B · 40C · 41C · 42B · 43B · 44C</div>
+<div class="key">1D · 2A · 3C · 4D · 5A · 6B · 7C · 8A · 9B · 10A · 11A · 12C · 13G · 14D · 15B · 16F · 17C · 18C · 19E · 20G · 21B · 22A · 23B · 24B · 25C · 26B · 27B · 28A · 29C · 30B · 31C · 32D · 33B · 34C · 35C · 36C · 37B · 38A · 39B · 40C · 41C · 42B · 43B · 44C</div>
 <h2>3. Từ vựng then chốt cần nắm</h2>
 <div class="key">proliferation · accountability · mitigate · incentive · manipulate · emancipatory · attenuate · predicated · proxy discrimination · representational adequacy · disparate impact · asymmetric · ethics washing</div>` },
 1102: { title: "Mã đề 1102 — Đề tham khảo THPTQG 2026 (Tiếng Anh — Môi trường)", desc: "Đề tham khảo THPTQG 44 câu (50 phút): điền từ thông báo (Green Innovation Summit 2027), điền từ đoạn văn (Fast fashion), sắp xếp thư, điền câu vào đoạn văn (Plastic Oceans), 2 bài đọc hiểu (Vertical farming, Water scarcity).",
