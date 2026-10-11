@@ -1713,5 +1713,98 @@ window.VOCAB = {
    "vi": "tẩy rửa đạo đức — chỉ có vẻ có trách nhiệm",
    "kind": "phrase"
   }
+ ],
+ "1102": [
+  {
+   "en": "decarbonisation",
+   "pos": "n",
+   "ipa": "/ˌdiːˌkɑːbənaɪˈzeɪʃn/",
+   "vi": "sự giảm phát thải carbon, khử carbon",
+   "kind": "word"
+  },
+  {
+   "en": "renewable",
+   "pos": "adj",
+   "ipa": "/rɪˈnjuːəbl/",
+   "vi": "có thể tái tạo (năng lượng)",
+   "kind": "word"
+  },
+  {
+   "en": "plummet",
+   "pos": "v",
+   "ipa": "/ˈplʌmɪt/",
+   "vi": "lao dốc, giảm mạnh",
+   "kind": "word"
+  },
+  {
+   "en": "unprecedented",
+   "pos": "adj",
+   "ipa": "/ʌnˈpresɪdentɪd/",
+   "vi": "chưa từng có tiền lệ",
+   "kind": "word"
+  },
+  {
+   "en": "deplete",
+   "pos": "v",
+   "ipa": "/dɪˈpliːt/",
+   "vi": "làm cạn kiệt, suy giảm",
+   "kind": "word"
+  },
+  {
+   "en": "invaluable",
+   "pos": "adj",
+   "ipa": "/ɪnˈvæljuəbl/",
+   "vi": "vô giá (không phải \"không giá trị\")",
+   "kind": "word"
+  },
+  {
+   "en": "circular economy",
+   "pos": "n",
+   "ipa": "",
+   "vi": "kinh tế tuần hoàn",
+   "kind": "phrase"
+  },
+  {
+   "en": "bioaccumulation",
+   "pos": "n",
+   "ipa": "/ˌbaɪoʊəˌkjuːmjəˈleɪʃn/",
+   "vi": "sự tích lũy sinh học",
+   "kind": "word"
+  },
+  {
+   "en": "ubiquitous",
+   "pos": "adj",
+   "ipa": "/juːˈbɪkwɪtəs/",
+   "vi": "có mặt khắp nơi",
+   "kind": "word"
+  },
+  {
+   "en": "leach",
+   "pos": "v",
+   "ipa": "/liːtʃ/",
+   "vi": "rỉ ra, thấm ra (chất độc)",
+   "kind": "word"
+  },
+  {
+   "en": "restricted",
+   "pos": "adj",
+   "ipa": "/rɪˈstrɪktɪd/",
+   "vi": "bị giới hạn, có hạn",
+   "kind": "word"
+  },
+  {
+   "en": "treaty",
+   "pos": "n",
+   "ipa": "/ˈtriːti/",
+   "vi": "hiệp ước",
+   "kind": "word"
+  },
+  {
+   "en": "reform",
+   "pos": "v/n",
+   "ipa": "/rɪˈfɔːm/",
+   "vi": "cải cách",
+   "kind": "word"
+  }
  ]
 };
