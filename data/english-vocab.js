@@ -1806,5 +1806,98 @@ window.VOCAB = {
    "vi": "cải cách",
    "kind": "word"
   }
- ]
+ ],
+  "1103": [
+  {
+    "en": "gamification",
+    "pos": "n",
+    "ipa": "/ˌɡeɪmɪfɪˈkeɪʃn/",
+    "vi": "sự game hóa",
+    "kind": "word"
+  },
+  {
+    "en": "intrinsic motivation",
+    "pos": "n",
+    "ipa": "",
+    "vi": "động lực nội tại",
+    "kind": "phrase"
+  },
+  {
+    "en": "extrinsic",
+    "pos": "adj",
+    "ipa": "/ekˈstrɪnzɪk/",
+    "vi": "bên ngoài, ngoại lai",
+    "kind": "word"
+  },
+  {
+    "en": "retention",
+    "pos": "n",
+    "ipa": "/rɪˈtenʃn/",
+    "vi": "sự ghi nhớ, duy trì kiến thức",
+    "kind": "word"
+  },
+  {
+    "en": "overjustification effect",
+    "pos": "n",
+    "ipa": "",
+    "vi": "hiệu ứng lý giải ngoại lai làm giảm động lực",
+    "kind": "phrase"
+  },
+  {
+    "en": "demoralise",
+    "pos": "v",
+    "ipa": "/dɪˈmɒrəlaɪz/",
+    "vi": "làm nản lòng",
+    "kind": "word"
+  },
+  {
+    "en": "mastery",
+    "pos": "n",
+    "ipa": "/ˈmɑːstəri/",
+    "vi": "sự thành thạo, làm chủ",
+    "kind": "word"
+  },
+  {
+    "en": "curriculum",
+    "pos": "n",
+    "ipa": "/kəˈrɪkjələm/",
+    "vi": "chương trình giảng dạy",
+    "kind": "word"
+  },
+  {
+    "en": "hybrid",
+    "pos": "adj",
+    "ipa": "/ˈhaɪbrɪd/",
+    "vi": "lai, kết hợp",
+    "kind": "word"
+  },
+  {
+    "en": "credential",
+    "pos": "n",
+    "ipa": "/krəˈdenʃl/",
+    "vi": "văn bằng, chứng chỉ",
+    "kind": "word"
+  },
+  {
+    "en": "niche",
+    "pos": "n",
+    "ipa": "/niːʃ/",
+    "vi": "thị trường ngách, chuyên biệt",
+    "kind": "word"
+  },
+  {
+    "en": "desirable difficulty",
+    "pos": "n",
+    "ipa": "",
+    "vi": "khó khăn có lợi cho học tập",
+    "kind": "phrase"
+  },
+  {
+    "en": "scrutiny",
+    "pos": "n",
+    "ipa": "/ˈskruːtəni/",
+    "vi": "sự xem xét kỹ lưỡng",
+    "kind": "word"
+  }
+  ]
 };
