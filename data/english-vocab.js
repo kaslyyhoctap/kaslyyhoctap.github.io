@@ -1992,5 +1992,98 @@ window.VOCAB = {
     "vi": "kháng kháng sinh",
     "kind": "phrase"
   }
+  ],
+ "1105": [
+  {
+   "en": "hybridisation",
+   "pos": "n",
+   "ipa": "/ˌhˈbrɪdəˈzeɪʃn/",
+   "vi": "sự lai ghép văn hóa",
+   "kind": "word"
+  },
+  {
+   "en": "homogenisation",
+   "pos": "n",
+   "ipa": "/həˌmɒdʒənaɪˈzeɪʃn/",
+   "vi": "sự đồng hóa",
+   "kind": "word"
+  },
+  {
+   "en": "vernacular",
+   "pos": "n/adj",
+   "ipa": "/vəˈnækjələ(r)/",
+   "vi": "thuộc về bản địa (kiến trúc/phương ngữ địa phương)",
+   "kind": "word"
+  },
+  {
+   "en": "provenance",
+   "pos": "n",
+   "ipa": "/ˈprɒvənəns/",
+   "vi": "nguồn gốc (vật phẩm)",
+   "kind": "word"
+  },
+  {
+   "en": "restitution",
+   "pos": "n",
+   "ipa": "/ˌrestɪˈtjuːʃn/",
+   "vi": "sự hoàn trả",
+   "kind": "word"
+  },
+  {
+   "en": "slippery slope",
+   "pos": "n",
+   "ipa": "",
+   "vi": "lập luận \"sườn dốc\" (mở đường cho hệ lụy)",
+   "kind": "phrase"
+  },
+  {
+   "en": "lingua franca",
+   "pos": "n",
+   "ipa": "",
+   "vi": "ngôn ngữ chung",
+   "kind": "phrase"
+  },
+  {
+   "en": "revitalisation",
+   "pos": "n",
+   "ipa": "/ˌriːˌvaɪtəlaɪˈzeɪʃn/",
+   "vi": "sự phục hồi",
+   "kind": "word"
+  },
+  {
+   "en": "immersion schooling",
+   "pos": "n",
+   "ipa": "",
+   "vi": "giáo dục ngôn ngữ đắm chìm",
+   "kind": "phrase"
+  },
+  {
+   "en": "diaspora",
+   "pos": "n",
+   "ipa": "/daɪˈæspərə/",
+   "vi": "cộng đồng người định cư ở nước ngoài",
+   "kind": "word"
+  },
+  {
+   "en": "overtourism",
+   "pos": "n",
+   "ipa": "/ˌəʊvəˈtʊərɪzəm/",
+   "vi": "du lịch quá tải",
+   "kind": "word"
+  },
+  {
+   "en": "monoculture",
+   "pos": "n",
+   "ipa": "/ˈmɒnəkʌltʃə(r)/",
+   "vi": "nền văn hóa/kinh tế đơn nhất",
+   "kind": "word"
+  },
+  {
+   "en": "commons",
+   "pos": "n",
+   "ipa": "/ˈkɒmənz/",
+   "vi": "tài nguyên chung",
+   "kind": "word"
+  }
   ]
 };
