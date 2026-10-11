@@ -1621,7 +1621,7 @@ window.VOCAB = {
    "kind": "phrase"
   }
  ],
- "3": [
+ "1101": [
   {
    "en": "proliferation",
    "pos": "n",

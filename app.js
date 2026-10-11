@@ -11,7 +11,7 @@ var META={
  biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene",4:"Bài 4: Đột biến gene"}},
  chemistry:{name:"Hóa học 12",short:"Hóa",units:"Chương",book:"Kết nối tri thức",lessons:{1:"Chương 1: Ester – Lipid",2:"Chương 2: Carbohydrate"}},
  english:{name:"Tiếng Anh 12",short:"Anh",units:"Unit",book:"Global Success",lessons:{1:"Unit 1: Life stories we admire",2:"Unit 2: A multicultural world"}},
- thptqg:{name:"Đề tham khảo THPTQG",short:"Đề",units:"Mã đề",book:"Đề thi thử tốt nghiệp 2026-2027",lessons:{1101:"Mã đề 1101 — Đề thi thử TN THPT 2027 (Tiếng Anh)"}}
+ thptqg:{name:"Đề tham khảo THPTQG",short:"Đề",units:"Mã đề",book:"Đề thi thử tốt nghiệp 2026-2027",lessons:{1101:"Mã đề 1101 — Đề thi thử TN THPT 2027 (Tiếng Anh)",1102:"Mã đề 1102 — Đề tham khảo THPTQG 2026 (Môi trường)",1103:"Mã đề 1103 — Đề tham khảo THPTQG 2026 (Giáo dục & công nghệ)",1104:"Mã đề 1104 — Đề tham khảo THPTQG 2026 (Sức khỏe)",1105:"Mã đề 1105 — Đề tham khảo THPTQG 2026 (Văn hóa & xã hội)"}}
 };
 var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning",reading_comprehension:"Reading Comprehension",true_false:"True/False",short_answer:"Short Answer"};
 var SKILLS={Vocabulary:"Vocabulary",Grammar:"Grammar","Cloze test":"Cloze Test","Word usage":"Word Usage","Closest meaning":"Paraphrase","Reading":"Reading"};
@@ -94,7 +94,7 @@ function bindCheckAll(id){var box=$(id);if(!box||!box.querySelector)return;var a
 function cfgSetLesson(v){Array.prototype.forEach.call($("cfgLesson").querySelectorAll("input"),function(i){i.checked=(v==="all")?true:i.value===String(v)})}
 function typeCounts(sub,l){var tc={};Q.filter(function(q){return q.subject===sub&&q.lesson===l}).forEach(function(q){var t=typeOf(q);tc[t]=(tc[t]||0)+1});return tc}
 function renderSubject(sub){curSub=sub;var m=META[sub];var th=window.THEORY[sub]||{};var ls=lessonsOf(sub);
- $("subjectHead").innerHTML='<h2>'+m.name+' <small class="muted">· '+counts(sub)+' câu · '+(sub==="thptqg"?("mã đề 1101 · "+((window.THEORY.thptqg&&window.THEORY.thptqg[1101])?window.THEORY.thptqg[1101].title:"")):(m.units+' 1–'+ls.length))+'</small></h2><p class="muted">'+m.book+' — chọn '+m.units.toLowerCase()+' để học lý thuyết, luyện trắc nghiệm hoặc tạo đề kiểm tra tính giờ.</p>';
+ $("subjectHead").innerHTML='<h2>'+m.name+' <small class="muted">· '+counts(sub)+' câu · '+(sub==="thptqg"?("mã đề "+ls.join(" · ")):(m.units+' 1–'+ls.length))+'</small></h2><p class="muted">'+m.book+' — chọn '+m.units.toLowerCase()+' để học lý thuyết, luyện trắc nghiệm hoặc tạo đề kiểm tra tính giờ.</p>';
  $("cfgLesson").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+ls.map(function(l){return '<label class="chk"><input type="checkbox" value="'+l+'" checked> '+(sub==="thptqg"&&th[l]?th[l].title:(m.units+' '+l))+'</label>'}).join("");
  var tys=Object.keys(TYPES).filter(function(t){return Q.some(function(q){return q.subject===sub&&typeOf(q)===t})});
  $("cfgType").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+tys.map(function(t){var n=Q.filter(function(q){return q.subject===sub&&typeOf(q)===t}).length;return '<label class="chk'+(n?"":" dis")+'"><input type="checkbox" value="'+t+'" checked> '+TYPES[t]+' ('+n+')</label>'}).join("");
@@ -365,7 +365,7 @@ function vocabKey(w){return $("vUnit").value+"::"+w.en}
 function renderVocab(){
  V.list=vocabFilter();V.i=0;V.flip=false;
  var u=$("vUnit").value,all=(vocabAll()[u]||[]).length;
- $("vocabCount").textContent=(u==="3"?"· Đề 1101":"· Unit "+u)+" · "+V.list.length+"/"+all+" thẻ";
+ $("vocabCount").textContent=(+u>1000?"· Đề "+u:"· Unit "+u)+" · "+V.list.length+"/"+all+" thẻ";
  renderFc();renderVGrid();
  go("vocab");
 }
@@ -387,9 +387,9 @@ function renderFc(){
   +(w.pos&&$("vMode").value!=="vien"?'<div class="ipa">'+esc(w.pos+(w.ipa?" · "+w.ipa:""))+'</div>':"")
   +((!V.flip&&V.hideAll)?'<div class="hint">Bấm để hiện nghĩa</div>':"")
   +((!V.flip&&!V.hideAll)?'<div class="vi">'+esc(backText)+'</div>':"")
-  +'<div class="hint">'+esc(w.kind==="phrase"?"Cụm từ":"Từ vựng")+' · Unit '+esc($("vUnit").value)+(known?" · Đã thuộc ✓":"")+'</div></div>'
+  +'<div class="hint">'+esc(w.kind==="phrase"?"Cụm từ":"Từ vựng")+' · '+(+$("vUnit").value>1000?"Đề ":"Unit ")+esc($("vUnit").value)+(known?" · Đã thuộc ✓":"")+'</div></div>'
   +'<div class="fc-face fc-back"><div class="en">'+esc(backText)+'</div>'
-  +'<div class="hint">'+esc(w.kind==="phrase"?"Cụm từ":"Từ vựng")+' · Unit '+esc($("vUnit").value)+(known?" · Đã thuộc ✓":"")+'</div></div>';
+  +'<div class="hint">'+esc(w.kind==="phrase"?"Cụm từ":"Từ vựng")+' · '+(+$("vUnit").value>1000?"Đề ":"Unit ")+esc($("vUnit").value)+(known?" · Đã thuộc ✓":"")+'</div></div>';
  $("fcCount").textContent=(V.i+1)+"/"+n;
  var done=V.list.filter(function(x){return S.vocabKnown[$("vUnit").value+"::"+x.en]}).length;
  var pct=n?Math.round(done/n*100):0;$("fcProg").style.width=pct+"%";$("fcProgWrap").setAttribute("aria-valuenow",pct);
