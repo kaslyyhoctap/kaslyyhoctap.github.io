@@ -126,6 +126,7 @@ data/
   english-unit2d.js   # 30 câu Anh Unit 2 band 7.0–8.5 (nâng cao)
   english-unit1e.js   # 12 câu Anh Unit 1: Reading Comprehension + cloze khó
   english-unit2e.js   # 12 câu Anh Unit 2: Reading Comprehension + cloze khó
+  english-mock1101.js # 44 câu Đề thi thử TN THPT 2027 (Mã 1101): điền từ, sắp xếp thư, điền câu, 2 đọc hiểu
   english-vocab.js    # flashcard từ vựng Unit 1–2
   theory.js           # tóm tắt lý thuyết Sử + Sinh + Hóa (kèm sơ đồ SVG)
   english-theory.js   # tóm tắt lý thuyết Anh Unit 1–2
