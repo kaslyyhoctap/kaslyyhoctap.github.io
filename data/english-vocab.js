@@ -1899,5 +1899,98 @@ window.VOCAB = {
     "vi": "sự xem xét kỹ lưỡng",
     "kind": "word"
   }
+  ],
+  "1104": [
+  {
+    "en": "epidemic",
+    "pos": "n",
+    "ipa": "/ˌepɪˈdemɪk/",
+    "vi": "dịch bệnh, sự lan rộng (bệnh tật)",
+    "kind": "word"
+  },
+  {
+    "en": "sedentary",
+    "pos": "adj",
+    "ipa": "/ˈsedntri/",
+    "vi": "ít vận động, tĩnh tại",
+    "kind": "word"
+  },
+  {
+    "en": "insidious",
+    "pos": "adj",
+    "ipa": "/ɪnˈsɪdiəs/",
+    "vi": "âm thầm nguy hiểm",
+    "kind": "word"
+  },
+  {
+    "en": "truncate",
+    "pos": "v",
+    "ipa": "/trʌŋˈkeɪt/",
+    "vi": "cắt ngắn",
+    "kind": "word"
+  },
+  {
+    "en": "revenge bedtime procrastination",
+    "pos": "n",
+    "ipa": "",
+    "vi": "thức khuya \"trả thù\" để lấy lại thời gian riêng",
+    "kind": "phrase"
+  },
+  {
+    "en": "confounder",
+    "pos": "n",
+    "ipa": "/kənˈfaʊndə(r)/",
+    "vi": "biến nhiễu, yếu tố gây nhiễu",
+    "kind": "word"
+  },
+  {
+    "en": "satiety",
+    "pos": "n",
+    "ipa": "/səˈtaɪəti/",
+    "vi": "cảm giác no, thỏa mãn",
+    "kind": "word"
+  },
+  {
+    "en": "hyper-palatability",
+    "pos": "n",
+    "ipa": "",
+    "vi": "độ hấp dẫn cực cao (đồ ăn)",
+    "kind": "word"
+  },
+  {
+    "en": "reformulation",
+    "pos": "n",
+    "ipa": "/ˌriːˌfɔːmjuˈleɪʃn/",
+    "vi": "cải tổ công thức sản phẩm",
+    "kind": "word"
+  },
+  {
+    "en": "stewardship",
+    "pos": "n",
+    "ipa": "/ˈstjuːədʃɪp/",
+    "vi": "quản lý có trách nhiệm",
+    "kind": "word"
+  },
+  {
+    "en": "broad-spectrum",
+    "pos": "adj",
+    "ipa": "",
+    "vi": "phổ rộng (thuốc)",
+    "kind": "word"
+  },
+  {
+    "en": "pipeline",
+    "pos": "n",
+    "ipa": "/ˈpaɪplaɪn/",
+    "vi": "chuỗi phát triển (thuốc mới)",
+    "kind": "word"
+  },
+  {
+    "en": "antimicrobial resistance",
+    "pos": "n",
+    "ipa": "",
+    "vi": "kháng kháng sinh",
+    "kind": "phrase"
+  }
   ]
 };
