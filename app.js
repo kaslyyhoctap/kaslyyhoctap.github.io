@@ -10,6 +10,7 @@ var META={
  history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh"}},
  biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene",4:"Bài 4: Đột biến gene",5:"Chuyên đề 1 – Đề 1"}},
  chemistry:{name:"Hóa học 12",short:"Hóa",units:"Chương",book:"Kết nối tri thức",lessons:{1:"Chương 1: Ester – Lipid",2:"Chương 2: Carbohydrate"}},
+ physics:{name:"Vật lí 12",short:"Lý",units:"Đề",book:"Đề khảo sát 2026-2027",lessons:{1:"Đề khảo sát lần 1",2:"Đề khảo sát lần 2",3:"Đề luyện thêm 1",4:"Đề luyện thêm 2",5:"Đề luyện thêm 3"}},
   literature:{name:"Ngữ văn 12",short:"Văn",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Khả năng lớn lao của tiểu thuyết",2:"Bài 2: Những thế giới thơ",3:"Bài 3: Tây Tiến (Quang Dũng)"}},
  english:{name:"Tiếng Anh 12",short:"Anh",units:"Unit",book:"Global Success",lessons:{1:"Unit 1: Life stories we admire",2:"Unit 2: A multicultural world",3:"Unit 3: Verbs with prepositions · Phrasal verbs · Relative clauses"}},
  thptqg:{name:"Đề tham khảo THPTQG",short:"Đề",units:"Mã đề",book:"Đề thi thử tốt nghiệp 2026-2027",lessons:{1101:"Mã đề 1101 — Đề thi thử TN THPT 2027 (Tiếng Anh)",1102:"Mã đề 1102 — Đề tham khảo THPTQG 2026 (Môi trường)",1103:"Mã đề 1103 — Đề tham khảo THPTQG 2026 (Giáo dục & công nghệ)",1104:"Mã đề 1104 — Đề tham khảo THPTQG 2026 (Sức khỏe)",1105:"Mã đề 1105 — Đề tham khảo THPTQG 2026 (Văn hóa & xã hội)"}}
@@ -17,10 +18,10 @@ var META={
 var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning",reading_comprehension:"Reading Comprehension",true_false:"True/False",short_answer:"Short Answer"};
 var SKILLS={Vocabulary:"Vocabulary",Grammar:"Grammar","Cloze test":"Cloze Test","Word usage":"Word Usage","Closest meaning":"Paraphrase","Reading":"Reading"};
 function lessonsOf(sub){return Object.keys(META[sub].lessons).map(Number).sort(function(a,b){return a-b})}
-function badgeCls(k){return k==="history"?"h":k==="biology"?"b":k==="chemistry"?"c":k==="literature"?"v":k==="thptqg"?"q":"e"}
-function btnCls(k){return k==="history"?"btn-primary":k==="biology"?"btn-bio":k==="chemistry"?"btn-chem":k==="literature"?"btn-van":k==="thptqg"?"btn-qg":"btn-eng"}
-function subjTag(q){return q.subject==="history"?"Sử":q.subject==="biology"?"Sinh":q.subject==="chemistry"?"Hóa":q.subject==="literature"?"Văn":q.subject==="thptqg"?"Đề":"Anh"}
-function unitTag(q){return q.subject==="thptqg"?String(q.lesson):((q.subject==="english"?"U":q.subject==="chemistry"?"C":"B")+q.lesson)}
+function badgeCls(k){return k==="physics"?"p":k==="history"?"h":k==="biology"?"b":k==="chemistry"?"c":k==="literature"?"v":k==="thptqg"?"q":"e"}
+function btnCls(k){return k==="physics"?"btn-phy":k==="history"?"btn-primary":k==="biology"?"btn-bio":k==="chemistry"?"btn-chem":k==="literature"?"btn-van":k==="thptqg"?"btn-qg":"btn-eng"}
+function subjTag(q){return q.subject==="physics"?"Lý":q.subject==="history"?"Sử":q.subject==="biology"?"Sinh":q.subject==="chemistry"?"Hóa":q.subject==="literature"?"Văn":q.subject==="thptqg"?"Đề":"Anh"}
+function unitTag(q){return q.subject==="thptqg"?String(q.lesson):q.subject==="physics"?"Đ"+q.lesson:((q.subject==="english"?"U":q.subject==="chemistry"?"C":"B")+q.lesson)}
 function isEngType(sub){return sub==="english"||sub==="thptqg"}
 function typeOf(q){return q.type||"multiple_choice"}
 function chipFor(q){var t=q.type?TYPES[q.type]:"";if(t&&q.topic&&t.toLowerCase()===q.topic.toLowerCase())t="";return esc(q.topic)+(t?" · "+esc(t):"")+" · "+esc(q.difficulty)+(q.band?" · Band "+Number(q.band).toFixed(1):"")}
@@ -51,7 +52,7 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape"){setNav(fals
 
 /* router */
 var views=["home","subject","theory","quiz","bank","vocab","progress","result"];
-var SUBJS=["history","biology","chemistry","english","literature","thptqg"];
+var SUBJS=["history","biology","chemistry","physics","english","literature","thptqg"];
 function go(v){views.forEach(function(x){$("view-"+x).hidden=x!==v});document.querySelectorAll(".nav-btn").forEach(function(b){b.classList.toggle("active",b.dataset.nav===v||(v==="subject"&&curSub&&b.dataset.nav===curSub))});var sb=$("subjBtn");if(sb)sb.classList.toggle("active",v==="subject");setNav(false);setSubj(false);window.scrollTo({top:0,behavior:"smooth"});$("main").querySelector("h1,h2")?.setAttribute("tabindex","-1")}
 document.addEventListener("click",function(e){var b=e.target.closest("[data-nav]");if(!b)return;var v=b.dataset.nav;
  if(v==="home")renderHome();
@@ -80,7 +81,7 @@ function renderHome(){
  var tot=S.hist.length,best=S.hist.reduce(function(m,h){return Math.max(m,h.point)},0);
  $("heroBest").textContent=tot?best.toFixed(2):"–";
  $("heroStats").innerHTML='<div><b>'+Q.length+'</b><span>câu hỏi</span></div><div><b>'+tot+'</b><span>đề đã làm</span></div><div><b>'+(tot?best.toFixed(1):"–")+'</b><span>điểm cao nhất</span></div>';
- $("heroBars").innerHTML=Object.keys(META).map(function(k){var m=META[k];return lessonsOf(k).map(function(l){var p=(S.prog[k]||{})[l]||0;return '<div class="hbar"><span>'+m.short+' '+(m.units==="Unit"?"U":m.units==="Chương"?"C":"B")+l+'</span><i><em style="width:'+p+'%"></em></i><span>'+p+'%</span></div>'}).join("")}).join("");
+ $("heroBars").innerHTML=Object.keys(META).map(function(k){var m=META[k];return lessonsOf(k).map(function(l){var p=(S.prog[k]||{})[l]||0;return '<div class="hbar"><span>'+m.short+' '+(m.units==="Unit"?"U":m.units==="Chương"?"C":m.units==="Đề"?"Đ":"B")+l+'</span><i><em style="width:'+p+'%"></em></i><span>'+p+'%</span></div>'}).join("")}).join("");
  go("home");
 }
 document.addEventListener("click",function(e){
