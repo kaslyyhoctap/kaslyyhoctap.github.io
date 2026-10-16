@@ -7,7 +7,7 @@ var store={get:function(){try{return JSON.parse(localStorage.getItem(LS))||{}}ca
 var S=Object.assign({theme:"light",best:0,exams:0,correct:0,answered:{},marked:[],hist:[],prog:{},vocabKnown:{},starred:{}},store.get());
 function save(){store.set(S)}
 var META={
- history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh"}},
+ history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh",4:"Kiểm tra giữa học kì I (đề tổng hợp)"}},
  biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene",4:"Bài 4: Đột biến gene",5:"Chuyên đề 1 – Đề 1"}},
  chemistry:{name:"Hóa học 12",short:"Hóa",units:"Chương",book:"Kết nối tri thức",lessons:{1:"Chương 1: Ester – Lipid",2:"Chương 2: Carbohydrate"}},
  physics:{name:"Vật lí 12",short:"Lý",units:"Đề",book:"Đề khảo sát 2026-2027",lessons:{1:"Đề khảo sát lần 1",2:"Đề khảo sát lần 2",3:"Đề luyện thêm 1",4:"Đề luyện thêm 2",5:"Đề luyện thêm 3"}},
@@ -21,7 +21,7 @@ function lessonsOf(sub){return Object.keys(META[sub].lessons).map(Number).sort(f
 function badgeCls(k){return k==="physics"?"p":k==="history"?"h":k==="biology"?"b":k==="chemistry"?"c":k==="literature"?"v":k==="thptqg"?"q":"e"}
 function btnCls(k){return k==="physics"?"btn-phy":k==="history"?"btn-primary":k==="biology"?"btn-bio":k==="chemistry"?"btn-chem":k==="literature"?"btn-van":k==="thptqg"?"btn-qg":"btn-eng"}
 function subjTag(q){return q.subject==="physics"?"Lý":q.subject==="history"?"Sử":q.subject==="biology"?"Sinh":q.subject==="chemistry"?"Hóa":q.subject==="literature"?"Văn":q.subject==="thptqg"?"Đề":"Anh"}
-function unitTag(q){return q.subject==="thptqg"?String(q.lesson):q.subject==="physics"?"Đ"+q.lesson:((q.subject==="english"?"U":q.subject==="chemistry"?"C":"B")+q.lesson)}
+function unitTag(q){return q.subject==="thptqg"?String(q.lesson):q.subject==="physics"?"Đ"+q.lesson:q.subject==="history"&&q.lesson===4?"KT1":((q.subject==="english"?"U":q.subject==="chemistry"?"C":"B")+q.lesson)}
 function isEngType(sub){return sub==="english"||sub==="thptqg"}
 function typeOf(q){return q.type||"multiple_choice"}
 function chipFor(q){var t=q.type?TYPES[q.type]:"";if(t&&q.topic&&t.toLowerCase()===q.topic.toLowerCase())t="";return esc(q.topic)+(t?" · "+esc(t):"")+" · "+esc(q.difficulty)+(q.band?" · Band "+Number(q.band).toFixed(1):"")}
@@ -68,7 +68,7 @@ function subjProg(sub){var p=S.prog[sub]||{};var ls=lessonsOf(sub).map(function(
 function renderHome(){
  var cards=Object.keys(META).map(function(k){var m=META[k];
   return '<div class="panel subj-card"><div class="top"><span class="badge '+badgeCls(k)+'">'+m.name+'</span>'
-  +'<h3>'+m.name+'</h3><p class="muted">'+lessonsOf(k).length+' '+m.units+' · '+counts(k)+' câu hỏi · '+m.book+'</p>'
+  +'<h3>'+m.name+'</h3><p class="muted">'+(k==="history"?(lessonsOf(k).length-1)+' '+m.units+' + đề KT giữa học kì I':lessonsOf(k).length+' '+m.units)+' · '+counts(k)+' câu hỏi · '+m.book+'</p>'
   +'<div class="pbar" role="progressbar" aria-valuenow="'+subjProg(k)+'" aria-valuemin="0" aria-valuemax="100" aria-label="Tiến độ '+m.name+'"><i style="width:'+subjProg(k)+'%"></i></div>'
   +'<p class="small muted">Tiến độ '+subjProg(k)+'%</p>'
   +'<div class="row"><button class="btn '+btnCls(k)+'" data-nav="'+k+'">Bắt đầu học</button></div></div></div>'}).join("");
@@ -81,7 +81,7 @@ function renderHome(){
  var tot=S.hist.length,best=S.hist.reduce(function(m,h){return Math.max(m,h.point)},0);
  $("heroBest").textContent=tot?best.toFixed(2):"–";
  $("heroStats").innerHTML='<div><b>'+Q.length+'</b><span>câu hỏi</span></div><div><b>'+tot+'</b><span>đề đã làm</span></div><div><b>'+(tot?best.toFixed(1):"–")+'</b><span>điểm cao nhất</span></div>';
- $("heroBars").innerHTML=Object.keys(META).map(function(k){var m=META[k];return lessonsOf(k).map(function(l){var p=(S.prog[k]||{})[l]||0;return '<div class="hbar"><span>'+m.short+' '+(m.units==="Unit"?"U":m.units==="Chương"?"C":m.units==="Đề"?"Đ":"B")+l+'</span><i><em style="width:'+p+'%"></em></i><span>'+p+'%</span></div>'}).join("")}).join("");
+ $("heroBars").innerHTML=Object.keys(META).map(function(k){var m=META[k];return lessonsOf(k).map(function(l){var p=(S.prog[k]||{})[l]||0;return '<div class="hbar"><span>'+m.short+' '+(k==="history"&&l===4?"KT1":(m.units==="Unit"?"U":m.units==="Chương"?"C":m.units==="Đề"?"Đ":"B")+l)+'</span><i><em style="width:'+p+'%"></em></i><span>'+p+'%</span></div>'}).join("")}).join("");
  go("home");
 }
 document.addEventListener("click",function(e){
@@ -96,8 +96,8 @@ function bindCheckAll(id){var box=$(id);if(!box||!box.querySelector)return;var a
 function cfgSetLesson(v){Array.prototype.forEach.call($("cfgLesson").querySelectorAll("input"),function(i){i.checked=(v==="all")?true:i.value===String(v)})}
 function typeCounts(sub,l){var tc={};Q.filter(function(q){return q.subject===sub&&q.lesson===l}).forEach(function(q){var t=typeOf(q);tc[t]=(tc[t]||0)+1});return tc}
 function renderSubject(sub){curSub=sub;var m=META[sub];var th=window.THEORY[sub]||{};var ls=lessonsOf(sub);
- $("subjectHead").innerHTML='<h2>'+m.name+' <small class="muted">· '+counts(sub)+' câu · '+(sub==="thptqg"?("mã đề "+ls.join(" · ")):(m.units+' 1–'+ls.length))+'</small></h2><p class="muted">'+m.book+' — chọn '+m.units.toLowerCase()+' để học lý thuyết, luyện trắc nghiệm hoặc tạo đề kiểm tra tính giờ.</p>';
- $("cfgLesson").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+ls.map(function(l){return '<label class="chk"><input type="checkbox" value="'+l+'" checked> '+(sub==="thptqg"&&th[l]?th[l].title:(m.units+' '+l))+'</label>'}).join("");
+ $("subjectHead").innerHTML='<h2>'+m.name+' <small class="muted">· '+counts(sub)+' câu · '+(sub==="thptqg"?("mã đề "+ls.join(" · ")):(sub==="history"?("Bài 1–3 + đề KT giữa học kì I"):(m.units+' 1–'+ls.length)))+'</small></h2><p class="muted">'+m.book+' — chọn '+m.units.toLowerCase()+' để học lý thuyết, luyện trắc nghiệm hoặc tạo đề kiểm tra tính giờ.</p>';
+ $("cfgLesson").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+ls.map(function(l){return '<label class="chk"><input type="checkbox" value="'+l+'" checked> '+esc(th[l]&&th[l].title?th[l].title:(m.units+' '+l))+'</label>'}).join("");
  var tys=Object.keys(TYPES).filter(function(t){return Q.some(function(q){return q.subject===sub&&typeOf(q)===t})});
  $("cfgType").innerHTML='<label class="chk"><input type="checkbox" value="all" checked> Tất cả</label>'+tys.map(function(t){var n=Q.filter(function(q){return q.subject===sub&&typeOf(q)===t}).length;return '<label class="chk'+(n?"":" dis")+'"><input type="checkbox" value="'+t+'" checked> '+TYPES[t]+' ('+n+')</label>'}).join("");
  bindCheckAll("cfgLesson");bindCheckAll("cfgType");
@@ -215,7 +215,7 @@ function resultOpts(q,s,a){
 function tfRows(q){return q.statements.map(function(s2,i){return '<div class="opt" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+chem(s2.t)+'</span><b>'+(s2.ok?"Đúng":"Sai")+'</b></div>'}).join("")}
 function renderQ(){
  var q=curQ(),st=E.qs[E.i],m=META[E.cfg.subject];
- var scope=E.cfg.lesson==="all"?" · Tổng hợp":(E.cfg.subject==="thptqg"?" · "+((window.THEORY.thptqg&&window.THEORY.thptqg[E.cfg.lesson])?window.THEORY.thptqg[E.cfg.lesson].title:("Mã đề "+E.cfg.lesson)):(" · "+m.units+" "+E.cfg.lesson));
+ var scope=E.cfg.lesson==="all"?" · Tổng hợp":(E.cfg.subject==="thptqg"?" · "+((window.THEORY.thptqg&&window.THEORY.thptqg[E.cfg.lesson])?window.THEORY.thptqg[E.cfg.lesson].title:("Mã đề "+E.cfg.lesson)):(" · "+(E.cfg.subject==="history"&&E.cfg.lesson===4?"KT giữa học kì I":(m.units+" "+E.cfg.lesson))));
  var kind=isEngType(E.cfg.subject)&&E.cfg.qtype&&E.cfg.qtype!=="all"?(" · "+(Array.isArray(E.cfg.qtype)?E.cfg.qtype.map(function(t){return TYPES[t]||t}).join(" + "):TYPES[E.cfg.qtype])):"";
  $("qTitle").textContent=(E.cfg.quick?"Kiểm tra nhanh · ":E.practice?"Luyện tập · ":"Kiểm tra · ")+m.name+scope+kind;
  $("qCount").textContent="Câu "+(E.i+1)+"/"+E.qs.length;
