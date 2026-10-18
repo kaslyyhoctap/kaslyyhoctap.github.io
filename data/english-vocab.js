@@ -1,4 +1,4 @@
-/* Flashcard vocabulary Unit 1-2 (Global Success). Source: user docx tables (full import); shifted tail meanings realigned. */
+/* Flashcard vocabulary Unit 1-3 (Global Success). Source: user docx tables (full import); shifted tail meanings realigned. */
 window.VOCAB = {
  "1": [
   {
@@ -2086,4 +2086,609 @@ window.VOCAB = {
    "kind": "word"
   }
   ]
+,
+ "3": [
+  {
+   "en": "ecotour",
+   "pos": "n",
+   "ipa": "/'iːkəʊtʊə/",
+   "vi": "chuyến du lịch sinh thái",
+   "kind": "word"
+  },
+  {
+   "en": "ecotourism",
+   "pos": "n",
+   "ipa": "/'iːkəʊtʊərɪzəm/",
+   "vi": "du lịch sinh thái",
+   "kind": "word"
+  },
+  {
+   "en": "ecotourist",
+   "pos": "n",
+   "ipa": "/'iːkəʊtʊərɪst/",
+   "vi": "khách du lịch sinh thái",
+   "kind": "word"
+  },
+  {
+   "en": "eco-system",
+   "pos": "n",
+   "ipa": "/'iːkəʊˌsɪstəm/",
+   "vi": "hệ sinh thái",
+   "kind": "word"
+  },
+  {
+   "en": "eco-conscious",
+   "pos": "adj",
+   "ipa": "/ˌiːkəʊ 'kɒnʃəs/",
+   "vi": "có ý thức sinh thái",
+   "kind": "word"
+  },
+  {
+   "en": "judge",
+   "pos": "v",
+   "ipa": "/dʒʌdʒ/",
+   "vi": "đánh giá, phán xét, phân xử",
+   "kind": "word"
+  },
+  {
+   "en": "awareness",
+   "pos": "n",
+   "ipa": "/ə'weənəs/",
+   "vi": "sự nhận thức",
+   "kind": "word"
+  },
+  {
+   "en": "aware of",
+   "pos": "adj",
+   "ipa": "/ə'weə(r)/",
+   "vi": "nhận thức, có ý thức",
+   "kind": "phrase"
+  },
+  {
+   "en": "unaware of",
+   "pos": "adj",
+   "ipa": "/ˌʌnə'weə(r)/",
+   "vi": "không nhận thức, không biết",
+   "kind": "phrase"
+  },
+  {
+   "en": "awareness of sth",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "nhận thức về điều gì",
+   "kind": "phrase"
+  },
+  {
+   "en": "raise awareness",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "nâng cao nhận thức",
+   "kind": "phrase"
+  },
+  {
+   "en": "resource",
+   "pos": "n",
+   "ipa": "/rɪ'sɔːs/",
+   "vi": "nguồn tài nguyên",
+   "kind": "word"
+  },
+  {
+   "en": "resourceful",
+   "pos": "adj",
+   "ipa": "/rɪ'sɔːsfl/",
+   "vi": "tháo vát, nhiều ý tưởng",
+   "kind": "word"
+  },
+  {
+   "en": "resourcefulness",
+   "pos": "n",
+   "ipa": "/rɪ'sɔːsfəlnəs/",
+   "vi": "sự tháo vát",
+   "kind": "word"
+  },
+  {
+   "en": "efficient",
+   "pos": "adj",
+   "ipa": "/ɪ'fɪʃnt/",
+   "vi": "hiệu quả",
+   "kind": "word"
+  },
+  {
+   "en": "efficiency",
+   "pos": "n",
+   "ipa": "/ɪ'fɪʃnsi/",
+   "vi": "sự hiệu quả",
+   "kind": "word"
+  },
+  {
+   "en": "efficiently",
+   "pos": "adv",
+   "ipa": "/ɪ'fɪʃntli/",
+   "vi": "một cách hiệu quả",
+   "kind": "word"
+  },
+  {
+   "en": "eco-friendly",
+   "pos": "adj",
+   "ipa": "/ˌiːkəʊ 'frendli/",
+   "vi": "thân thiện với môi trường",
+   "kind": "word"
+  },
+  {
+   "en": "eco-friendliness",
+   "pos": "n",
+   "ipa": "/ˌiːkəʊ 'frendlinəs/",
+   "vi": "tính thân thiện với môi trường",
+   "kind": "word"
+  },
+  {
+   "en": "decompose",
+   "pos": "v",
+   "ipa": "/ˌdiːkəm'pəʊz/",
+   "vi": "phân hủy",
+   "kind": "word"
+  },
+  {
+   "en": "decomposable",
+   "pos": "adj",
+   "ipa": "/ˌdiːkəm'pəʊzəbl/",
+   "vi": "có thể phân hủy",
+   "kind": "word"
+  },
+  {
+   "en": "decomposition",
+   "pos": "n",
+   "ipa": "/ˌdiːkəm'pəʊzɪʃn/",
+   "vi": "quá trình phân hủy",
+   "kind": "word"
+  },
+  {
+   "en": "compost",
+   "pos": "n",
+   "ipa": "/'kɒmpɒst/",
+   "vi": "phân hữu cơ",
+   "kind": "word"
+  },
+  {
+   "en": "compost",
+   "pos": "v",
+   "ipa": "/'kɒmpɒst/",
+   "vi": "ủ phân",
+   "kind": "word"
+  },
+  {
+   "en": "composting",
+   "pos": "n",
+   "ipa": "/'kɒmpɒstɪŋ/",
+   "vi": "việc làm phân hữu cơ",
+   "kind": "word"
+  },
+  {
+   "en": "reusable",
+   "pos": "adj",
+   "ipa": "/ˌriː'juːzəbl/",
+   "vi": "có thể tái sử dụng",
+   "kind": "word"
+  },
+  {
+   "en": "reuse",
+   "pos": "v/n",
+   "ipa": "/ˌriː'juːz/",
+   "vi": "tái sử dụng",
+   "kind": "word"
+  },
+  {
+   "en": "single-use",
+   "pos": "adj",
+   "ipa": "/ˌsɪŋɡl 'juːs/",
+   "vi": "dùng một lần",
+   "kind": "word"
+  },
+  {
+   "en": "reduce",
+   "pos": "v",
+   "ipa": "/rɪ'djuːs/",
+   "vi": "làm giảm, giảm bớt",
+   "kind": "word"
+  },
+  {
+   "en": "waste",
+   "pos": "n",
+   "ipa": "/weɪst/",
+   "vi": "rác thải, sự lãng phí",
+   "kind": "word"
+  },
+  {
+   "en": "wasteful",
+   "pos": "adj",
+   "ipa": "/'weɪstfl/",
+   "vi": "lãng phí",
+   "kind": "word"
+  },
+  {
+   "en": "household waste",
+   "pos": "phr",
+   "ipa": "/'haʊshəʊld weɪst/",
+   "vi": "rác thải sinh hoạt",
+   "kind": "phrase"
+  },
+  {
+   "en": "leak",
+   "pos": "v/n",
+   "ipa": "/liːk/",
+   "vi": "rò rỉ",
+   "kind": "word"
+  },
+  {
+   "en": "leaking",
+   "pos": "adj",
+   "ipa": "/'liːkɪŋ/",
+   "vi": "đang rò rỉ",
+   "kind": "word"
+  },
+  {
+   "en": "creative",
+   "pos": "adj",
+   "ipa": "/kri'eɪtɪv/",
+   "vi": "đầy sáng tạo",
+   "kind": "word"
+  },
+  {
+   "en": "bookmark",
+   "pos": "n/v",
+   "ipa": "/'bʊkmɑːk/",
+   "vi": "đánh dấu trang",
+   "kind": "word"
+  },
+  {
+   "en": "package",
+   "pos": "n",
+   "ipa": "/'pækɪdʒ/",
+   "vi": "gói hàng, bao bì",
+   "kind": "word"
+  },
+  {
+   "en": "packaging",
+   "pos": "n",
+   "ipa": "/'pækɪdʒɪŋ/",
+   "vi": "bao bì, việc đóng gói",
+   "kind": "word"
+  },
+  {
+   "en": "atmosphere",
+   "pos": "n",
+   "ipa": "/'ætməsfɪə(r)/",
+   "vi": "bầu khí quyển, bầu không khí",
+   "kind": "word"
+  },
+  {
+   "en": "container",
+   "pos": "n",
+   "ipa": "/kən'teɪnə(r)/",
+   "vi": "thùng, thùng chứa, hộp, gói",
+   "kind": "word"
+  },
+  {
+   "en": "contain",
+   "pos": "v",
+   "ipa": "/kən'teɪn/",
+   "vi": "chứa đựng",
+   "kind": "word"
+  },
+  {
+   "en": "leftover",
+   "pos": "a/n",
+   "ipa": "/'leftˌəʊvə(r)/",
+   "vi": "còn sót lại / thức ăn thừa",
+   "kind": "word"
+  },
+  {
+   "en": "cardboard",
+   "pos": "n/adj",
+   "ipa": "/'kɑːdbɔːd/",
+   "vi": "bìa cứng, làm bằng bìa cứng",
+   "kind": "word"
+  },
+  {
+   "en": "contaminated",
+   "pos": "adj",
+   "ipa": "/kən'tæmɪneɪtɪd/",
+   "vi": "nhiễm độc, nhiễm khuẩn",
+   "kind": "word"
+  },
+  {
+   "en": "recyclable",
+   "pos": "adj",
+   "ipa": "/ˌriː'saɪkləbl/",
+   "vi": "có thể tái chế",
+   "kind": "word"
+  },
+  {
+   "en": "recycle",
+   "pos": "v",
+   "ipa": "/ˌriː'saɪkl/",
+   "vi": "tái chế",
+   "kind": "word"
+  },
+  {
+   "en": "recycling",
+   "pos": "n",
+   "ipa": "/ˌriː'saɪklɪŋ/",
+   "vi": "việc tái chế",
+   "kind": "word"
+  },
+  {
+   "en": "pile",
+   "pos": "n",
+   "ipa": "/paɪl/",
+   "vi": "chồng, đống",
+   "kind": "word"
+  },
+  {
+   "en": "sustainable",
+   "pos": "adj",
+   "ipa": "/sə'steɪnəbl/",
+   "vi": "bền vững",
+   "kind": "word"
+  },
+  {
+   "en": "sustain",
+   "pos": "v",
+   "ipa": "/sə'steɪn/",
+   "vi": "duy trì",
+   "kind": "word"
+  },
+  {
+   "en": "sustainability",
+   "pos": "n",
+   "ipa": "/səˌsteɪnə'bɪləti/",
+   "vi": "tính bền vững",
+   "kind": "word"
+  },
+  {
+   "en": "sustainably",
+   "pos": "adv",
+   "ipa": "/sə'steɪnəbli/",
+   "vi": "một cách bền vững",
+   "kind": "word"
+  },
+  {
+   "en": "sustainable living",
+   "pos": "phr",
+   "ipa": "/sə'steɪnəbl 'lɪvɪŋ/",
+   "vi": "lối sống bền vững",
+   "kind": "phrase"
+  },
+  {
+   "en": "release",
+   "pos": "v",
+   "ipa": "/rɪ'liːs/",
+   "vi": "thải ra, giải phóng",
+   "kind": "word"
+  },
+  {
+   "en": "release",
+   "pos": "n",
+   "ipa": "/rɪ'liːs/",
+   "vi": "sự giải phóng, sự phát hành",
+   "kind": "word"
+  },
+  {
+   "en": "conservation",
+   "pos": "n",
+   "ipa": "/ˌkɒnsə'veɪʃn/",
+   "vi": "sự bảo tồn",
+   "kind": "word"
+  },
+  {
+   "en": "conserve",
+   "pos": "v",
+   "ipa": "/kən'sɜːv/",
+   "vi": "bảo tồn, giữ gìn",
+   "kind": "word"
+  },
+  {
+   "en": "conservative",
+   "pos": "adj",
+   "ipa": "/kən'sɜːvətɪv/",
+   "vi": "bảo thủ, dè dặt",
+   "kind": "word"
+  },
+  {
+   "en": "conversational",
+   "pos": "adj",
+   "ipa": "/ˌkɒnsə'veɪʃənl/",
+   "vi": "liên quan đến bảo tồn",
+   "kind": "word"
+  },
+  {
+   "en": "emission",
+   "pos": "n",
+   "ipa": "/ɪ'mɪʃn/",
+   "vi": "khí thải, sự phát thải",
+   "kind": "word"
+  },
+  {
+   "en": "emit",
+   "pos": "v",
+   "ipa": "/ɪ'mɪt/",
+   "vi": "thải ra, phát ra",
+   "kind": "word"
+  },
+  {
+   "en": "low-emission",
+   "pos": "adj",
+   "ipa": "/ˌləʊ ɪ'mɪʃn/",
+   "vi": "thải ra ít khí",
+   "kind": "word"
+  },
+  {
+   "en": "renewable",
+   "pos": "adj",
+   "ipa": "/rɪ'njuːəbl/",
+   "vi": "có thể tái tạo",
+   "kind": "word"
+  },
+  {
+   "en": "renewal",
+   "pos": "n",
+   "ipa": "/rɪ'njuːəl/",
+   "vi": "sự đổi mới, sự tái tạo",
+   "kind": "word"
+  },
+  {
+   "en": "renew",
+   "pos": "v",
+   "ipa": "/rɪ'njuː/",
+   "vi": "tái tạo, làm mới",
+   "kind": "word"
+  },
+  {
+   "en": "non-renewable",
+   "pos": "adj",
+   "ipa": "/ˌnɒn rɪ'njuːəbl/",
+   "vi": "không tái tạo được",
+   "kind": "word"
+  },
+  {
+   "en": "biodiversity",
+   "pos": "n",
+   "ipa": "/ˌbaɪəʊdaɪ'vɜːsəti/",
+   "vi": "sự đa dạng sinh học",
+   "kind": "word"
+  },
+  {
+   "en": "biodegradable",
+   "pos": "adj",
+   "ipa": "/ˌbaɪəʊdɪ'ɡreɪdəbl/",
+   "vi": "có thể phân hủy sinh học",
+   "kind": "word"
+  },
+  {
+   "en": "biodegrade",
+   "pos": "v",
+   "ipa": "/ˌbaɪəʊdɪ'ɡreɪd/",
+   "vi": "phân hủy sinh học",
+   "kind": "word"
+  },
+  {
+   "en": "degradation",
+   "pos": "n",
+   "ipa": "/ˌdeɡrə'deɪʃn/",
+   "vi": "sự suy thoái",
+   "kind": "word"
+  },
+  {
+   "en": "reforestation",
+   "pos": "n",
+   "ipa": "/ˌriːˌfɒrɪ'steɪʃn/",
+   "vi": "sự trồng rừng",
+   "kind": "word"
+  },
+  {
+   "en": "deforestation",
+   "pos": "n",
+   "ipa": "/ˌdiːˌfɒrɪ'steɪʃn/",
+   "vi": "sự phá rừng",
+   "kind": "word"
+  },
+  {
+   "en": "reforest",
+   "pos": "v",
+   "ipa": "/ˌriː'fɒrɪst/",
+   "vi": "trồng lại rừng",
+   "kind": "word"
+  },
+  {
+   "en": "commuting",
+   "pos": "n",
+   "ipa": "/kə'mjuːtɪŋ/",
+   "vi": "việc đi lại (bằng phương tiện công cộng, xe đạp,...)",
+   "kind": "word"
+  },
+  {
+   "en": "commuter",
+   "pos": "n",
+   "ipa": "/kə'mjuːtə(r)/",
+   "vi": "người đi lại (bằng phương tiện công cộng, xe đạp,...)",
+   "kind": "word"
+  },
+  {
+   "en": "carbon footprint",
+   "pos": "n",
+   "ipa": "/'kɑːbən 'fʊtprɪnt/",
+   "vi": "tổng lượng phát thải khí nhà kính",
+   "kind": "phrase"
+  },
+  {
+   "en": "landfill",
+   "pos": "n",
+   "ipa": "/'lændfɪl/",
+   "vi": "bãi rác, bãi chôn rác",
+   "kind": "word"
+  },
+  {
+   "en": "clean up",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "dọn dẹp",
+   "kind": "phrase"
+  },
+  {
+   "en": "cut down on sth",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "giảm thiểu thứ gì đó",
+   "kind": "phrase"
+  },
+  {
+   "en": "throw sth away",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "vứt thứ gì đó",
+   "kind": "phrase"
+  },
+  {
+   "en": "a waste of sth",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "lãng phí thứ gì",
+   "kind": "phrase"
+  },
+  {
+   "en": "go green",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "sống xanh",
+   "kind": "phrase"
+  },
+  {
+   "en": "get rid of",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "loại bỏ",
+   "kind": "phrase"
+  },
+  {
+   "en": "rinse out",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "rửa sạch",
+   "kind": "phrase"
+  },
+  {
+   "en": "in the long run",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "về lâu dài",
+   "kind": "phrase"
+  },
+  {
+   "en": "in the long/medium/short term",
+   "pos": "phr",
+   "ipa": "",
+   "vi": "về lâu dài / trong thời gian không xa / trước mắt",
+   "kind": "phrase"
+  }
+ ]
 };
