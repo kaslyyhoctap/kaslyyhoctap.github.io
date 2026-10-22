@@ -10,7 +10,7 @@
   --shadow-lg:0 2px 4px rgba(19,78,74,.06),0 18px 44px -16px rgba(19,78,74,.32);
   /* accent từng môn (badge class trong app.js): h=Sử b=Sinh c=Hóa e=Anh v=Văn q=THPTQG p=Lý */
   --acc-h:#3B82F6; --acc-b:#14B8A6; --acc-c:#F97316; --acc-e:#8B5CF6;
-  --acc-v:#EC4899; --acc-q:#EF4444; --acc-p:#06B6D4;
+  --acc-v:#EC4899; --acc-q:#EF4444; --acc-p:#06B6D4; --acc-t:#22C55E;
 }
 [data-theme="dark"]{
   --bg:#0A1414; --fg:#D7EFEB; --card:#101E1E; --card-fg:#E6F4F2;
@@ -83,6 +83,8 @@ body.nav-open .header{z-index:200}
 .btn-phy:hover{background:#0E7490}
 .btn-van{background:#DB2777;border-color:#DB2777;color:#fff}
 .btn-van:hover{background:#BE185D}
+.btn-tin{background:#16A34A;border-color:#16A34A;color:#fff}
+.btn-tin:hover{background:#15803D}
 [data-theme="dark"] .btn-phy{background:#22D3EE;border-color:#22D3EE;color:#083344}
 [data-theme="dark"] .btn-van{background:#F472B6;border-color:#F472B6;color:#500724}
 [data-theme="dark"] .btn-phy{background:#22D3EE;border-color:#22D3EE;color:#083344}
@@ -128,7 +130,7 @@ main{min-height:60vh;isolation:isolate} /* ponytail: nhốt stacking của nội
 .subj-card:has(.badge.h){--acc:var(--acc-h)} .subj-card:has(.badge.b){--acc:var(--acc-b)}
 .subj-card:has(.badge.c){--acc:var(--acc-c)} .subj-card:has(.badge.e){--acc:var(--acc-e)}
 .subj-card:has(.badge.v){--acc:var(--acc-v)} .subj-card:has(.badge.q){--acc:var(--acc-q)}
-.subj-card:has(.badge.p){--acc:var(--acc-p)}
+.subj-card:has(.badge.p){--acc:var(--acc-p)} .subj-card:has(.badge.t){--acc:var(--acc-t)}
 .subj-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
 .subj-card .top{padding:22px;display:grid;gap:10px;align-content:start}
 .subj-card h3{font-size:1.2rem;margin:2px 0}
@@ -141,6 +143,7 @@ main{min-height:60vh;isolation:isolate} /* ponytail: nhốt stacking của nội
 .badge.q{background:#FEE2E2;color:#991B1B}[data-theme="dark"] .badge.q{background:#450A0A;color:#FECACA}
 .badge.p{background:#CFFAFE;color:#155E75}[data-theme="dark"] .badge.p{background:#083344;color:#A5F3FC}
 .badge.v{background:#FCE7F3;color:#9D174D}[data-theme="dark"] .badge.v{background:#3B0A24;color:#F9A8D4}
+.badge.t{background:#DCFCE7;color:#166534}[data-theme="dark"] .badge.t{background:#052E16;color:#86EFAC}
 .lesson-meta{display:flex;gap:0 6px;flex-wrap:wrap;margin:8px 0}
 .lesson-meta .badge{white-space:normal}
 .pbar{height:8px;background:var(--muted);border-radius:99px;overflow:hidden}
