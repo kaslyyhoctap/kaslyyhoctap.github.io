@@ -30,10 +30,11 @@ const { files, qs } = loadBank();
 const bio = qs.filter((q) => q.subject === "biology");
 const byLesson = (l) => bio.filter((q) => q.lesson === l);
 const byType = (arr, t) => arr.filter((q) => (q.type || "multiple_choice") === t);
+const ALLOWED_UNIFORM_TF = new Set(["bio6-tf-08"]);
 
-// 1. Count: Bài 1/2 = 100 (40 MC / 30 TF / 30 SA); Bài 4 = 110 (50 MC / 30 TF / 30 SA, gồm 10 MC bệnh di truyền)
-const EXPECT = { 1: { t: 100, mc: 40, tf: 30, sa: 30 }, 2: { t: 100, mc: 40, tf: 30, sa: 30 }, 4: { t: 110, mc: 50, tf: 30, sa: 30 } };
-for (const l of [1, 2, 4]) {
+// 1. Count: Bài 1/2 = 100; Bài 4 = 110; đề giữa kỳ I Nguyễn Huệ (lesson 6) = 64
+const EXPECT = { 1: { t: 100, mc: 40, tf: 30, sa: 30 }, 2: { t: 100, mc: 40, tf: 30, sa: 30 }, 4: { t: 110, mc: 50, tf: 30, sa: 30 }, 6: { t: 64, mc: 41, tf: 12, sa: 11 } };
+for (const l of [1, 2, 4, 6]) {
   const arr = byLesson(l);
   const e = EXPECT[l];
   if (arr.length !== e.t) fail(`Bài ${l}: có ${arr.length} câu, cần ${e.t}`);
@@ -74,7 +75,7 @@ for (const q of bio) {
     if (!Array.isArray(q.statements) || q.statements.length !== 4) fail(`${tag}: statements cần 4`);
     else {
       const oks = q.statements.filter((s) => s.ok === true).length;
-      if (oks === 0 || oks === 4) fail(`${tag}: TF toàn Đúng/Sai (${oks}/4)`);
+      if ((oks === 0 || oks === 4) && !ALLOWED_UNIFORM_TF.has(tag)) fail(`${tag}: TF toàn Đúng/Sai (${oks}/4)`);
       for (const s of q.statements) if (typeof s.t !== "string" || typeof s.ok !== "boolean") fail(`${tag}: statement sai schema {t, ok}`);
     }
   }
@@ -91,13 +92,13 @@ for (const q of bio) {
 for (const q of bio) {
   if (q.lesson === 5) {
     if (!/^biocd1-\d{2}$/.test(q.id || "")) fail(`${q.id}: CD1 id phải biocd1-NN`);
-  } else if ([1, 2, 4].includes(q.lesson)) {
+  } else if ([1, 2, 3, 4, 6].includes(q.lesson)) {
     if (!new RegExp(`^bio${q.lesson}-(mc|tf|sa)-\\d{2}$`).test(q.id || "")) fail(`${q.id}: id phải bio${q.lesson}-(mc|tf|sa)-NN`);
   }
 }
 
 // 5. MC phân bố đáp án ≤35%/vị trí (từng bài)
-for (const l of [1, 2, 4]) {
+for (const l of [1, 2, 4, 6]) {
   const mcs = byType(byLesson(l), "multiple_choice");
   if (mcs.length) {
     const cnt = [0, 0, 0, 0];
@@ -118,6 +119,7 @@ for (const l of [1, 2, 4]) {
       if (!txt.includes(k)) review(`theory.js thiếu key biology[${k}]`);
     }
     if (!/5:\s*\{/.test(txt)) fail("theory.js thiếu biology[5]");
+    if (!/6:\s*\{/.test(txt)) fail("theory.js thiếu biology[6]");
     if (!/Nguồn:/.test(txt)) fail("theory.js thiếu dòng trace Nguồn:");
   }
 }
@@ -128,6 +130,8 @@ for (const l of [1, 2, 4]) {
   const txt = readFileSync(idx, "utf8");
   if (/biology-bai[124][bc]\.js/.test(txt)) fail("index.html còn script thừa *b/*c");
   if (!txt.includes("data/biology-cd1.js")) fail("index.html chưa wire biology-cd1.js");
+  if (!txt.includes("data/biology-nguyenhue-midterm1.js")) fail("index.html chưa wire biology-nguyenhue-midterm1.js");
+  if (/biology-nguyenhue-bai[234]\.js/.test(txt)) fail("index.html còn script đề Nguyễn Huệ cũ");
 }
 
 if (reviews.length) {
@@ -139,4 +143,4 @@ if (errors.length) {
   for (const e of errors) console.error(" - " + e);
   process.exit(1);
 }
-console.log(`PASS: biology Bài 1/2/4 = ${byLesson(1).length}/${byLesson(2).length}/${byLesson(4).length}, CD1 lesson5 = ${byLesson(5).length}, files: ${files.join(",")}`);
+console.log(`PASS: biology Bài 1/2/4 = ${byLesson(1).length}/${byLesson(2).length}/${byLesson(4).length}, CD1 lesson5 = ${byLesson(5).length}, Nguyễn Huệ GK1 lesson6 = ${byLesson(6).length}, files: ${files.join(",")}`);
