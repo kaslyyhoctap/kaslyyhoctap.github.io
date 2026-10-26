@@ -47,9 +47,9 @@ Lý do chắc chắn chỉ có 1 đề giữa kỳ Sinh: `META.biology.lessons` 
 | `PASS` | 64 |
 | `AMBIGUOUS` | 0 |
 | `NEEDS_REVIEW` | 0 |
-| `ANSWER_ERROR` | 1 (TF-02 ý d, đã sửa) + 3 (SA-08, SA-09, SA-11, đã sửa) |
+| `ANSWER_ERROR` | 3 (SA-08, SA-09, SA-11 — SA-08 đã sửa; TF-02 ý d, đã sửa) |
 | `SCIENCE_ERROR` | 0 |
-| `EXPLANATION_ERROR` | 3 (SA-08, SA-09/SA-11, đã sửa) |
+| `EXPLANATION_ERROR` | 4 (SA-08, SA-07, SA-09/SA-11 — đã sửa) |
 | `FORMATTING_ERROR` | 4 (cả 4 đã sửa: `trung thế`→`trung thể` ×2 chỗ; `đột biển`→`đột biến`; sửa phương án MC-10 và MC-02 để loại trùng lặp) |
 | `DUPLICATE` (câu trùng) | 0 |
 
@@ -114,12 +114,11 @@ Phân bố theo dạng câu:
 
 #### B.2.4. `bio6-sa-08` — đáp án và lời giải
 
-- Trạng thái: **ANSWER_ERROR + EXPLANATION_ERROR đã sửa** (theo xác nhận của giáo viên), mức **HIGH** (chấm điểm trực tiếp)
-- Đáp án cũ: `4` → Đáp án mới: **`5`**
-- Nội dung lỗi: (1) lời giải cũ chỉ nói "Theo đáp án ghi trong đề cương là 4" mà không chứng minh — không đạt quy tắc audit; (2) đáp án 4 không tương thích với cách diễn giải "có thể là thể đột biến".
-- Căn cứ cho đáp án 5: alen đột biến là `a` (A đột biến thành a) và `B` (b đột biến thành B). Với cách hiểu "**có thể là** thể đột biến" — cơ thể chỉ cần mang allele đột biến (`a` hoặc `B`) là có khả năng trở thành thể đột biến. Trong 6 vị trí được liệt kê chỉ có **5 kiểu gene duy nhất** (AABB, AABb, AaBb, Aabb, aabb) vì `Aabb` bị viết lặp ở vị trí 4 và 6 — cả 5 kiểu gene này đều mang ít nhất một allele đột biến.
-- Bản sửa đã áp dụng: `answer:"5"`; viết lại `explanation` nêu rõ cách xác định và ghi rõ lỗi lặp của đề gốc.
-- Ghi chú còn lại: đề gốc liệt kê `Aabb` hai lần — nghi ngờ vị trí 6 trong ảnh gốc là một kiểu gene khác bị OCR đọc sai (nếu là `aaBb` thì vẫn cho đáp án 5). Cần đối chiếu ảnh gốc để xác nhận danh sách 6 kiểu gene.
+- Trạng thái: **ANSWER_ERROR (đã sửa) + EXPLANATION_ERROR (đã sửa)**, mức **HIGH** (chấm điểm trực tiếp)
+- Lịch sử đáp án: đề cương OCR ghi `4` → sửa tạm thành `5` (theo xác nhận của giáo viên) → **quay lại `4`** (xác nhận cuối của giáo viên)
+- Đáp án hiện tại: **`4`**
+- Căn cứ cho đáp án 4: áp dụng đúng định nghĩa "thể đột biến" mà chính đề đã dùng ở `mc-30` — *cơ thể mang gene đột biến **đã biểu hiện thành kiểu hình***. Alen `a` lặn chỉ biểu hiện khi đồng hợp tử `aa`; alen `B` trội biểu hiện khi có ít nhất một `B`. Xét 6 vị trí được liệt kê: `AABB` (có B trội), `AABb` (có B), `AaBb` (có B) và `aabb` (đồng hợp aa) là 4 kiểu biểu hiện kiểu hình đột biến; `Aabb` (vị trí 4 và 6) không biểu hiện vì a lặn chưa biểu hiện và b không bị đột biến. → `4`.
+- Ghi chú còn lại: đề gốc liệt kê `Aabb` hai lần ở vị trí 4 và 6 — nghi ngờ vị trí 6 trong ảnh gốc là một kiểu gene khác bị OCR đọc sai. Nếu tính theo 5 kiểu gene duy nhất thì vẫn cho 4 (vì `Aabb` không biểu hiện). Cần đối chiếu ảnh gốc để xác nhận danh sách 6 kiểu gene. Đáp án `4` không bị ảnh hưởng bởi việc này.
 
 #### B.2.5. `bio6-mc-02` — phương án mô tả chức năng vùng điều hòa chưa chính xác theo SGK
 
@@ -153,7 +152,7 @@ Phân bố theo dạng câu:
 **Tính rõ ràng và khả năng chấm điểm.** Không có câu thiếu dữ kiện đến mức không chấm được. Tất cả câu SA có dữ kiện đủ tính và yêu cầu định dạng rõ ("số nguyên, không đơn vị"). `maxLen` khớp độ dài đáp án ở 11/11 câu.
 
 **Các vấn đề chưa giải quyết:**
-1. `bio6-sa-08` — đề gốc liệt kê `Aabb` hai lần (vị trí 4 và 6); đáp án 5 hiện đúng với cách đếm kiểu gene duy nhất, nhưng cần đối chiếu ảnh gốc để xác nhận vị trí 6 thực ra là kiểu gene gì.
+1. `bio6-sa-08` — đề gốc liệt kê `Aabb` hai lần (vị trí 4 và 6); đáp án `4` không bị ảnh hưởng bởi lỗi lặp này, nhưng cần đối chiếu ảnh gốc để biết vị trí 6 thực ra là kiểu gene gì.
 2. `bio6-tf-08` — cả 4 mệnh đề đều Đúng; validator đã cấp ngoại lệ (`ALLOWED_UNIFORM_TF`) vì đúng bản chất kiến thức. Đây là điểm yếu thiết kế câu ĐS (không phân hóa được học sinh), mức `LOW`, chờ giáo viên quyết định có thay mệnh đề hay không.
 3. Chưa đối chiếu trực tiếp với ảnh gốc (chỉ đọc được bản OCR text) — một số câu có thể lệch do lỗi OCR của đề cương.
 
