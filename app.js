@@ -8,7 +8,7 @@ var S=Object.assign({theme:"light",best:0,exams:0,correct:0,answered:{},marked:[
 function save(){store.set(S)}
 var META={
  history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh",4:"Kiểm tra giữa học kì I (đề tổng hợp)"}},
- biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene",4:"Bài 4: Đột biến gene",5:"Chuyên đề 1 – Đề 1",6:"Đề ôn tập giữa kỳ I – THPT Nguyễn Huệ"}},
+ biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene",4:"Bài 4: Đột biến gene",5:"Chuyên đề 1 – Đề 1",6:"Đề ôn tập giữa kỳ I – THPT Nguyễn Huệ",7:"Đề cương giữa kỳ I (Bài 1, 2, 3)",8:"Đề sinh giữa kỳ bổ sung (Mã đề 121 – THPT Nguyễn Huệ)"}},
  chemistry:{name:"Hóa học 12",short:"Hóa",units:"Chương",book:"Kết nối tri thức",lessons:{1:"Chương 1: Ester – Lipid",2:"Chương 2: Carbohydrate"}},
  physics:{name:"Vật lí 12",short:"Lý",units:"Đề",book:"Đề khảo sát 2026-2027",lessons:{1:"Đề khảo sát lần 1",2:"Đề khảo sát lần 2",3:"Đề luyện thêm 1",4:"Đề luyện thêm 2",5:"Đề luyện thêm 3"}},
   literature:{name:"Ngữ văn 12",short:"Văn",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Khả năng lớn lao của tiểu thuyết",2:"Bài 2: Những thế giới thơ",3:"Bài 3: Tây Tiến (Quang Dũng)"}},
@@ -20,6 +20,7 @@ var META={
 var TYPES={multiple_choice:"Multiple Choice",cloze:"Cloze Test",word_usage_error:"Word Usage Error",closest_meaning:"Closest Meaning",reading_comprehension:"Reading Comprehension",true_false:"True/False",short_answer:"Short Answer"};
 var SKILLS={Vocabulary:"Vocabulary",Grammar:"Grammar","Cloze test":"Cloze Test","Word usage":"Word Usage","Closest meaning":"Paraphrase","Reading":"Reading"};
 function lessonsOf(sub){return Object.keys(META[sub].lessons).map(Number).sort(function(a,b){return a-b})}
+function lessonScope(sub,lesson,m){return sub==="biology"&&Number(lesson)>=6?(META.biology.lessons[lesson]||(m.units+" "+lesson)):(m.units+" "+lesson)}
 function badgeCls(k){return k==="physics"?"p":k==="history"?"h":k==="biology"?"b":k==="chemistry"?"c":k==="literature"?"v":k==="thptqg"?"q":k==="tinhoc"?"t":"e"}
 function btnCls(k){return k==="physics"?"btn-phy":k==="history"?"btn-primary":k==="biology"?"btn-bio":k==="chemistry"?"btn-chem":k==="literature"?"btn-van":k==="thptqg"?"btn-qg":k==="tinhoc"?"btn-tin":"btn-eng"}
 function subjTag(q){return q.subject==="physics"?"Lý":q.subject==="history"?"Sử":q.subject==="biology"?"Sinh":q.subject==="chemistry"?"Hóa":q.subject==="literature"?"Văn":q.subject==="thptqg"?"Đề":q.subject==="tinhoc"?"Tin":"Anh"}
@@ -217,7 +218,7 @@ function resultOpts(q,s,a){
 function tfRows(q){return q.statements.map(function(s2,i){return '<div class="opt" style="cursor:default"><span class="k">'+"abcd"[i]+'</span><span>'+chem(s2.t)+'</span><b>'+(s2.ok?"Đúng":"Sai")+'</b></div>'}).join("")}
 function renderQ(){
  var q=curQ(),st=E.qs[E.i],m=META[E.cfg.subject];
- var scope=E.cfg.lesson==="all"?" · Tổng hợp":(E.cfg.subject==="thptqg"?" · "+((window.THEORY.thptqg&&window.THEORY.thptqg[E.cfg.lesson])?window.THEORY.thptqg[E.cfg.lesson].title:("Mã đề "+E.cfg.lesson)):(" · "+(E.cfg.subject==="biology"&&String(E.cfg.lesson)==="6"?"Đề ôn tập giữa kỳ I – THPT Nguyễn Huệ":(E.cfg.subject==="history"&&E.cfg.lesson===4?"KT giữa học kì I":(m.units+" "+E.cfg.lesson)))));
+ var scope=E.cfg.lesson==="all"?" · Tổng hợp":(E.cfg.subject==="thptqg"?" · "+((window.THEORY.thptqg&&window.THEORY.thptqg[E.cfg.lesson])?window.THEORY.thptqg[E.cfg.lesson].title:("Mã đề "+E.cfg.lesson)):(" · "+(E.cfg.subject==="history"&&E.cfg.lesson===4?"KT giữa học kì I":lessonScope(E.cfg.subject,E.cfg.lesson,m))));
  var kind=isEngType(E.cfg.subject)&&E.cfg.qtype&&E.cfg.qtype!=="all"?(" · "+(Array.isArray(E.cfg.qtype)?E.cfg.qtype.map(function(t){return TYPES[t]||t}).join(" + "):TYPES[E.cfg.qtype])):"";
  $("qTitle").textContent=(E.cfg.quick?"Kiểm tra nhanh · ":E.practice?"Luyện tập · ":"Kiểm tra · ")+m.name+scope+kind;
  $("qCount").textContent="Câu "+(E.i+1)+"/"+E.qs.length;
@@ -283,7 +284,7 @@ function submit(auto){
  var rec={when:Date.now(),sub:E.cfg.subject,lesson:E.cfg.lesson,point:point,ok:ok,tot:tot,time:secs,ids:E.qs.map(function(s){return s.id})};
  S.hist.unshift(rec);S.hist=S.hist.slice(0,20);save();
  var m=META[E.cfg.subject];
- var scope=E.cfg.lesson==="all"?(" · Tổng hợp "+lessonsOf(E.cfg.subject).length+" "+m.units.toLowerCase()):(E.cfg.subject==="thptqg"?(" · "+((window.THEORY.thptqg&&window.THEORY.thptqg[E.cfg.lesson])?window.THEORY.thptqg[E.cfg.lesson].title:("Mã đề "+E.cfg.lesson))):(" · "+(E.cfg.subject==="biology"&&String(E.cfg.lesson)==="6"?"Đề ôn tập giữa kỳ I – THPT Nguyễn Huệ":(m.units+" "+E.cfg.lesson))));
+ var scope=E.cfg.lesson==="all"?(" · Tổng hợp "+lessonsOf(E.cfg.subject).length+" "+m.units.toLowerCase()):(E.cfg.subject==="thptqg"?(" · "+((window.THEORY.thptqg&&window.THEORY.thptqg[E.cfg.lesson])?window.THEORY.thptqg[E.cfg.lesson].title:("Mã đề "+E.cfg.lesson))):(" · "+lessonScope(E.cfg.subject,E.cfg.lesson,m)));
  $("rSub").textContent=(auto?"Hết giờ · ":"")+m.name+scope;
  $("rPoint").textContent=point.toFixed(1);
  $("rFrac").textContent=ok+"/"+tot+" · "+Math.round(ok/tot*100)+"%";
