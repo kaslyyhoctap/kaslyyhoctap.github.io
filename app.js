@@ -8,7 +8,7 @@ var S=Object.assign({theme:"light",best:0,exams:0,correct:0,answered:{},marked:[
 function save(){store.set(S)}
 var META={
  history:{name:"Lịch sử 12",short:"Sử",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Liên Hợp Quốc",2:"Bài 2: Trật tự thế giới trong Chiến tranh lạnh",3:"Bài 3: Trật tự thế giới sau Chiến tranh lạnh",4:"Kiểm tra giữa học kì I (đề tổng hợp)"}},
- biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene",4:"Bài 4: Đột biến gene",5:"Chuyên đề 1 – Đề 1",6:"Đề ôn tập giữa kỳ I – THPT Nguyễn Huệ",7:"Đề cương giữa kỳ I (Bài 1, 2, 3)",8:"Đề sinh giữa kỳ bổ sung (Mã đề 121 – THPT Nguyễn Huệ)"}},
+ biology:{name:"Sinh học 12",short:"Sinh",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: DNA và cơ chế tái bản DNA",2:"Bài 2: Gene và truyền đạt thông tin di truyền",3:"Bài 3: Điều hoà biểu hiện gene",4:"Bài 4: Đột biến gene",5:"Chuyên đề 1 – Đề 1",6:"Đề ôn tập giữa kỳ I – THPT Nguyễn Huệ",7:"Đề cương giữa kỳ I (Bài 1, 2, 3)",8:"Đề sinh giữa kỳ bổ sung (Mã đề 121 – THPT Nguyễn Huệ)",9:"Đề kiểm tra Sinh học 12 – Phần bổ sung (Đúng/Sai)"}},
  chemistry:{name:"Hóa học 12",short:"Hóa",units:"Chương",book:"Kết nối tri thức",lessons:{1:"Chương 1: Ester – Lipid",2:"Chương 2: Carbohydrate"}},
  physics:{name:"Vật lí 12",short:"Lý",units:"Đề",book:"Đề khảo sát 2026-2027",lessons:{1:"Đề khảo sát lần 1",2:"Đề khảo sát lần 2",3:"Đề luyện thêm 1",4:"Đề luyện thêm 2",5:"Đề luyện thêm 3"}},
   literature:{name:"Ngữ văn 12",short:"Văn",units:"Bài",book:"Kết nối tri thức",lessons:{1:"Bài 1: Khả năng lớn lao của tiểu thuyết",2:"Bài 2: Những thế giới thơ",3:"Bài 3: Tây Tiến (Quang Dũng)"}},

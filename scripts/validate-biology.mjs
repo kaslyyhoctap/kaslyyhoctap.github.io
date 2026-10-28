@@ -32,9 +32,9 @@ const byLesson = (l) => bio.filter((q) => q.lesson === l);
 const byType = (arr, t) => arr.filter((q) => (q.type || "multiple_choice") === t);
 const ALLOWED_UNIFORM_TF = new Set(["bio6-tf-08"]);
 
-// 1. Count: Bài 1/2 = 100; Bài 4 = 110; đề giữa kỳ I Nguyễn Huệ (lesson 6) = 64; đề cương giữa kì I (lesson 7) = 38; Mã đề 121 (lesson 8) = 28
-const EXPECT = { 1: { t: 100, mc: 40, tf: 30, sa: 30 }, 2: { t: 100, mc: 40, tf: 30, sa: 30 }, 4: { t: 110, mc: 50, tf: 30, sa: 30 }, 6: { t: 64, mc: 41, tf: 12, sa: 11 }, 7: { t: 38, mc: 25, tf: 0, sa: 13 }, 8: { t: 28, mc: 18, tf: 4, sa: 6 } };
-for (const l of [1, 2, 4, 6, 7, 8]) {
+// 1. Count: Bài 1/2 = 100; Bài 4 = 110; đề giữa kỳ I Nguyễn Huệ (lesson 6) = 64; đề cương giữa kì I (lesson 7) = 38; Mã đề 121 (lesson 8) = 28; phần bổ sung đề kiểm tra (lesson 9) = 10
+const EXPECT = { 1: { t: 100, mc: 40, tf: 30, sa: 30 }, 2: { t: 100, mc: 40, tf: 30, sa: 30 }, 4: { t: 110, mc: 50, tf: 30, sa: 30 }, 6: { t: 64, mc: 41, tf: 12, sa: 11 }, 7: { t: 38, mc: 25, tf: 0, sa: 13 }, 8: { t: 28, mc: 18, tf: 4, sa: 6 }, 9: { t: 10, mc: 1, tf: 9, sa: 0 } };
+for (const l of [1, 2, 4, 6, 7, 8, 9]) {
   const arr = byLesson(l);
   const e = EXPECT[l];
   if (arr.length !== e.t) fail(`Bài ${l}: có ${arr.length} câu, cần ${e.t}`);
@@ -92,13 +92,13 @@ for (const q of bio) {
 for (const q of bio) {
   if (q.lesson === 5) {
     if (!/^biocd1-\d{2}$/.test(q.id || "")) fail(`${q.id}: CD1 id phải biocd1-NN`);
-  } else if ([1, 2, 3, 4, 6, 7, 8].includes(q.lesson)) {
+  } else if ([1, 2, 3, 4, 6, 7, 8, 9].includes(q.lesson)) {
     if (!new RegExp(`^bio${q.lesson}-(mc|tf|sa)-\\d{2}$`).test(q.id || "")) fail(`${q.id}: id phải bio${q.lesson}-(mc|tf|sa)-NN`);
   }
 }
 
 // 5. MC phân bố đáp án ≤35%/vị trí (từng bài)
-for (const l of [1, 2, 4, 6, 7, 8]) {
+for (const l of [1, 2, 4, 6, 7, 8, 9]) {
   const mcs = byType(byLesson(l), "multiple_choice");
   if (mcs.length >= 10) {
     const cnt = [0, 0, 0, 0];
@@ -122,6 +122,7 @@ for (const l of [1, 2, 4, 6, 7, 8]) {
     if (!/6:\s*\{/.test(txt)) fail("theory.js thiếu biology[6]");
     if (!/7:\s*\{/.test(txt)) fail("theory.js thiếu biology[7]");
     if (!/8:\s*\{/.test(txt)) fail("theory.js thiếu biology[8]");
+    if (!/9:\s*\{/.test(txt)) fail("theory.js thiếu biology[9]");
     if (!/Nguồn:/.test(txt)) fail("theory.js thiếu dòng trace Nguồn:");
   }
 }
@@ -135,6 +136,7 @@ for (const l of [1, 2, 4, 6, 7, 8]) {
   if (!txt.includes("data/biology-nguyenhue-midterm1.js")) fail("index.html chưa wire biology-nguyenhue-midterm1.js");
   if (!txt.includes("data/biology-decuong-gk1.js")) fail("index.html chưa wire biology-decuong-gk1.js");
   if (!txt.includes("data/biology-nguyenhue-ma121.js")) fail("index.html chưa wire biology-nguyenhue-ma121.js");
+  if (!txt.includes("data/biology-kiemtra-bosung.js")) fail("index.html chưa wire biology-kiemtra-bosung.js");
   if (/biology-nguyenhue-bai[234]\.js/.test(txt)) fail("index.html còn script đề Nguyễn Huệ cũ");
 }
 
