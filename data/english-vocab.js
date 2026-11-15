@@ -1,4 +1,4 @@
-/* Flashcard vocabulary Unit 1-3 (Global Success). Source: user docx tables (full import); shifted tail meanings realigned. */
+/* Flashcard vocabulary Unit 1-4 (Global Success). Source: user docx tables + Unit 4 textbook photos (pp.8-10); shifted tail meanings realigned. */
 window.VOCAB = {
  "1": [
   {
@@ -2690,5 +2690,1001 @@ window.VOCAB = {
    "vi": "về lâu dài / trong thời gian không xa / trước mắt",
    "kind": "phrase"
   }
- ]
+  ],
+  "4": [
+   {
+    "en": "urbanisation",
+    "pos": "n",
+    "ipa": "/ˌɜːbənaɪ'zeɪʃn/",
+    "vi": "sự đô thị hóa",
+    "kind": "word"
+   },
+   {
+    "en": "urbanise",
+    "pos": "v",
+    "ipa": "/'ɜːbənaɪz/",
+    "vi": "đô thị hóa",
+    "kind": "word"
+   },
+   {
+    "en": "urban",
+    "pos": "adj",
+    "ipa": "/'ɜːbən/",
+    "vi": "thuộc về đô thị",
+    "kind": "word"
+   },
+   {
+    "en": "urbanised",
+    "pos": "adj",
+    "ipa": "/'ɜːbənaɪzd/",
+    "vi": "được đô thị hóa",
+    "kind": "word"
+   },
+   {
+    "en": "urbanisation process",
+    "pos": "np",
+    "ipa": "/'ɜːbənaɪ'zeɪʃn 'prəʊses/",
+    "vi": "quá trình đô thị hóa",
+    "kind": "phrase"
+   },
+   {
+    "en": "traffic jam",
+    "pos": "n",
+    "ipa": "/'træfɪk dʒæm/",
+    "vi": "tắc đường",
+    "kind": "phrase"
+   },
+   {
+    "en": "traffic",
+    "pos": "n",
+    "ipa": "/'træfɪk/",
+    "vi": "giao thông, lưu lượng",
+    "kind": "word"
+   },
+   {
+    "en": "jam",
+    "pos": "n",
+    "ipa": "/dʒæm/",
+    "vi": "sự kẹt, tắc nghẽn",
+    "kind": "word"
+   },
+   {
+    "en": "resident",
+    "pos": "n",
+    "ipa": "/'rezɪdənt/",
+    "vi": "cư dân",
+    "kind": "word"
+   },
+   {
+    "en": "residential",
+    "pos": "adj",
+    "ipa": "/,rezɪ'denʃl/",
+    "vi": "thuộc khu dân cư",
+    "kind": "word"
+   },
+   {
+    "en": "residency",
+    "pos": "n",
+    "ipa": "/'rezɪdənsi/",
+    "vi": "sự cư trú",
+    "kind": "word"
+   },
+   {
+    "en": "reside",
+    "pos": "v",
+    "ipa": "/rɪ'zaɪd/",
+    "vi": "cư trú, sinh sống",
+    "kind": "word"
+   },
+   {
+    "en": "resident area",
+    "pos": "np",
+    "ipa": "/'rezɪdənt 'eəriə/",
+    "vi": "khu vực dân cư",
+    "kind": "phrase"
+   },
+   {
+    "en": "high-rise",
+    "pos": "adj",
+    "ipa": "/'haɪ raɪz/",
+    "vi": "cao tầng",
+    "kind": "word"
+   },
+   {
+    "en": "high-rise building",
+    "pos": "np",
+    "ipa": "/'haɪ raɪz 'bɪldɪŋ/",
+    "vi": "tòa nhà cao tầng",
+    "kind": "phrase"
+   },
+   {
+    "en": "low-rise",
+    "pos": "adj",
+    "ipa": "/'ləʊraɪz/",
+    "vi": "thấp tầng",
+    "kind": "word"
+   },
+   {
+    "en": "low-rise building",
+    "pos": "np",
+    "ipa": "/'ləʊraɪz 'bɪldɪŋ/",
+    "vi": "tòa nhà thấp tầng",
+    "kind": "phrase"
+   },
+   {
+    "en": "comfort",
+    "pos": "n",
+    "ipa": "/'kʌmfət/",
+    "vi": "sự thoải mái",
+    "kind": "word"
+   },
+   {
+    "en": "comfortable",
+    "pos": "adj",
+    "ipa": "/'kʌmftəbl/",
+    "vi": "thoải mái",
+    "kind": "word"
+   },
+   {
+    "en": "uncomfortable",
+    "pos": "adj",
+    "ipa": "/ʌn'kʌmftəbl/",
+    "vi": "không thoải mái",
+    "kind": "word"
+   },
+   {
+    "en": "comfortably",
+    "pos": "adv",
+    "ipa": "/'kʌmftəbli/",
+    "vi": "một cách thoải mái",
+    "kind": "word"
+   },
+   {
+    "en": "crowd",
+    "pos": "n",
+    "ipa": "/kraʊd/",
+    "vi": "đám đông",
+    "kind": "word"
+   },
+   {
+    "en": "crowding",
+    "pos": "n",
+    "ipa": "/'kraʊdɪŋ/",
+    "vi": "sự chen chúc",
+    "kind": "word"
+   },
+   {
+    "en": "overcrowded",
+    "pos": "adj",
+    "ipa": "/,əʊvə'kraʊdɪd/",
+    "vi": "quá đông đúc",
+    "kind": "word"
+   },
+   {
+    "en": "crowded",
+    "pos": "adj",
+    "ipa": "/'kraʊdɪd/",
+    "vi": "đông đúc",
+    "kind": "word"
+   },
+   {
+    "en": "crowdedly",
+    "pos": "adv",
+    "ipa": "/'kraʊdɪdli/",
+    "vi": "một cách đông đúc",
+    "kind": "word"
+   },
+   {
+    "en": "convenience",
+    "pos": "n",
+    "ipa": "/kən'viːniəns/",
+    "vi": "sự tiện lợi",
+    "kind": "word"
+   },
+   {
+    "en": "convenient",
+    "pos": "adj",
+    "ipa": "/kən'viːniənt/",
+    "vi": "tiện lợi",
+    "kind": "word"
+   },
+   {
+    "en": "inconvenient",
+    "pos": "adj",
+    "ipa": "/,ɪnkən'viːniənt/",
+    "vi": "bất tiện",
+    "kind": "word"
+   },
+   {
+    "en": "conveniently",
+    "pos": "adv",
+    "ipa": "/kən'viːniəntli/",
+    "vi": "một cách tiện lợi",
+    "kind": "word"
+   },
+   {
+    "en": "rush hour",
+    "pos": "n",
+    "ipa": "/'rʌʃ ˌaʊər/",
+    "vi": "giờ cao điểm",
+    "kind": "phrase"
+   },
+   {
+    "en": "rush",
+    "pos": "v",
+    "ipa": "/rʌʃ/",
+    "vi": "vội vã, hối hả",
+    "kind": "word"
+   },
+   {
+    "en": "facility",
+    "pos": "n",
+    "ipa": "/fə'sɪləti/",
+    "vi": "cơ sở",
+    "kind": "word"
+   },
+   {
+    "en": "rice field",
+    "pos": "n",
+    "ipa": "/raɪs fiːld/",
+    "vi": "cánh đồng lúa",
+    "kind": "phrase"
+   },
+   {
+    "en": "expense",
+    "pos": "n",
+    "ipa": "/ɪk'spens/",
+    "vi": "chi phí",
+    "kind": "word"
+   },
+   {
+    "en": "expensive",
+    "pos": "adj",
+    "ipa": "/ɪk'spensɪv/",
+    "vi": "đắt đỏ",
+    "kind": "word"
+   },
+   {
+    "en": "inexpensive",
+    "pos": "adj",
+    "ipa": "/,ɪnɪk'spensɪv/",
+    "vi": "không đắt, rẻ",
+    "kind": "word"
+   },
+   {
+    "en": "expensively",
+    "pos": "adv",
+    "ipa": "/ɪk'spensɪvli/",
+    "vi": "một cách đắt đỏ",
+    "kind": "word"
+   },
+   {
+    "en": "employment ≠ unemployment",
+    "pos": "n",
+    "ipa": "/ɪm'plɔɪmənt/ ≠ /,ʌnɪm'plɔɪmənt/",
+    "vi": "sự có việc làm ≠ sự thất nghiệp",
+    "kind": "phrase"
+   },
+   {
+    "en": "employer",
+    "pos": "n",
+    "ipa": "/ɪm'plɔɪər/",
+    "vi": "người sử dụng lao động",
+    "kind": "word"
+   },
+   {
+    "en": "employ ≠ unemployed",
+    "pos": "v,adj",
+    "ipa": "/ɪm'plɔɪ/ ≠ /,ʌnɪm'plɔɪd/",
+    "vi": "thuê, tuyển dụng ≠ thất nghiệp",
+    "kind": "phrase"
+   },
+   {
+    "en": "crime",
+    "pos": "n",
+    "ipa": "/kraɪm/",
+    "vi": "tội phạm, tội ác",
+    "kind": "word"
+   },
+   {
+    "en": "afford",
+    "pos": "v",
+    "ipa": "/ə'fɔːd/",
+    "vi": "đủ khả năng chi trả",
+    "kind": "word"
+   },
+   {
+    "en": "affordable",
+    "pos": "adj",
+    "ipa": "/ə'fɔːdəbl/",
+    "vi": "có thể chi trả được",
+    "kind": "word"
+   },
+   {
+    "en": "invest",
+    "pos": "v",
+    "ipa": "/ɪn'vest/",
+    "vi": "đầu tư",
+    "kind": "word"
+   },
+   {
+    "en": "investment",
+    "pos": "n",
+    "ipa": "/ɪn'vestmənt/",
+    "vi": "sự đầu tư",
+    "kind": "word"
+   },
+   {
+    "en": "investor",
+    "pos": "n",
+    "ipa": "/ɪn'vestər/",
+    "vi": "nhà đầu tư",
+    "kind": "word"
+   },
+   {
+    "en": "rural",
+    "pos": "adj",
+    "ipa": "/'rʊərəl/",
+    "vi": "thuộc về nông thôn",
+    "kind": "word"
+   },
+   {
+    "en": "rural area",
+    "pos": "np",
+    "ipa": "/'rʊərəl 'eəriə/",
+    "vi": "khu vực nông thôn",
+    "kind": "phrase"
+   },
+   {
+    "en": "improve",
+    "pos": "v",
+    "ipa": "/ɪm'pruːv/",
+    "vi": "cải thiện",
+    "kind": "word"
+   },
+   {
+    "en": "improvement",
+    "pos": "n",
+    "ipa": "/ɪm'pruːvmənt/",
+    "vi": "sự cải thiện",
+    "kind": "word"
+   },
+   {
+    "en": "infrastructure",
+    "pos": "n",
+    "ipa": "/'ɪnfrəstrʌktʃər/",
+    "vi": "cơ sở hạ tầng",
+    "kind": "word"
+   },
+   {
+    "en": "authority",
+    "pos": "n",
+    "ipa": "/ɔː'θɒrəti/",
+    "vi": "chính quyền",
+    "kind": "word"
+   },
+   {
+    "en": "expand",
+    "pos": "v",
+    "ipa": "/ɪk'spænd/",
+    "vi": "mở rộng",
+    "kind": "word"
+   },
+   {
+    "en": "expansion",
+    "pos": "n",
+    "ipa": "/ɪk'spænʃn/",
+    "vi": "sự mở rộng",
+    "kind": "word"
+   },
+   {
+    "en": "expandable",
+    "pos": "adj",
+    "ipa": "/ɪk'spændəbl/",
+    "vi": "có thể mở rộng",
+    "kind": "word"
+   },
+   {
+    "en": "shortage",
+    "pos": "n",
+    "ipa": "/'ʃɔːtɪdʒ/",
+    "vi": "thiếu hụt",
+    "kind": "word"
+   },
+   {
+    "en": "farmland",
+    "pos": "n",
+    "ipa": "/'fɑːmlænd/",
+    "vi": "đất nông nghiệp",
+    "kind": "word"
+   },
+   {
+    "en": "housing",
+    "pos": "n",
+    "ipa": "/'haʊzɪŋ/",
+    "vi": "nhà ở",
+    "kind": "word"
+   },
+   {
+    "en": "public transport",
+    "pos": "np",
+    "ipa": "/'pʌblɪk 'trænspɔːt/",
+    "vi": "phương tiện giao thông công cộng",
+    "kind": "phrase"
+   },
+   {
+    "en": "traditional",
+    "pos": "adj",
+    "ipa": "/trə'dɪʃənl/",
+    "vi": "truyền thống",
+    "kind": "word"
+   },
+   {
+    "en": "tradition",
+    "pos": "n",
+    "ipa": "/trə'dɪʃn/",
+    "vi": "tục lệ, truyền thống",
+    "kind": "word"
+   },
+   {
+    "en": "traditionally",
+    "pos": "adv",
+    "ipa": "/trə'dɪʃənəli/",
+    "vi": "theo truyền thống",
+    "kind": "word"
+   },
+   {
+    "en": "seek",
+    "pos": "v",
+    "ipa": "/siːk/",
+    "vi": "tìm kiếm",
+    "kind": "word"
+   },
+   {
+    "en": "decision",
+    "pos": "n",
+    "ipa": "/dɪ'sɪʒn/",
+    "vi": "quyết định",
+    "kind": "word"
+   },
+   {
+    "en": "indecision",
+    "pos": "n",
+    "ipa": "/,ɪndɪ'sɪʒən/",
+    "vi": "sự thiếu quyết đoán",
+    "kind": "word"
+   },
+   {
+    "en": "decide (+ to V)",
+    "pos": "v",
+    "ipa": "/dɪ'saɪd/",
+    "vi": "quyết định",
+    "kind": "phrase"
+   },
+   {
+    "en": "decisive",
+    "pos": "adj",
+    "ipa": "/dɪ'saɪsɪv/",
+    "vi": "quyết đoán, dứt khoát",
+    "kind": "word"
+   },
+   {
+    "en": "decide on sth",
+    "pos": "v",
+    "ipa": "",
+    "vi": "quyết định chọn/về cái gì",
+    "kind": "phrase"
+   },
+   {
+    "en": "exhibition",
+    "pos": "n",
+    "ipa": "/,eksɪ'bɪʃn/",
+    "vi": "triển lãm",
+    "kind": "word"
+   },
+   {
+    "en": "attract",
+    "pos": "v",
+    "ipa": "/ə'trækt/",
+    "vi": "thu hút",
+    "kind": "word"
+   },
+   {
+    "en": "attractive",
+    "pos": "adj",
+    "ipa": "/ə'træktɪv/",
+    "vi": "hấp dẫn, thu hút",
+    "kind": "word"
+   },
+   {
+    "en": "attraction",
+    "pos": "n",
+    "ipa": "/ə'trækʃn/",
+    "vi": "sự thu hút",
+    "kind": "word"
+   },
+   {
+    "en": "attractiveness",
+    "pos": "n",
+    "ipa": "/ə'træktɪvnəs/",
+    "vi": "sự hấp dẫn, thu hút",
+    "kind": "word"
+   },
+   {
+    "en": "childhood",
+    "pos": "n",
+    "ipa": "/'tʃaɪldhʊd/",
+    "vi": "tuổi thơ",
+    "kind": "word"
+   },
+   {
+    "en": "trade",
+    "pos": "n",
+    "ipa": "/treɪd/",
+    "vi": "buôn bán",
+    "kind": "word"
+   },
+   {
+    "en": "craft",
+    "pos": "n",
+    "ipa": "/krɑːft/",
+    "vi": "thủ công",
+    "kind": "word"
+   },
+   {
+    "en": "population",
+    "pos": "n",
+    "ipa": "/,pɒpju'leɪʃn/",
+    "vi": "dân số",
+    "kind": "word"
+   },
+   {
+    "en": "populate",
+    "pos": "v",
+    "ipa": "/'pɒpjʊleɪt/",
+    "vi": "làm cho dân cư đông đúc",
+    "kind": "word"
+   },
+   {
+    "en": "populous",
+    "pos": "adj",
+    "ipa": "/'pɒpjʊləs/",
+    "vi": "đông dân, đông đúc",
+    "kind": "word"
+   },
+   {
+    "en": "population growth",
+    "pos": "np",
+    "ipa": "/,pɒpjʊ'leɪʃn ɡrəʊθ/",
+    "vi": "sự tăng trưởng dân số",
+    "kind": "phrase"
+   },
+   {
+    "en": "colonial",
+    "pos": "adj",
+    "ipa": "/kə'ləʊniəl/",
+    "vi": "thuộc địa",
+    "kind": "word"
+   },
+   {
+    "en": "architecture",
+    "pos": "n",
+    "ipa": "/'ɑːkɪtektʃər/",
+    "vi": "kiến trúc",
+    "kind": "word"
+   },
+   {
+    "en": "modernize",
+    "pos": "v",
+    "ipa": "/'mɒdənaɪz/",
+    "vi": "hiện đại hóa",
+    "kind": "word"
+   },
+   {
+    "en": "modernization",
+    "pos": "n",
+    "ipa": "/ˌmɒdənaɪ'zeɪʃn/",
+    "vi": "sự hiện đại hóa",
+    "kind": "word"
+   },
+   {
+    "en": "modern",
+    "pos": "adj",
+    "ipa": "/'mɒdən/",
+    "vi": "hiện đại, mới mẻ",
+    "kind": "word"
+   },
+   {
+    "en": "modernly",
+    "pos": "adv",
+    "ipa": "/'mɒdənli/",
+    "vi": "một cách hiện đại",
+    "kind": "word"
+   },
+   {
+    "en": "concern",
+    "pos": "v",
+    "ipa": "/kən'sɜːn/",
+    "vi": "sự lo ngại",
+    "kind": "word"
+   },
+   {
+    "en": "gradually",
+    "pos": "adv",
+    "ipa": "/'ɡrædʒuəli/",
+    "vi": "dần dần",
+    "kind": "word"
+   },
+   {
+    "en": "tram",
+    "pos": "n",
+    "ipa": "/træm/",
+    "vi": "xe điện",
+    "kind": "word"
+   },
+   {
+    "en": "reliable",
+    "pos": "adj",
+    "ipa": "/rɪ'laɪəbl/",
+    "vi": "đáng tin cậy",
+    "kind": "word"
+   },
+   {
+    "en": "reliability",
+    "pos": "n",
+    "ipa": "/rɪ,laɪə'bɪləti/",
+    "vi": "sự đáng tin cậy",
+    "kind": "word"
+   },
+   {
+    "en": "reliably",
+    "pos": "adv",
+    "ipa": "/rɪ'laɪəbli/",
+    "vi": "một cách đáng tin cậy",
+    "kind": "word"
+   },
+   {
+    "en": "dweller",
+    "pos": "n",
+    "ipa": "/'dwelər/",
+    "vi": "người dân",
+    "kind": "word"
+   },
+   {
+    "en": "emission",
+    "pos": "n",
+    "ipa": "/ɪ'mɪʃn/",
+    "vi": "khí thải, sự phát ra",
+    "kind": "word"
+   },
+   {
+    "en": "emit",
+    "pos": "v",
+    "ipa": "/ɪ'mɪt/",
+    "vi": "phát ra, thải ra",
+    "kind": "word"
+   },
+   {
+    "en": "smog",
+    "pos": "n",
+    "ipa": "/smɒɡ/",
+    "vi": "khói bụi",
+    "kind": "word"
+   },
+   {
+    "en": "decrease",
+    "pos": "v,n",
+    "ipa": "/dɪ'kriːs/, /'diːkriːs/",
+    "vi": "giảm; sự giảm đi",
+    "kind": "word"
+   },
+   {
+    "en": "decreasing",
+    "pos": "adj",
+    "ipa": "/dɪ'kriːsɪŋ/",
+    "vi": "đang giảm dần",
+    "kind": "word"
+   },
+   {
+    "en": "rapidly",
+    "pos": "adv",
+    "ipa": "/'ræpɪdli/",
+    "vi": "nhanh, liên tục",
+    "kind": "word"
+   },
+   {
+    "en": "rapid",
+    "pos": "adj",
+    "ipa": "/'ræpɪd/",
+    "vi": "nhanh chóng",
+    "kind": "word"
+   },
+   {
+    "en": "rapidity",
+    "pos": "n",
+    "ipa": "/rə'pɪdəti/",
+    "vi": "sự nhanh chóng",
+    "kind": "word"
+   },
+   {
+    "en": "stable",
+    "pos": "adj",
+    "ipa": "/'steɪbl/",
+    "vi": "ổn định",
+    "kind": "word"
+   },
+   {
+    "en": "stability",
+    "pos": "n",
+    "ipa": "/stə'bɪləti/",
+    "vi": "sự ổn định",
+    "kind": "word"
+   },
+   {
+    "en": "stabilize",
+    "pos": "v",
+    "ipa": "/'steɪbəlaɪz/",
+    "vi": "làm ổn định",
+    "kind": "word"
+   },
+   {
+    "en": "slightly",
+    "pos": "adv",
+    "ipa": "/'slaɪtli/",
+    "vi": "nhẹ, một chút",
+    "kind": "word"
+   },
+   {
+    "en": "slight",
+    "pos": "adj",
+    "ipa": "/slaɪt/",
+    "vi": "nhẹ, mỏng, nhỏ",
+    "kind": "word"
+   },
+   {
+    "en": "steadily",
+    "pos": "adv",
+    "ipa": "/'stedəli/",
+    "vi": "đều đặn, vững chắc",
+    "kind": "word"
+   },
+   {
+    "en": "steady",
+    "pos": "adj",
+    "ipa": "/'stedi/",
+    "vi": "vững chắc, ổn định",
+    "kind": "word"
+   },
+   {
+    "en": "steadiness",
+    "pos": "n",
+    "ipa": "/'stedinəs/",
+    "vi": "sự ổn định, sự vững vàng",
+    "kind": "word"
+   },
+   {
+    "en": "flat",
+    "pos": "n,adj",
+    "ipa": "/flæt/",
+    "vi": "căn hộ; phẳng, bằng",
+    "kind": "word"
+   },
+   {
+    "en": "flatly",
+    "pos": "adv",
+    "ipa": "/'flætli/",
+    "vi": "một cách phẳng, dứt khoát",
+    "kind": "word"
+   },
+   {
+    "en": "immigration",
+    "pos": "n",
+    "ipa": "/ˌɪmɪ'ɡreɪʃn/",
+    "vi": "sự nhập cư",
+    "kind": "word"
+   },
+   {
+    "en": "immigrate",
+    "pos": "v",
+    "ipa": "/'ɪmɪɡreɪt/",
+    "vi": "nhập cư",
+    "kind": "word"
+   },
+   {
+    "en": "immigrant",
+    "pos": "n",
+    "ipa": "/'ɪmɪɡrənt/",
+    "vi": "người nhập cư",
+    "kind": "word"
+   },
+   {
+    "en": "coastal",
+    "pos": "adj",
+    "ipa": "/'kəʊstl/",
+    "vi": "ven biển",
+    "kind": "word"
+   },
+   {
+    "en": "coast",
+    "pos": "n",
+    "ipa": "/kəʊst/",
+    "vi": "bờ biển, ven biển",
+    "kind": "word"
+   },
+   {
+    "en": "agricultural",
+    "pos": "adj",
+    "ipa": "/,æɡrɪ'kʌltʃərəl/",
+    "vi": "thuộc về nông nghiệp",
+    "kind": "word"
+   },
+   {
+    "en": "agriculture",
+    "pos": "n",
+    "ipa": "/'æɡrɪkʌltʃər/",
+    "vi": "nông nghiệp",
+    "kind": "word"
+   },
+   {
+    "en": "region",
+    "pos": "n",
+    "ipa": "/'riːdʒən/",
+    "vi": "khu vực",
+    "kind": "word"
+   },
+   {
+    "en": "regional",
+    "pos": "adj",
+    "ipa": "/'riːdʒənəl/",
+    "vi": "thuộc về vùng, địa phương",
+    "kind": "word"
+   },
+   {
+    "en": "complaint",
+    "pos": "n",
+    "ipa": "/kəm'pleɪnt/",
+    "vi": "sự phàn nàn, khiếu nại",
+    "kind": "word"
+   },
+   {
+    "en": "complain",
+    "pos": "v",
+    "ipa": "/kəm'pleɪn/",
+    "vi": "phàn nàn, than vãn",
+    "kind": "word"
+   },
+   {
+    "en": "respond",
+    "pos": "v",
+    "ipa": "/rɪ'spɒnd/",
+    "vi": "trả lời, phản ứng",
+    "kind": "word"
+   },
+   {
+    "en": "response",
+    "pos": "n",
+    "ipa": "/rɪ'spɒns/",
+    "vi": "sự trả lời, phản hồi",
+    "kind": "word"
+   },
+   {
+    "en": "mistake",
+    "pos": "n",
+    "ipa": "/mɪ'steɪk/",
+    "vi": "sai lầm",
+    "kind": "word"
+   },
+   {
+    "en": "mistaken",
+    "pos": "adj",
+    "ipa": "/mɪ'steɪkən/",
+    "vi": "sai lầm, nhầm lẫn",
+    "kind": "word"
+   },
+   {
+    "en": "mistakenly",
+    "pos": "adv",
+    "ipa": "/mɪ'steɪkənli/",
+    "vi": "một cách sai lầm",
+    "kind": "word"
+   },
+   {
+    "en": "equal",
+    "pos": "adj",
+    "ipa": "/'iːkwəl/",
+    "vi": "ngang nhau, bình đẳng",
+    "kind": "word"
+   },
+   {
+    "en": "equality",
+    "pos": "n",
+    "ipa": "/ɪ'kwɒləti/",
+    "vi": "sự bình đẳng",
+    "kind": "word"
+   },
+   {
+    "en": "equally",
+    "pos": "adv",
+    "ipa": "/'iːkwəli/",
+    "vi": "một cách bình đẳng",
+    "kind": "word"
+   },
+   {
+    "en": "community",
+    "pos": "n",
+    "ipa": "/kə'mjuːnəti/",
+    "vi": "cộng đồng",
+    "kind": "word"
+   },
+   {
+    "en": "communal",
+    "pos": "adj",
+    "ipa": "/kə'mjuːnəl/",
+    "vi": "thuộc về cộng đồng",
+    "kind": "word"
+   },
+   {
+    "en": "stuck",
+    "pos": "v",
+    "ipa": "/stʌk/",
+    "vi": "mắc kẹt, dính vào",
+    "kind": "word"
+   },
+   {
+    "en": "show sb around",
+    "pos": "phr",
+    "ipa": "",
+    "vi": "dẫn ai xem xung quanh",
+    "kind": "phrase"
+   },
+   {
+    "en": "in addition to sth/doing sth",
+    "pos": "phr",
+    "ipa": "",
+    "vi": "ngoài việc gì/ làm việc gì",
+    "kind": "phrase"
+   },
+   {
+    "en": "get around",
+    "pos": "phr",
+    "ipa": "",
+    "vi": "đi xung quanh, đi lại",
+    "kind": "phrase"
+   },
+   {
+    "en": "result in sth",
+    "pos": "phr",
+    "ipa": "",
+    "vi": "dẫn đến điều gì",
+    "kind": "phrase"
+   },
+   {
+    "en": "afford to do sth",
+    "pos": "phr",
+    "ipa": "",
+    "vi": "đủ khả năng để làm việc gì",
+    "kind": "phrase"
+   },
+   {
+    "en": "bring back",
+    "pos": "phr",
+    "ipa": "",
+    "vi": "mang trở lại, gợi nhớ lại",
+    "kind": "phrase"
+   },
+   {
+    "en": "be translated into sth",
+    "pos": "phr",
+    "ipa": "",
+    "vi": "được dịch sang thứ gì (sách in lệch hàng: “tiếp xúc với thứ gì”)",
+    "kind": "phrase"
+   },
+   {
+    "en": "settle in",
+    "pos": "phr",
+    "ipa": "",
+    "vi": "định cư tại",
+    "kind": "phrase"
+   }
+  ]
 };

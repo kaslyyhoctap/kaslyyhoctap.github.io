@@ -128,7 +128,7 @@ data/
   english-unit2e.js   # 12 câu Anh Unit 2: Reading Comprehension + cloze khó
   thptqg-1101.js … thptqg-1105.js  # 5 đề tham khảo THPTQG 2026–2027 (Mã 1101–1105), mỗi đề 44 câu + 13 thẻ từ vựng
   thptqg-theory.js   # lý thuyết/ma trận đề/đáp án nhanh mục Đề tham khảo THPTQG
-  english-vocab.js    # flashcard từ vựng Unit 1–2
+  english-vocab.js    # flashcard từ vựng Unit 1–4 + Đề 1101–1105
   theory.js           # tóm tắt lý thuyết Sử + Sinh + Hóa (kèm sơ đồ SVG)
   english-theory.js   # tóm tắt lý thuyết Anh Unit 1–2
 .github/workflows/
